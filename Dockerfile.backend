@@ -36,6 +36,8 @@ ENV PYTHONUNBUFFERED=1
 
 # 7) Expose and launch
 EXPOSE 8011 8012
-CMD ["poetry", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8011"]
+#CMD ["poetry", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8011"]
 # For production
 # CMD ["gunicorn","-k", "uvicorn.workers.UvicornWorker","--bind", "0.0.0.0:8011","--workers", "4","app:app"]
+
+CMD ["sleep", "infinity"]
