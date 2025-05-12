@@ -1,0 +1,40 @@
+FROM python:3.11-slim-bookworm
+
+# 1) Install CA certs (and curl if you ever need it at runtime)
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+ && rm -rf /var/lib/apt/lists/*
+
+# # 2) Make sure OpenAI/httpx can find them
+# ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+# COPY CA_certificates/ /usr/local/share/ca-certificates/
+# RUN find /usr/local/share/ca-certificates/ -type f \( -iname "*.pem" -o -iname "*.cer" \) -exec sh -c 'mv "$0" "${0%.*}.crt"' {} \; \
+#  && update-ca-certificates
+
+# 3) Set working dir
+WORKDIR /app
+
+# 4) Copy only lockfiles first, install deps
+COPY pyproject.toml poetry.lock ./
+
+RUN pip install --upgrade pip setuptools wheel \
+ && pip install poetry==1.5.1 \
+ && poetry config virtualenvs.create false \
+ && poetry install --no-interaction --no-ansi --no-root --no-dev
+
+# 4a) Install gunicorn for production
+# RUN poetry add gunicorn
+
+# 5) Copy application code
+COPY . .
+
+# 6) Optional: unbuffered logs
+ENV PYTHONUNBUFFERED=1
+
+# 7) Expose and launch
+EXPOSE 8011 8012
+CMD ["poetry", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8011"]
+# For production
+# CMD ["gunicorn","-k", "uvicorn.workers.UvicornWorker","--bind", "0.0.0.0:8011","--workers", "4","app:app"]
