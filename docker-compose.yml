@@ -1,0 +1,36 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: DRSearch_backend
+    env_file:
+      - ./.env
+    environment:
+      WEAVIATE_URL: http://weaviate:8080
+      WEAVIATE_API_KEY: key
+      RECORD_MANAGER_DB_URL: postgresql://stevenlong:yourpassword@postgres_drsearch:5432/recordmanager_db
+      # AZURE_OPENAI_API_KEY: #<Insert_value>
+      # AZURE_OPENAI_ENDPOINT: #<Insert_value>
+
+    ports:
+      - 8011:8011
+      - 8012:8012
+    networks:
+      - drsearch-net
+      - shared-net
+    # develop:
+    #   watch:
+    #     - path: app/
+    #       action: sync+restart
+    #       target: /app/frontend/app/
+
+networks:
+  drsearch-net:
+    external: true
+    name: drsearch_docker_drsearch-net
+
+  shared-net:
+    external: true
+    name: drsearch_docker_shared-net
