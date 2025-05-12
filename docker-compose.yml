@@ -10,7 +10,7 @@ services:
     environment:
       WEAVIATE_URL: http://weaviate:8080
       WEAVIATE_API_KEY: key
-      RECORD_MANAGER_DB_URL: postgresql://stevenlong:yourpassword@postgres_drsearch:5432/recordmanager_db
+      RECORD_MANAGER_DB_URL: postgresql://username:yourpassword@postgres_drsearch:5432/recordmanager_db
       # AZURE_OPENAI_API_KEY: #<Insert_value>
       # AZURE_OPENAI_ENDPOINT: #<Insert_value>
 
@@ -28,7 +28,7 @@ services:
 
 networks:
   drsearch-net:
-    external: true
+    # external: true
     name: drsearch_docker_drsearch-net
 
   shared-net:
