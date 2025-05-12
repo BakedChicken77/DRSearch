@@ -16,7 +16,6 @@
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker"
     ],
-    "postCreateCommand": "poetry install --no-root",
     "remoteUser": "vscode",
     "mounts": [
         "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
