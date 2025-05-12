@@ -1,22 +1,24 @@
 {
-  "name": "Python FastAPI Dev Container",
-  "dockerComposeFile": ["../docker-compose.yml"], // Relative path to your docker-compose file
-  "service": "app", // Name of the service running your FastAPI application in docker-compose.yml
-  "workspaceFolder": "/workspace", // Directory where your code will be mounted
-  "settings": {
-    "python.pythonPath": "/usr/local/bin/python", // Adjust the Python path if necessary
-    "editor.formatOnSave": true,
-    "python.formatting.provider": "black" // Example: Configure Black as the formatter
-  },
-  "extensions": [
-    "ms-python.python",
-    "ms-python.vscode-pylance",
-    "esbenp.prettier-vscode",
-    "ms-azuretools.vscode-docker" // Add extensions you find useful
-  ],
-  "postCreateCommand": "pip install -r requirements.txt", // Install Python dependencies after setup
-  "remoteUser": "vscode", // Default user inside the container
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached" // Mount your code into the container
-  ]
+    "name": "Python FastAPI Dev Container",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "app",
+    "workspaceFolder": "/workspace/DRSearch",
+    "settings": {
+        "python.pythonPath": "/usr/local/bin/python",
+        "editor.formatOnSave": true,
+        "python.formatting.provider": "black"
+    },
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker"
+    ],
+    "postCreateCommand": "poetry install --no-root",
+    "remoteUser": "vscode",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+    ]
 }
