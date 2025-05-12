@@ -32,5 +32,5 @@ networks:
     name: drsearch_docker_drsearch-net
 
   shared-net:
-    external: true
+    # external: true
     name: drsearch_docker_shared-net
