@@ -17,7 +17,8 @@ RUN apt-get update \
 WORKDIR /app
 
 # 4) Copy only lockfiles first, install deps
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml ./
+# COPY pyproject.toml poetry.lock ./
 
 RUN pip install --upgrade pip setuptools wheel \
  && pip install poetry==1.5.1 \
