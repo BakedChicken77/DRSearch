@@ -1,0 +1,6 @@
+__pycache__
+docs
+Makefile
+openapi_schema.json
+.gitignore
+.yml
