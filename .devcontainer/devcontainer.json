@@ -3,7 +3,7 @@
     "dockerComposeFile": [
         "../docker-compose.yml"
     ],
-    "service": "app",
+    "service": "drsearch_backend",
     "workspaceFolder": "/workspace/DRSearch",
     "settings": {
         "python.pythonPath": "/usr/local/bin/python",
