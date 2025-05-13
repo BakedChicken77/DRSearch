@@ -52,8 +52,8 @@ services:
       WEAVIATE_URL: http://weaviate:8080
       WEAVIATE_API_KEY: key
       RECORD_MANAGER_DB_URL: postgresql://username:yourpassword@postgres_drsearch:5432/recordmanager_db
-      # AZURE_OPENAI_API_KEY: #<Insert_value>
-      # AZURE_OPENAI_ENDPOINT: #<Insert_value>
+      TENANT_ID: secret
+      CLIENT_ID: secret
     ports:
       - 8011:8011
       - 8012:8012
