@@ -1,5 +1,16 @@
 FROM python:3.11-slim-bookworm
 
+
+# 0) Add the non-root user that Codespaces/dev-containers expect
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+RUN apt-get update && apt-get install -y --no-install-recommends sudo \
+ && groupadd --gid $USER_GID $USERNAME \
+ && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+ && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME \
+ && chmod 0440 /etc/sudoers.d/$USERNAME
+
 # 1) Install CA certs (and curl if you ever need it at runtime)
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -36,6 +47,10 @@ ENV PYTHONUNBUFFERED=1
 
 # 7) Expose and launch
 EXPOSE 8011 8012
+
+# Switch to non-root user for the running Github container
+USER ${USERNAME}
+
 #CMD ["poetry", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8011"]
 # For production
 # CMD ["gunicorn","-k", "uvicorn.workers.UvicornWorker","--bind", "0.0.0.0:8011","--workers", "4","app:app"]
