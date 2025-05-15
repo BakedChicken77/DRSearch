@@ -1,0 +1,74 @@
+
+# Stage 1: Build frontend with Node.js
+FROM node:20.10-buster AS stage1
+
+WORKDIR /app
+
+ENV NODE_ENV=development
+# copy only what we need to install+build
+# COPY package.json yarn.lock ./
+COPY package.json ./
+
+# Set npm registry for yarn and install frontend dependencies
+RUN echo 'registry "https://registry.npmjs.org/"' > /app/.yarnrc && \
+    yarn install
+
+COPY . ./
+
+# **NEW** build next.js for production
+ENV NODE_ENV=production
+RUN yarn build
+
+
+
+# ##############
+# ### Use second stage for production only. Comment out for development
+# ##############
+# # Stage 2: Combine both frontend and backend
+# FROM node:20.10-buster
+# WORKDIR /app
+# # 2) Copy only the built frontend assets and node_modules needed to run Next.js
+# COPY --from=stage1 /app/.next ./.next
+# COPY --from=stage1 /app/public ./public
+# COPY --from=stage1 /app/node_modules ./node_modules
+# COPY --from=stage1 /app/package.json ./package.json
+
+# ##############
+# ### Use second stage for production only. Comment out for development
+# ##############
+
+
+ENV NODE_ENV=production
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
+
+
+
+### UNCOMMENT TO ADD CA CERTIFICATES
+# # ─── copy raw files ───────────────────────────────────────────────────────────
+# COPY CA_certificates/ /usr/local/share/ca-certificates/
+
+# # ─── normalise → install → bundle ────────────────────────────────────────────
+# RUN set -e \
+#  # 1) make sure all files have .crt so update-ca-certificates can see them
+#  && find /usr/local/share/ca-certificates -type f \
+#       \( -iname '*.pem' -o -iname '*.cer' \) \
+#       -exec sh -c 'cp "$0" "${0%.*}.crt"' {} \; \
+#  \
+#  # 2) update the Debian/Ubuntu system trust store
+#  && update-ca-certificates \
+#  \
+#  # 3) concatenate every CA into a single PEM                   (order unimportant)
+#  && cat /usr/local/share/ca-certificates/*.crt > /etc/ssl/certs/extra-cas.pem
+
+
+
+
+# 4) tell Node to use the bundle
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/extra-cas.pem
+
+
+EXPOSE 3000
+
+CMD ["yarn", "dev"]
+# CMD ["yarn", "start"]

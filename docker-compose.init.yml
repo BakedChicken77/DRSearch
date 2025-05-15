@@ -1,0 +1,27 @@
+
+services:
+  weaviate_init:
+    image: alpine
+    command: ["sh", "-c", "cp -r /source/. /destination"]
+    volumes:
+      - ./DockerVolumes/drsearch_docker_weaviate_data:/source
+      - weaviate_data:/destination
+    networks:
+      - drsearch-net
+
+  postgres_init:
+    image: alpine
+    command: ["sh", "-c", "cp -r /source/. /destination"]
+    volumes:
+      - ./DockerVolumes/drsearch_docker_RecordManager:/source
+      - recordmanager_data:/destination
+    networks:
+      - drsearch-net
+
+volumes:
+  weaviate_data:
+  recordmanager_data:
+
+networks:
+  drsearch-net:
+  

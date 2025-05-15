@@ -1,0 +1,107 @@
+services:
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.24.10
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 100
+      AUTHENTICATION_APIKEY_ENABLED: 'true'
+      AUTHENTICATION_APIKEY_ALLOWED_KEYS: 'key'
+      AUTHENTICATION_APIKEY_USERS: 'user'
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: 'node1'
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    restart: unless-stopped
+    networks:
+      - drsearch-net
+
+  postgres_drsearch:
+    image: postgres:16.4
+    container_name: postgres_drsearch
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: recordmanager_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - recordmanager_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - drsearch-net
+  drsearch_backend:
+    build:
+      context: ./drsearch_backend
+      dockerfile: Dockerfile.backend
+    container_name: DRSearch_backend
+    env_file:
+      - ./drsearch_backend/.env
+    environment:
+      WEAVIATE_URL: http://weaviate:8080
+      WEAVIATE_API_KEY: key
+      RECORD_MANAGER_DB_URL: postgresql://username:yourpassword@postgres_drsearch:5432/recordmanager_db
+      TENANT_ID: secret
+      CLIENT_ID: secret
+    ports:
+      - 8011:8011
+      - 8012:8012
+    depends_on:
+      - weaviate
+      - postgres_drsearch
+    networks:
+      - drsearch-net
+      - shared-net
+
+  drsearch_frontend:
+    build:
+      context: ./drsearch_frontend
+      dockerfile: Dockerfile.frontend
+    container_name: DRSearch_frontend
+    env_file:
+      - ./drsearch_frontend/.env
+    environment:
+      CLIENT_SECRET: Secret
+      NEXTAUTH_SECRET: Secret
+      NEXTAUTH_URL: http://localhost:3000 
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8011
+      NODE_ENV: development
+      ADMIN_EMAIL_ADDRESS: "steve.long@drs.com, twittic@drs.com"
+      NEXT_TELEMETRY_DISABLED: 1
+      
+    ports:
+      - 3000:3000
+    # volumes:
+    #   - drsearch_frontend_data:/app
+    networks:
+      - drsearch-net
+      - shared-net
+    develop:
+      watch:
+        - path: ./drsearch_frontend/app/
+          action: sync+restart
+          target: /app/app/
+
+
+volumes:
+  weaviate_data:
+  recordmanager_data:
+
+networks:
+  drsearch-net:
+    name: drsearch_docker_drsearch-net
+
+  shared-net:
+    # external: true
+    name: drsearch_docker_shared-net
