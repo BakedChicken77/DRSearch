@@ -6,6 +6,7 @@ from typing import Any, Dict
 
 import pytest
 from fastapi.testclient import TestClient
+from langchain.schema import BaseRetriever
 
 # --------------------------------------------------------------------------- #
 #  Global environment & dummy values
@@ -82,12 +83,36 @@ class FakeClient:
         self.query = FakeQuery()
 
 
+class _DummyRetriever(BaseRetriever):
+    """A simple synchronous retriever that always returns one predictable Document.
+    This is sufficient for unit-tests that need a real ``BaseRetriever`` instance
+    without hitting any external services.
+    """
+
+    def _get_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
+        from langchain.schema import Document
+
+        return [
+            Document(
+                page_content=f"Dummy content for: {query}",
+                metadata={"filename": "dummy.pdf"},
+            )
+        ]
+
+    async def _aget_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
+        # Just delegate to the sync implementation for test purposes.
+        return self._get_relevant_documents(query, run_manager=run_manager)
+
+
 class _FakeWeavStore:
     def __init__(self, *a, **k):
         ...
 
     def as_retriever(self, *a, **k):
-        return "retriever-ok"
+        # Return a real BaseRetriever implementation rather than a string, so that
+        # downstream components (e.g. MultiQueryRetriever) work as expected during
+        # unit-tests.
+        return _DummyRetriever()
 
 
 @pytest.fixture(autouse=True)
