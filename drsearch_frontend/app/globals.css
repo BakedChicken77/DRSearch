@@ -1,0 +1,94 @@
+/* app\globals.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add the Inter font using @font-face */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter/Inter-Regular.woff2') format('woff2'),
+       url('/fonts/Inter/Inter-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter/Inter-Bold.woff2') format('woff2'),
+       url('/fonts/Inter/Inter-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Apply the Inter font to the body and the .inter class */
+body, .inter {
+  font-family: 'Inter', sans-serif;
+  color: #000000;
+  background: #bfc1b4;
+}
+
+body input,
+body textarea { 
+  color: black;
+}
+
+a {
+  color: #2d7bd4;
+}
+
+a:hover {
+  border-bottom: 1px solid;
+}
+
+p {
+  margin: 8px 0;
+}
+
+code {
+  color: #ffa500;
+}
+
+li {
+  padding: 4px;
+}
+
+```
+
+```tsx
+// app\layout.tsx
+
+// This file defines the global layout structure for the app. It wraps every page and provides the overall HTML, 
+// body structure, and common layout components (such as a navigation bar, footer, or background styling). 
+// It is not responsible for rendering specific page content but ensures that all child pages follow a consistent layout.
+
+"use client";
+
+import "./globals.css";
+// import { Inter } from "next/font/google";
+import { SessionProvider } from "next-auth/react"; // Import SessionProvider
+
+// const inter = Inter({ subsets: ["latin"] });
+
+
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className="h-full">
+      <body className="inter h-full"> {/* Directly apply the .inter class */}
+        <SessionProvider>
+          <div
+            className="flex flex-col h-full md:p-8"
+            style={{ background: "rgb(212, 211, 203)" }}
+          >
+            {children}
+          </div>
+        </SessionProvider>
+      </body>
+    </html>
+  );
+}

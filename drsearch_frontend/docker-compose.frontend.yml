@@ -1,0 +1,44 @@
+# docker-compose.frontend.yml
+
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: DRSearch_frontend
+    env_file:
+      - ./.env
+    environment:
+      CLIENT_SECRET: Secret
+      NEXTAUTH_SECRET: Secret
+      NEXTAUTH_URL: http://localhost:3000 
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8011
+      NODE_ENV: development
+      ADMIN_EMAIL_ADDRESS: "steve.long@drs.com, twittic@drs.com"
+      NEXT_TELEMETRY_DISABLED: 1
+      
+    ports:
+      - 3000:3000
+    # volumes:
+    #   - drsearch_frontend_data:/app
+    networks:
+      - drsearch-net
+      - shared-net
+    develop:
+      watch:
+        - path: app/
+          action: sync+restart
+          target: /app/frontend/app/
+
+# volumes:
+#   drsearch_frontend_data:
+
+networks:
+  drsearch-net:
+    external: true
+    name: drsearch_docker_drsearch-net
+
+  shared-net:
+    external: true
+    name: drsearch_docker_shared-net
