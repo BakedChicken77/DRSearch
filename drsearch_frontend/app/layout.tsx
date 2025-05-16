@@ -1,0 +1,36 @@
+// app\layout.tsx
+
+// This file defines the global layout structure for the app. It wraps every page and provides the overall HTML, 
+// body structure, and common layout components (such as a navigation bar, footer, or background styling). 
+// It is not responsible for rendering specific page content but ensures that all child pages follow a consistent layout.
+
+"use client";
+
+import "./globals.css";
+// import { Inter } from "next/font/google";
+import { SessionProvider } from "next-auth/react"; // Import SessionProvider
+
+// const inter = Inter({ subsets: ["latin"] });
+
+
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" className="h-full">
+      <body className="inter h-full"> {/* Directly apply the .inter class */}
+        <SessionProvider>
+          <div
+            className="flex flex-col h-full md:p-8"
+            style={{ background: "rgb(212, 211, 203)" }}
+          >
+            {children}
+          </div>
+        </SessionProvider>
+      </body>
+    </html>
+  );
+}
