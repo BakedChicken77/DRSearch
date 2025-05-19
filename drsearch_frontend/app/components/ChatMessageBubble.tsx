@@ -195,7 +195,7 @@ export function ChatMessageBubble(props: {
       });
       if (data.code === 200) {
         setFeedback({ run_id, score, key, feedback_id: data.feedbackId });
-        score == 1 ? animateButton("upButton") : animateButton("downButton");
+        score === 1 ? animateButton("upButton") : animateButton("downButton");
         if (comment) {
           setComment("");
         }
