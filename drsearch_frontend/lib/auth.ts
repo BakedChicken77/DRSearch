@@ -10,7 +10,7 @@ import { TokenSetParameters } from "openid-client";
 
 const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED !== 'False';
 const API_SCOPE = process.env.NEXT_PUBLIC_AZURE_AD_API_SCOPE; // Replace with your actual API scope
-const NEXT_AUTH_DEBUG_MODE = process.env.NEXTAUTH_DEBUG === 'true'; // Default debug mode to false if not set
+const NEXT_AUTH_DEBUG_MODE = process.env.NEXT_AUTH_DEBUG_MODE === 'true'; // Default debug mode to false if not set
 
 
 console.log("Auth Enabled:", AUTH_ENABLED);
