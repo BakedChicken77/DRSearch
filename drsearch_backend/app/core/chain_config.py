@@ -7,7 +7,7 @@ Chain-specific environment setup and constants for DRSearch’s RAG/chat pipelin
 import os
 from pathlib import Path
 
-import truststore   # ensure OS-level CA store is honoured
+import truststore  # ensure OS-level CA store is honoured
 from dotenv import load_dotenv
 
 # ─── Environment bootstrapping ────────────────────────────────────────────────
@@ -21,7 +21,7 @@ load_dotenv()
 # ─── Chain constants ─────────────────────────────────────────────────────────
 
 #: Toggle RAG vs. plain-chatbot mode
-RAG_ON: bool = True
+RAG_ON: bool = os.getenv("RAG_ON", "True").lower() == "true"
 
 #: How many documents to pull per query when RAG_ON
 _NUMBER_OF_DOCS_RETRIEVED: int = 3
@@ -30,8 +30,12 @@ _NUMBER_OF_DOCS_RETRIEVED: int = 3
 _DEFAULT_INDEX: str = "JACSKE_Program"
 
 #: Weaviate connection settings
-_WEAVIATE_URL: str = os.environ["WEAVIATE_URL"]
-_WEAVIATE_API_KEY: str = os.environ["WEAVIATE_API_KEY"]
+if RAG_ON:
+    _WEAVIATE_URL: str = os.environ["WEAVIATE_URL"]
+    _WEAVIATE_API_KEY: str = os.environ["WEAVIATE_API_KEY"]
+else:  # Database details optional when RAG disabled
+    _WEAVIATE_URL = os.getenv("WEAVIATE_URL", "")
+    _WEAVIATE_API_KEY = os.getenv("WEAVIATE_API_KEY", "")
 
 #: Whether Auth is enabled (True/False)
 _AUTH_ENABLED: bool = os.getenv("AUTH_ENABLED", "True") == "True"
