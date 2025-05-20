@@ -37,3 +37,29 @@ test("calls onChoice when card clicked", () => {
   fireEvent.mouseUp(screen.getByText("q1"));
   expect(onChoice).toHaveBeenCalledWith("q1");
 });
+
+test("renders all example options and handles hover and click", () => {
+  const onChoice = jest.fn();
+  render(
+    <EmptyState
+      onChoice={onChoice}
+      selectedIndexName="index1"
+      setSelectedIndexName={() => {}}
+      indexOptions={options}
+      loadingOptions={false}
+    />,
+  );
+
+  options[0].example_questions.forEach((q) => {
+    const heading = screen.getByText(q);
+    const card = heading.closest(".chakra-card") as HTMLElement;
+    expect(card).toBeInTheDocument();
+    expect(getComputedStyle(card).cursor).toBe("pointer");
+    fireEvent.mouseEnter(card);
+    expect(getComputedStyle(card).backgroundColor).toBe("rgb(78, 78, 81)");
+    fireEvent.mouseLeave(card);
+    fireEvent.mouseUp(card);
+    expect(onChoice).toHaveBeenCalledWith(q);
+  });
+  expect(onChoice).toHaveBeenCalledTimes(options[0].example_questions.length);
+});
