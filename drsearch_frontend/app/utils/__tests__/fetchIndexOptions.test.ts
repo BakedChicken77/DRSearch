@@ -1,6 +1,6 @@
 import { fetchIndexOptions } from "../fetchIndexOptions";
 
-const apiUrl = "http://localhost:8010/index-options";
+const apiUrl = "http://localhost:8011/index-options";
 
 beforeEach(() => {
   (global.fetch as any) = jest.fn();
