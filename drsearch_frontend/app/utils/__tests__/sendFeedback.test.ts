@@ -50,3 +50,31 @@ test("patches feedback when id provided", async () => {
   );
   expect(res.feedbackId).toBe("f");
 });
+
+test("includes comment in request body when provided", async () => {
+  (fetch as jest.Mock).mockResolvedValue({
+    json: () => Promise.resolve({ code: 200, result: "ok" }),
+  });
+  await sendFeedback({
+    key: "k",
+    runId: "r",
+    comment: "my comment",
+    isExplicit: true,
+  });
+  const body = JSON.parse((fetch as jest.Mock).mock.calls[0][1].body);
+  expect(body.comment).toBe("my comment");
+});
+
+test("omits comment from request body when not provided", async () => {
+  (fetch as jest.Mock).mockResolvedValue({
+    json: () => Promise.resolve({ code: 200, result: "ok" }),
+  });
+  await sendFeedback({
+    key: "k",
+    runId: "r",
+    feedbackId: "f",
+    isExplicit: true,
+  });
+  const body = JSON.parse((fetch as jest.Mock).mock.calls[0][1].body);
+  expect(body).not.toHaveProperty("comment");
+});
