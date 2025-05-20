@@ -24,3 +24,39 @@ test("renders EmptyState when no messages", async () => {
     expect(screen.getByText("DRS ASSISTANT")).toBeInTheDocument(),
   );
 });
+import { fireEvent } from "@testing-library/react";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+
+jest.mock("@microsoft/fetch-event-source", () => ({
+  fetchEventSource: jest.fn(() => Promise.resolve()),
+}));
+
+test("shows options and sends initial question", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    { name: "idx", display_name: "Index", example_questions: ["q1"] },
+  ]);
+  const mockSession = { accessToken: "token" } as any;
+  render(
+    <SessionProvider session={mockSession}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  await screen.findByText("Select Document Index");
+  const select = screen.getByRole("combobox");
+  fireEvent.change(select, { target: { value: "idx" } });
+  fireEvent.mouseUp(screen.getByText("q1"));
+  expect(fetchEventSource).toHaveBeenCalled();
+  expect(screen.queryByText("q1")).not.toBeNull();
+});
+
+test("send button disabled without index", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([]);
+  const mockSession = { accessToken: "token" } as any;
+  render(
+    <SessionProvider session={mockSession}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  await screen.findByText("DRS ASSISTANT");
+  expect(screen.getByLabelText("Send")).toBeDisabled();
+});
