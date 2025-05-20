@@ -1,13 +1,33 @@
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { SessionProvider } from "next-auth/react";
+import React from "react";
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  act,
+} from "@testing-library/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import { ChatWindow } from "../ChatWindow";
 import { fetchIndexOptions } from "../../utils/fetchIndexOptions";
+import hljs from "highlight.js";
 
 jest.mock("../../utils/fetchIndexOptions", () => ({
   fetchIndexOptions: jest.fn(),
 }));
 
+jest.mock("next-auth/react", () => ({
+  __esModule: true,
+  SessionProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  useSession: jest.fn(),
+}));
+
 beforeEach(() => {
+  (useSession as jest.Mock).mockReturnValue({
+    data: { accessToken: "token" },
+    status: "authenticated",
+  });
   jest.clearAllMocks();
 });
 
@@ -128,5 +148,130 @@ test("changing index resets chat", async () => {
   fireEvent.click(screen.getByLabelText("Send"));
   await waitFor(() => expect(fetchEventSource).toHaveBeenCalled());
   fireEvent.change(select, { target: { value: "idx2" } });
+  await waitFor(() => expect(fetchEventSource).toHaveBeenCalled());
+});
+
+test("index change clears messages", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    { name: "a", display_name: "A", example_questions: [] },
+    { name: "b", display_name: "B", example_questions: [] },
+  ]);
+  (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
+    opts.onmessage?.({
+      event: "data",
+      data: JSON.stringify({
+        ops: [{ op: "add", path: "/streamed_output", value: ["answer"] }],
+      }),
+    });
+    opts.onmessage?.({ event: "end" });
+  });
+
+  render(
+    <SessionProvider session={null}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  const select = await screen.findByRole("combobox");
+  fireEvent.change(select, { target: { value: "a" } });
+  await act(async () => {});
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "hi" } });
+  fireEvent.click(screen.getByLabelText("Send"));
+
+  await screen.findByText("hi");
+  await screen.findByText("answer");
+
+  await act(async () => {
+    fireEvent.change(select, { target: { value: "b" } });
+  });
+
+  await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""));
+});
+
+test("shows loading state when session loading", () => {
+  (useSession as jest.Mock).mockReturnValueOnce({
+    data: null,
+    status: "loading",
+  });
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([]);
+  render(
+    <SessionProvider session={null}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  expect(screen.getByText("Loading...")).toBeInTheDocument();
+});
+
+test("renders highlighted markdown and updates message", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    { name: "idx", display_name: "Index", example_questions: [] },
+  ]);
+
+  const highlightSpy = jest.spyOn(hljs, "highlight");
+
+  (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
+    opts.onmessage?.({
+      event: "data",
+      data: JSON.stringify({
+        ops: [
+          {
+            op: "add",
+            path: "/streamed_output",
+            value: ["response"],
+          },
+          {
+            op: "add",
+            path: "/logs",
+            value: {
+              FindDocs: {
+                final_output: {
+                  output: [{ metadata: { file_path: "p", filename: "f" } }],
+                },
+              },
+            },
+          },
+        ],
+      }),
+    });
+    opts.onmessage?.({ event: "end" });
+  });
+
+  render(
+    <SessionProvider session={null}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  const select = await screen.findByRole("combobox");
+  fireEvent.change(select, { target: { value: "idx" } });
+  fireEvent.change(screen.getByRole("textbox"), {
+    target: { value: "```js\nconst a = 1;\n```" },
+  });
+  fireEvent.click(screen.getByLabelText("Send"));
+
+  await screen.findByText("response");
+
+  expect(highlightSpy).toHaveBeenCalled();
+  expect(screen.getByText("Sources")).toBeInTheDocument();
+});
+
+test("enter vs shift+enter", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    { name: "idx", display_name: "Index", example_questions: [] },
+  ]);
+  (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
+    opts.onmessage?.({ event: "end" });
+  });
+  render(
+    <SessionProvider session={null}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  const select = await screen.findByRole("combobox");
+  fireEvent.change(select, { target: { value: "idx" } });
+  const box = screen.getByRole("textbox");
+  fireEvent.change(box, { target: { value: "line" } });
+  fireEvent.keyDown(box, { key: "Enter", shiftKey: true });
+  expect(box).toHaveValue("line\n");
+
+  fireEvent.keyDown(box, { key: "Enter" });
   await waitFor(() => expect(fetchEventSource).toHaveBeenCalled());
 });
