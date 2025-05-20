@@ -1,6 +1,5 @@
 // app\components\ChatMessageBubble.tsx
 
-
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { emojisplosion } from "emojisplosion";
@@ -41,7 +40,7 @@ export type Feedback = {
   comment?: string;
 };
 
-const filterSources = (sources: Source[]) => {
+export const filterSources = (sources: Source[]) => {
   console.log("Filtering sources:", sources);
   const filtered: Source[] = [];
   const urlMap = new Map<string, number>();
@@ -63,7 +62,9 @@ const filterSources = (sources: Source[]) => {
       }
     } else {
       // Handle the case where url is undefined
-      console.warn(`Source at index ${i} has undefined url and will be skipped.`);
+      console.warn(
+        `Source at index ${i} has undefined url and will be skipped.`,
+      );
     }
   });
 
@@ -72,12 +73,14 @@ const filterSources = (sources: Source[]) => {
   return { filtered, indexMap };
 };
 
-const createAnswerElements = (
+export const createAnswerElements = (
   content: string,
   filteredSources: Source[],
   sourceIndexMap: Map<number, number>,
   highlighedSourceLinkStates: boolean[],
-  setHighlightedSourceLinkStates: React.Dispatch<React.SetStateAction<boolean[]>>,
+  setHighlightedSourceLinkStates: React.Dispatch<
+    React.SetStateAction<boolean[]>
+  >,
 ) => {
   console.log("Creating answer elements with content:", content);
   //const matches = Array.from(content.matchAll(/\[\^?(\d+)\^?\]/g));
@@ -109,7 +112,9 @@ const createAnswerElements = (
           sourceNumber={sourceNum + 1} // Keep original source number
           highlighted={highlighedSourceLinkStates[resolvedNum]}
           onMouseEnter={() => {
-            console.log(`Mouse entered citation for source number ${resolvedNum}`);
+            console.log(
+              `Mouse entered citation for source number ${resolvedNum}`,
+            );
             setHighlightedSourceLinkStates(
               filteredSources.map((_, i) => i === resolvedNum),
             );
@@ -316,14 +321,20 @@ export function ChatMessageBubble(props: {
                       source={source}
                       highlighted={highlighedSourceLinkStates[index]}
                       onMouseEnter={() => {
-                        console.log(`Mouse entered SourceBubble for index ${index}`);
+                        console.log(
+                          `Mouse entered SourceBubble for index ${index}`,
+                        );
                         setHighlightedSourceLinkStates(
                           filteredSources.map((_, i) => i === index),
                         );
                       }}
                       onMouseLeave={() => {
-                        console.log(`Mouse left SourceBubble for index ${index}`);
-                        setHighlightedSourceLinkStates(filteredSources.map(() => false));
+                        console.log(
+                          `Mouse left SourceBubble for index ${index}`,
+                        );
+                        setHighlightedSourceLinkStates(
+                          filteredSources.map(() => false),
+                        );
                       }}
                       runId={runId}
                     />
