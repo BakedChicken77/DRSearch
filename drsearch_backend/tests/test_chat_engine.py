@@ -11,8 +11,8 @@ class DummyLLM:
     def __call__(self, input, **kwargs):
         return "LLM-OK"
 
-dummy_llm = RunnableLambda(DummyLLM())
 
+dummy_llm = RunnableLambda(DummyLLM())
 
 
 def test_chat_engine_unknown_index():
@@ -23,6 +23,7 @@ def test_chat_engine_unknown_index():
 def test_chat_engine_answer_chain_simple_RAG_OFF(monkeypatch):
     # Force RAG mode off so retriever chain is skipped -> simpler test
     monkeypatch.setattr("app.chain.engine.RAG_ON", False)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", False)
 
     eng = ChatEngine()  # default index
 
@@ -37,6 +38,7 @@ def test_chat_engine_answer_chain_simple_RAG_ON(monkeypatch):
     """Full RAG chain incl. MultiQueryRetriever should succeed with FakeListLLM."""
 
     monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
 
     # Ensure retriever chain uses a predictable in-memory retriever instead of
     # the real Weaviate vector-store, which is outside the scope of unit tests.
@@ -65,6 +67,7 @@ def test_llm_init_failure(monkeypatch):
     with pytest.raises(RuntimeError, match="boom"):
         ChatEngine("JACSKE_Program")  # any valid key from INDEX_CONFIG
 
+
 def test_multiquery_retriever_path(monkeypatch):
     from app.chain.engine import ChatEngine
 
@@ -73,6 +76,9 @@ def test_multiquery_retriever_path(monkeypatch):
         lambda *_, **__: _DummyRetriever(),
     )
 
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
+
     monkeypatch.setattr(
         "app.chain.engine.AzureChatOpenAI",
         lambda *_, **__: _fake_llm_for_answer("LLM-OK"),
@@ -80,13 +86,17 @@ def test_multiquery_retriever_path(monkeypatch):
 
     ChatEngine("JACSKE_Program")  # should initialise without error
 
+
 def test_context_map_with_retriever(monkeypatch):
     monkeypatch.setattr(
         "app.chain.engine.AzureChatOpenAI",
         lambda *_, **__: _fake_llm_for_answer("answer"),
     )
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
 
     from tests.conftest import _DummyRetriever  # type: ignore
+
     monkeypatch.setattr(
         "app.chain.retriever.RetrieverFactory.build",
         lambda *_, **__: _DummyRetriever(),
@@ -96,7 +106,6 @@ def test_context_map_with_retriever(monkeypatch):
 
     result = engine.answer_chain.invoke({"question": "test?", "chat_history": []})
     assert "answer" in result
-
 
 
 def test_modify_docs_enriches_path(monkeypatch, tmp_path):
@@ -120,8 +129,9 @@ def test_modify_docs_enriches_path(monkeypatch, tmp_path):
 
     engine = ChatEngine("JACSKE_Program")
 
-    retriever = RunnableLambda(lambda input: [Document(page_content="...", metadata={"filename": "abc.pdf"})])
-
+    retriever = RunnableLambda(
+        lambda input: [Document(page_content="...", metadata={"filename": "abc.pdf"})]
+    )
 
     format_fn = lambda docs: "<doc>content</doc>"
 
@@ -144,6 +154,7 @@ def _fake_llm_for_answer(final_answer: str) -> FakeListLLM:
 def _dup_test_chat_engine_answer_chain_simple_RAG_ON_fake(monkeypatch):
     # Force RAG mode off so retriever chain is skipped -> simpler test
     monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
 
     # Use a FakeListLLM that returns predictable values for MultiQueryRetriever.
     monkeypatch.setattr(
@@ -168,6 +179,8 @@ def _dup_test_multiquery_retriever_path_fake(monkeypatch):
         "app.chain.engine.AzureChatOpenAI",
         lambda *_, **__: _fake_llm_for_answer("LLM-OK"),
     )
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
 
     ChatEngine("JACSKE_Program")  # this will now succeed
 
@@ -177,13 +190,17 @@ def _dup_test_context_map_with_retriever_fake(monkeypatch):
         "app.chain.engine.AzureChatOpenAI",
         lambda *_, **__: _fake_llm_for_answer("answer"),
     )
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
 
     engine = ChatEngine("JACSKE_Program")
 
-    result = engine.answer_chain.invoke({
-        "question": "test?",
-        "chat_history": [],
-    })
+    result = engine.answer_chain.invoke(
+        {
+            "question": "test?",
+            "chat_history": [],
+        }
+    )
     assert "answer" in result
 
 
@@ -201,6 +218,9 @@ def _dup_test_modify_docs_enriches_path_fake(monkeypatch, tmp_path):
         lambda *_, **__: _DummyRetriever(),
     )
 
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
+
     monkeypatch.setattr(
         "app.chain.engine.AzureChatOpenAI",
         lambda *_, **__: _fake_llm_for_answer("LLM-OK"),
@@ -208,8 +228,9 @@ def _dup_test_modify_docs_enriches_path_fake(monkeypatch, tmp_path):
 
     engine = ChatEngine("JACSKE_Program")
 
-    retriever = RunnableLambda(lambda input: [Document(page_content="...", metadata={"filename": "abc.pdf"})])
-
+    retriever = RunnableLambda(
+        lambda input: [Document(page_content="...", metadata={"filename": "abc.pdf"})]
+    )
 
     format_fn = lambda docs: "<doc>content</doc>"
 

@@ -55,7 +55,9 @@ def test_cli_interactive_exit(monkeypatch, capsys):
     monkeypatch.setattr(builtins, "input", lambda _p="": next(user_inputs))
 
     # The stub engine will echo back "stub-response" so the AI path is taken.
-    monkeypatch.setattr("app.chain.cli._engine_for", lambda idx: _StubEngine("stub-response"))
+    monkeypatch.setattr(
+        "app.chain.cli._engine_for", lambda idx: _StubEngine("stub-response")
+    )
 
     chain_cli()
 
@@ -73,7 +75,9 @@ def test_mapping_no_file(tmp_path):
 
 def test_models_chat_request():
     """Ensure the Pydantic model validates and serialises as expected."""
-    req = ChatRequest(question="q", chat_history=[{"human": "h", "ai": "a"}], index_name="idx")
+    req = ChatRequest(
+        question="q", chat_history=[{"human": "h", "ai": "a"}], index_name="idx"
+    )
     data = req.dict()
     assert data["question"] == "q"
     assert data["chat_history"][0]["human"] == "h"
@@ -85,7 +89,9 @@ def test_settings_split_origins():
     # Ensure any existing env-var does not interfere with constructor-provided value
     os.environ.pop("CORS_ORIGINS", None)
 
-    cfg = Settings(cors_origins="http://a.com , http://b.com", tenant_id="t", client_id="c")
+    cfg = Settings(
+        cors_origins="http://a.com , http://b.com", tenant_id="t", client_id="c"
+    )
     assert cfg.cors_origins == ["http://a.com", "http://b.com"]
 
 
@@ -94,7 +100,9 @@ def test_index_options_structure():
     assert isinstance(INDEX_OPTIONS, list) and INDEX_OPTIONS, "Empty index options list"
     for item in INDEX_OPTIONS:
         assert {"name", "display_name", "example_questions"}.issubset(item)
-        assert isinstance(item["example_questions"], list) and item["example_questions"], "Missing questions"
+        assert (
+            isinstance(item["example_questions"], list) and item["example_questions"]
+        ), "Missing questions"
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
@@ -115,7 +123,11 @@ def test_main_module_execution(monkeypatch):
     monkeypatch.setattr("uvicorn.Config", lambda *a, **k: object())
 
     # Prevent real signal handling on non-main threads / platforms
-    monkeypatch.setattr("asyncio.AbstractEventLoop.add_signal_handler", lambda *a, **k: None, raising=False)
+    monkeypatch.setattr(
+        "asyncio.AbstractEventLoop.add_signal_handler",
+        lambda *a, **k: None,
+        raising=False,
+    )
 
     # Replace asyncio.new_event_loop with a dummy loop that has the required methods.
     import asyncio
@@ -131,7 +143,7 @@ def test_main_module_execution(monkeypatch):
     monkeypatch.setattr(asyncio, "set_event_loop", lambda *a, **k: None)
 
     # Provide a valid CORS_ORIGINS so Settings() validates successfully
-    monkeypatch.setenv("CORS_ORIGINS","http://localhost:3000")
+    monkeypatch.setenv("CORS_ORIGINS", "http://localhost:3000")
 
     # Finally run the module as if it were the main program. The patched pieces
     # ensure nothing heavyweight actually happens.
@@ -146,15 +158,23 @@ def test_engine_modify_docs_mapping_none(monkeypatch):
 
     # Force RAG_ON so retriever logic is active but patch everything heavy.
     monkeypatch.setattr("app.chain.engine.RAG_ON", True)
-    monkeypatch.setattr("app.chain.retriever.RetrieverFactory.build", lambda *_, **__: _DummyRetriever())
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
+    monkeypatch.setattr(
+        "app.chain.retriever.RetrieverFactory.build", lambda *_, **__: _DummyRetriever()
+    )
 
     # Lightweight LLM replacement
-    monkeypatch.setattr("app.chain.engine.AzureChatOpenAI", lambda *_, **__: RunnableLambda(lambda *_a, **_k: "text"))
+    monkeypatch.setattr(
+        "app.chain.engine.AzureChatOpenAI",
+        lambda *_, **__: RunnableLambda(lambda *_a, **_k: "text"),
+    )
 
     eng = ChatEngine("SEPs_F_T_C_W_A_V")  # This index has PN_TO_FILE_MAPPING = None
 
     # Simple retriever returning a doc without file_path metadata.
-    retr = RunnableLambda(lambda q: [Document(page_content="x", metadata={"filename": "ignored.pdf"})])
+    retr = RunnableLambda(
+        lambda q: [Document(page_content="x", metadata={"filename": "ignored.pdf"})]
+    )
 
     chain = eng._build_retriever_chain(retr, lambda d: "")
     docs = chain.invoke({"question": "hi", "chat_history": []})
@@ -187,4 +207,4 @@ def test_cli_keyboard_interrupt(monkeypatch, capsys):
     chain_cli()
 
     captured = capsys.readouterr()
-    assert "Exiting." in captured.out 
+    assert "Exiting." in captured.out
