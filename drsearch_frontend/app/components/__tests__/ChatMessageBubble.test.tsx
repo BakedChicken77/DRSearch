@@ -17,7 +17,7 @@ test("creates citation elements", () => {
   const sources = [{ url: "a", title: "A" }];
   const { filtered, indexMap } = filterSources(sources as any);
   const res = createAnswerElements(
-    "test [1]",
+    "test [0]",
     filtered as any,
     indexMap,
     [false],

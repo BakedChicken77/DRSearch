@@ -33,7 +33,7 @@ export function EmptyState(props: {
   if (loadingOptions)
     return (
       <VStack pt={20}>
-        <Spinner size="xl" />
+        <Spinner size="xl" role="status" />
       </VStack>
     );
 
@@ -63,9 +63,7 @@ export function EmptyState(props: {
           <Heading fontSize="8xl" fontWeight={"medium"} mb={1} color={"black"}>
             DRS ASSISTANT
           </Heading>
-          <p style={{ color: "black", textAlign: "center" }}>
-            Here to assist
-          </p>
+          <p style={{ color: "black", textAlign: "center" }}>Here to assist</p>
           <Select
             value={selectedIndexName}
             onChange={(e) => setSelectedIndexName(e.target.value)}
@@ -100,9 +98,7 @@ export function EmptyState(props: {
                   selectedIndexName ? "rgb(58, 58, 61)" : "gray.300"
                 }
                 _hover={
-                  selectedIndexName
-                    ? { backgroundColor: "rgb(78,78,81)" }
-                    : {}
+                  selectedIndexName ? { backgroundColor: "rgb(78,78,81)" } : {}
                 }
                 cursor={selectedIndexName ? "pointer" : "not-allowed"}
                 marginBottom="25px"
