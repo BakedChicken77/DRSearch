@@ -34,6 +34,18 @@ test("throws error on http failure", async () => {
   );
 });
 
+test("uses statusText when error body empty", async () => {
+  (fetch as jest.Mock).mockResolvedValue({
+    ok: false,
+    status: 404,
+    text: () => Promise.resolve(""),
+    statusText: "Not Found",
+  });
+  await expect(fetchIndexOptions()).rejects.toThrow(
+    "Failed to fetch index options: 404 – Not Found",
+  );
+});
+
 test("throws error on malformed data", async () => {
   (fetch as jest.Mock).mockResolvedValue({
     ok: true,
