@@ -1,7 +1,26 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import { SessionProvider } from "next-auth/react";
 import { ChatWindow } from "../ChatWindow";
+import { fetchIndexOptions } from "../../utils/fetchIndexOptions";
 
-test("renders EmptyState when no messages", () => {
-  render(<ChatWindow />);
-  expect(screen.getByText("DRS ASSISTANT")).toBeInTheDocument();
+jest.mock("../../utils/fetchIndexOptions", () => ({
+  fetchIndexOptions: jest.fn(),
+}));
+
+test("renders EmptyState when no messages", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([]);
+
+  const mockSession = {
+    accessToken: "test-token",
+  } as any;
+
+  render(
+    <SessionProvider session={mockSession}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+
+  await waitFor(() =>
+    expect(screen.getByText("DRS ASSISTANT")).toBeInTheDocument(),
+  );
 });
