@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { SourceBubble } from "../SourceBubble";
 import { sendFeedback } from "../../utils/sendFeedback";
 
@@ -55,4 +55,24 @@ test("sends feedback on click", async () => {
     value: source.url,
     isExplicit: false,
   });
+});
+
+test("logs opened url after click", async () => {
+  (sendFeedback as jest.Mock).mockResolvedValue({});
+  const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+  render(
+    <SourceBubble
+      source={source}
+      highlighted={false}
+      onMouseEnter={() => {}}
+      onMouseLeave={() => {}}
+      runId="123"
+    />,
+  );
+  const card = screen.getByText("Example").closest("div") as HTMLElement;
+  fireEvent.click(card!);
+  await waitFor(() => {
+    expect(logSpy).toHaveBeenCalledWith("Opened file URL:", source.url);
+  });
+  logSpy.mockRestore();
 });
