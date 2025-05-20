@@ -70,6 +70,11 @@ docker-compose -f docker-compose.fullapp.yml up -d
   ```bash
   yarn format
   ```
+- Run all unit tests with coverage reporting:
+  ```bash
+  cd drsearch_frontend
+  yarn test --coverage
+  ```
 
 ## Development Workflow
 
