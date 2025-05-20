@@ -21,6 +21,16 @@ import { apiBaseUrl } from "../utils/constants";
 import { InlineCitation } from "./InlineCitation";
 import DOMPurify from "dompurify";
 
+export const __TEST__ = {
+  sendUserFeedback: null as
+    | ((score: number, key: string) => Promise<void>)
+    | null,
+  animateButton: null as ((buttonId: string) => void) | null,
+  viewTrace: null as (() => Promise<void>) | null,
+  setComment: null as ((c: string) => void) | null,
+  comment: "",
+};
+
 export type Message = {
   id: string;
   createdAt?: Date;
@@ -155,6 +165,8 @@ export function ChatMessageBubble(props: {
   const [traceIsLoading, setTraceIsLoading] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [comment, setComment] = useState("");
+  __TEST__.setComment = setComment;
+  __TEST__.comment = comment;
   const [feedbackColor, setFeedbackColor] = useState("");
   const upButtonRef = useRef(null);
   const downButtonRef = useRef(null);
@@ -209,14 +221,15 @@ export function ChatMessageBubble(props: {
         }
         console.log("Feedback sent successfully:", data);
       }
-      } catch (e: any) {
-        /* istanbul ignore next */
-        console.error("Error sending feedback:", e);
-        /* istanbul ignore next */
-        toast.error(e.message);
+    } catch (e: any) {
+      /* istanbul ignore next */
+      console.error("Error sending feedback:", e);
+      /* istanbul ignore next */
+      toast.error(e.message);
     }
     setIsLoading(false);
   };
+  __TEST__.sendUserFeedback = sendUserFeedback;
 
   const viewTrace = async () => {
     console.log("Viewing trace for run ID:", runId);
@@ -250,6 +263,7 @@ export function ChatMessageBubble(props: {
       toast.error(e.message);
     }
   };
+  __TEST__.viewTrace = viewTrace;
 
   const sources = props.message.sources ?? [];
   const { filtered: filteredSources, indexMap: sourceIndexMap } =
@@ -305,6 +319,7 @@ export function ChatMessageBubble(props: {
     });
     console.log("Button animation completed for:", buttonId);
   };
+  __TEST__.animateButton = animateButton;
 
   return (
     <VStack align="start" spacing={5} pb={5}>
