@@ -9,7 +9,7 @@ import os
 
 from app.chain.cli import _cli as chain_cli
 from app.chain.mapping import PartNumberMapping
-from app.chain.models import ChatRequest
+from app.models import ChatRequest
 from app.core.config import Settings
 from app.index_options import INDEX_OPTIONS
 from tests.conftest import _DummyRetriever  # type: ignore

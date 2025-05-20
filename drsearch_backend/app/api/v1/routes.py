@@ -8,9 +8,8 @@ import logging
 import os
 import urllib.parse
 from pathlib import Path
-from typing import Callable, List
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response
 from fastapi.responses import FileResponse
 from langserve import add_routes
 
@@ -18,7 +17,15 @@ from ...core.config import Settings, get_settings
 from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for side-effects
 from app.auth import jwt  # triggers cache warming on app-start
 from app.chain.api import answer_chain 
-from .schemas import Feedback, FeedbackUpdate, TraceRequest, ChatRequest
+from app.models import (
+    ChatRequest,
+    Feedback,
+    FeedbackUpdate,
+    IndexOption,
+    IndexOptionsResponse,
+    StandardResponse,
+    TraceRequest,
+)
 from ...core.logging import logging
 
 logger = logging.getLogger(__name__)
@@ -51,27 +58,28 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     )
 
     # ---- /index-options
-    @router.get("/index-options")  # noqa: D401 – inline route
-    async def index_options() -> dict:  # noqa: D401
+    @router.get("/index-options", response_model=IndexOptionsResponse)
+    async def index_options() -> IndexOptionsResponse:  # noqa: D401
         try:
-            return {"code": 200, "result": await _read_index_options()}
+            opts = [IndexOption(**o) for o in await _read_index_options()]
+            return IndexOptionsResponse(result=opts)
         except Exception as exc:  # pragma: no cover – catastrophic
             logger.error("Unable to read index options", exc_info=exc)
             raise HTTPException(status_code=500, detail="Unable to read index options") from exc
 
     # ---- feedback endpoints -------------------------------------------------
-    @router.post("/feedback", status_code=200)
-    async def create_feedback(body: Feedback) -> dict:  # noqa: D401
+    @router.post("/feedback", status_code=200, response_model=StandardResponse)
+    async def create_feedback(body: Feedback) -> StandardResponse:  # noqa: D401
         # TODO: integrate LangSmith client when available
         logger.info("Feedback received", extra=body.dict())
-        return {"result": "posted feedback successfully", "code": 200}
+        return StandardResponse(result="posted feedback successfully")
 
-    @router.patch("/feedback", status_code=200)
-    async def patch_feedback(body: FeedbackUpdate) -> dict:  # noqa: D401
+    @router.patch("/feedback", status_code=200, response_model=StandardResponse)
+    async def patch_feedback(body: FeedbackUpdate) -> StandardResponse:  # noqa: D401
         if body.feedback_id is None:
             raise HTTPException(status_code=400, detail="Missing feedback_id")
         logger.info("Feedback patched", extra=body.dict())
-        return {"result": "patched feedback successfully", "code": 200}
+        return StandardResponse(result="patched feedback successfully")
 
     # ---- get‑trace (stub) ---------------------------------------------------
     @router.post("/get_trace")
