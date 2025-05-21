@@ -17,3 +17,13 @@ def test_retriever_factory_success(monkeypatch):
 def test_retriever_factory_bad_index(monkeypatch):
     with pytest.raises(ConfigurationError):
         RetrieverFactory.build("missing")
+
+
+def test_retriever_factory_pgvector(monkeypatch):
+    monkeypatch.setattr("app.core.chain_config._VECTOR_BACKEND", "pgvector")
+    monkeypatch.setattr(
+        "app.core.chain_config._PGVECTOR_URL",
+        "postgresql://user:pass@localhost/db",
+    )
+    r = RetrieverFactory.build("JACSKE_Program")
+    assert isinstance(r, BaseRetriever)

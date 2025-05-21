@@ -19,6 +19,8 @@ _DUMMY_ENV: Dict[str, str] = {
     "AZURE_OPENAI_DEPLOYMENT_NAME": "dummy-model",
     "AZURE_OPENAI_ENDPOINT": "https://dummy-endpoint.openai.azure.com/",
     "AZURE_OPENAI_API_KEY": "dummy-key",
+    "VECTOR_BACKEND": "weaviate",
+    "PGVECTOR_URL": "postgresql://user:pass@localhost/db",
     # RAG is enabled by default during tests
     "RAG_ON": "True",
     # Auth (turned OFF for most tests – can be re-enabled where needed)
@@ -117,6 +119,14 @@ class _FakeWeavStore:
         return _DummyRetriever()
 
 
+class _FakePgVector:
+    def __init__(self, *a, **k):
+        ...
+
+    def as_retriever(self, *a, **k):
+        return _DummyRetriever()
+
+
 @pytest.fixture(autouse=True)
 def _patch_external(monkeypatch):
     # LLM & embeddings
@@ -129,6 +139,16 @@ def _patch_external(monkeypatch):
     monkeypatch.setattr("weaviate.Client", FakeClient, raising=False)
     monkeypatch.setattr(
         "langchain_community.vectorstores.Weaviate", _FakeWeavStore, raising=False
+    )
+    monkeypatch.setattr(
+        "langchain_community.vectorstores.pgvector.PGVector",
+        _FakePgVector,
+        raising=False,
+    )
+    monkeypatch.setattr(
+        "app.vectorstores.pgvector_store.PGVector",
+        _FakePgVector,
+        raising=False,
     )
     yield
 
