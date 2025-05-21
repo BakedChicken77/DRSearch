@@ -1,9 +1,10 @@
 import pytest
-from app.chain.engine import ChatEngine
-from app.chain.exceptions import ConfigurationError
-from langchain_core.runnables import RunnableLambda
 from langchain.schema import Document
 from langchain_core.language_models.fake import FakeListLLM
+from langchain_core.runnables import RunnableLambda
+
+from app.chain.engine import ChatEngine
+from app.chain.exceptions import ConfigurationError
 from tests.conftest import _DummyRetriever  # type: ignore
 
 
@@ -53,6 +54,23 @@ def test_chat_engine_answer_chain_simple_RAG_ON(monkeypatch):
     )
 
     eng = ChatEngine()  # default index
+
+    out = eng.answer_chain.invoke({"question": "hi", "chat_history": []})
+    assert out == "LLM-OK"
+
+
+def test_chat_engine_retriever_failure(monkeypatch):
+    """ChatEngine should fall back to chatbot mode if retriever init fails."""
+
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("db down")
+
+    monkeypatch.setattr("app.chain.retriever.RetrieverFactory.build", boom)
+
+    eng = ChatEngine()
 
     out = eng.answer_chain.invoke({"question": "hi", "chat_history": []})
     assert out == "LLM-OK"
