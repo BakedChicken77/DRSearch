@@ -7,7 +7,6 @@ from langchain.prompts import ChatPromptTemplate
 from app import System_Prompts
 
 from app.chain.engine import ChatEngine
-from app.chain.exceptions import ConfigurationError
 from tests.conftest import _DummyRetriever  # type: ignore
 
 
@@ -19,9 +18,25 @@ class DummyLLM:
 dummy_llm = RunnableLambda(DummyLLM())
 
 
-def test_chat_engine_unknown_index():
-    with pytest.raises(ConfigurationError):
-        ChatEngine("does-not-exist")
+def test_chat_engine_unknown_index(monkeypatch):
+    """Unknown index should default to chatbot-only mode."""
+
+    captured: dict[str, str] = {}
+    orig_from_messages = ChatPromptTemplate.from_messages
+
+    def capture(msgs):
+        captured["system"] = msgs[0][1]
+        return orig_from_messages(msgs)
+
+    monkeypatch.setattr(
+        "app.chain.engine.ChatPromptTemplate.from_messages",
+        capture,
+    )
+
+    eng = ChatEngine("does-not-exist")
+    out = eng.answer_chain.invoke({"question": "hi", "chat_history": []})
+    assert out == "LLM-OK"
+    assert captured["system"] == System_Prompts.RESPONSE_TEMPLATE_CHATBOT
 
 
 def test_chat_engine_answer_chain_simple_RAG_OFF(monkeypatch):

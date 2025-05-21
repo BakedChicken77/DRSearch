@@ -22,7 +22,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import AzureChatOpenAI
 
 from app import System_Prompts
-from app.chain.exceptions import ConfigurationError
 from app.chain.formatter import DocumentFormatter
 from app.chain.history import HistorySerializer
 from app.chain.mapping import PartNumberMapping
@@ -40,7 +39,17 @@ class ChatEngine:
         self._index_name = index_name
         self._cfg = INDEX_CONFIG.get(index_name)
         if self._cfg is None:
-            raise ConfigurationError(f"Unknown index '{index_name}'")
+            logger.warning(
+                "Unknown index '%s' – running in chatbot-only mode", index_name
+            )
+            self._cfg = {
+                "response_template": System_Prompts.RESPONSE_TEMPLATE_CHATBOT,
+                "PN_TO_FILE_MAPPING": None,
+                "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER2,
+            }
+            self._unknown_index = True
+        else:
+            self._unknown_index = False
         self._mapping = PartNumberMapping(self._cfg["PN_TO_FILE_MAPPING"])
         self._llm = self._init_llm()
         self._answer_chain = self._build_answer_chain()
@@ -91,7 +100,7 @@ class ChatEngine:
         format_docs_fn: Callable[[Sequence[Document]], str] | None = None
 
         enable_retrieval = False
-        if RAG_ON:
+        if RAG_ON and not getattr(self, "_unknown_index", False):
             try:
                 retriever = RetrieverFactory.build(self._index_name)
                 raw_retriever = RetrieverFactory.build(self._index_name)
@@ -104,6 +113,12 @@ class ChatEngine:
                 )
                 response_template = System_Prompts.RESPONSE_TEMPLATE_CHATBOT
                 enable_retrieval = False
+        elif RAG_ON and getattr(self, "_unknown_index", False):
+            logger.warning(
+                "Index '%s' not configured – retrieval disabled", self._index_name
+            )
+            response_template = System_Prompts.RESPONSE_TEMPLATE_CHATBOT
+            enable_retrieval = False
         else:
             logger.info("Running in chatbot-only mode – retrieval disabled")
 
