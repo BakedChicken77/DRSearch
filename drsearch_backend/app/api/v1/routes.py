@@ -90,7 +90,11 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     @router.get("/files/{file_path:path}")
     async def read_file(file_path: str) -> FileResponse:  # noqa: D401
         decoded = urllib.parse.unquote(file_path)
-        unc_path = decoded.replace("/", "\\")  # UNC path on Windows share
+        unc_path = os.path.normpath(os.path.join(BASE_DIR, decoded))  # Normalize path
+
+        if not unc_path.startswith(str(BASE_DIR)):
+            logger.warning("Unauthorized file access attempt", extra={"path": unc_path})
+            raise HTTPException(status_code=403, detail="Access to the requested file is forbidden")
 
         if not os.path.exists(unc_path):
             logger.info("File not found", extra={"path": unc_path})
