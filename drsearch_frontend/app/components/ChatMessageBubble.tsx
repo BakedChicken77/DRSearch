@@ -342,7 +342,7 @@ export function ChatMessageBubble(props: {
                     paddingBottom={"10px"}
                     cursor="pointer"
                   >
-                    Sources
+                    View Sources
                   </Heading>
                 </PopoverTrigger>
                 <PopoverContent bg="rgb(45,52,62)" border="none" width="auto">
