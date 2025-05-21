@@ -87,7 +87,8 @@ class AuthMiddleware:
                 jwks_uri=self._oidc_config["jwks_uri"],
             )
         except TokenValidationError as exc:
-            resp = JSONResponse({"detail": str(exc)}, status_code=401)
+            logger.error("Token validation failed", exc_info=exc)
+            resp = JSONResponse({"detail": "Invalid token"}, status_code=401)
             await resp(scope, receive, send)
             return
 
