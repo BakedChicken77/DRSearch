@@ -278,7 +278,7 @@ test("renders highlighted markdown and updates message", async () => {
   await screen.findByText("response");
 
   expect(highlightSpy).toHaveBeenCalled();
-  expect(screen.getByText("Sources")).toBeInTheDocument();
+  expect(screen.getByText("View Sources")).toBeInTheDocument();
 });
 
 test("enter vs shift+enter", async () => {
