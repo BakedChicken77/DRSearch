@@ -5,7 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { emojisplosion } from "emojisplosion";
 import { useState, useRef } from "react";
 import { useSession } from "next-auth/react"; // Import useSession for authentication
-import { SourceBubble, Source } from "./SourceBubble";
+import { Source } from "./SourceBubble";
+import { SourceList } from "./SourceList";
 import {
   VStack,
   Flex,
@@ -15,6 +16,10 @@ import {
   Button,
   Divider,
   Spacer,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
 } from "@chakra-ui/react";
 import { sendFeedback } from "../utils/sendFeedback";
 import { apiBaseUrl } from "../utils/constants";
@@ -327,42 +332,39 @@ export function ChatMessageBubble(props: {
         <>
           <Flex direction={"column"} width={"100%"}>
             <VStack spacing={"5px"} align={"start"} width={"100%"}>
-              <Heading
-                fontSize="lg"
-                fontWeight={"medium"}
-                mb={1}
-                color={"blue.300"}
-                paddingBottom={"10px"}
-              >
-                Sources
-              </Heading>
-              <HStack spacing={"10px"} maxWidth={"100%"} overflow={"auto"}>
-                {filteredSources.map((source, index) => (
-                  <Box key={index} alignSelf={"stretch"} width={40}>
-                    <SourceBubble
-                      source={source}
-                      highlighted={highlighedSourceLinkStates[index]}
-                      onMouseEnter={() => {
-                        console.log(
-                          `Mouse entered SourceBubble for index ${index}`,
-                        );
+              <Popover trigger="hover" placement="bottom-start" isLazy>
+                <PopoverTrigger>
+                  <Heading
+                    fontSize="lg"
+                    fontWeight={"medium"}
+                    mb={1}
+                    color={"blue.300"}
+                    paddingBottom={"10px"}
+                    cursor="pointer"
+                  >
+                    Sources
+                  </Heading>
+                </PopoverTrigger>
+                <PopoverContent bg="rgb(45,52,62)" border="none" width="auto">
+                  <PopoverBody>
+                    <SourceList
+                      sources={filteredSources}
+                      highlightedStates={highlighedSourceLinkStates}
+                      onMouseEnter={(index) => {
                         setHighlightedSourceLinkStates(
                           filteredSources.map((_, i) => i === index),
                         );
                       }}
-                      onMouseLeave={() => {
-                        console.log(
-                          `Mouse left SourceBubble for index ${index}`,
-                        );
+                      onMouseLeave={() =>
                         setHighlightedSourceLinkStates(
                           filteredSources.map(() => false),
-                        );
-                      }}
+                        )
+                      }
                       runId={runId}
                     />
-                  </Box>
-                ))}
-              </HStack>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
             </VStack>
           </Flex>
 

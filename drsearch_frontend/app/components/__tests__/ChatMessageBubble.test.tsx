@@ -236,7 +236,7 @@ describe("ChatMessageBubble component", () => {
     await waitFor(() => expect(open).not.toHaveBeenCalled());
   });
 
-  test("source bubble hover highlights", () => {
+  test("source list hover highlights", async () => {
     renderWithProviders(
       <ChatMessageBubble
         message={{
@@ -250,9 +250,11 @@ describe("ChatMessageBubble component", () => {
         messageCompleted
       />,
     );
-    const bubble = screen.getByText("Title");
-    fireEvent.mouseEnter(bubble);
-    fireEvent.mouseLeave(bubble);
+    const heading = screen.getByText("Sources");
+    fireEvent.mouseEnter(heading);
+    const link = await screen.findByText("Title");
+    fireEvent.mouseEnter(link);
+    fireEvent.mouseLeave(link);
   });
 
   test("citation fallback uses last source", () => {
