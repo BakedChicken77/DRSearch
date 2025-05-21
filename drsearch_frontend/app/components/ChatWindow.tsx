@@ -92,7 +92,10 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
     if (!session) return <p>You are not authenticated. Please sign in.</p>; // istanbul ignore next
     accessToken = session.accessToken as string;
   } else {
-    accessToken = "dev-access-token";
+    accessToken =
+      process.env.NODE_ENV === "development"
+        ? process.env.NEXT_PUBLIC_DEV_ACCESS_TOKEN ?? ""
+        : "";
   }
 
   // send a chat message
