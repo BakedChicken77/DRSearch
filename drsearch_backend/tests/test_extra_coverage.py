@@ -76,12 +76,16 @@ def test_mapping_no_file(tmp_path):
 def test_models_chat_request():
     """Ensure the Pydantic model validates and serialises as expected."""
     req = ChatRequest(
-        question="q", chat_history=[{"human": "h", "ai": "a"}], index_name="idx"
+        question="q",
+        chat_history=[{"human": "h", "ai": "a"}],
+        index_name="idx",
+        num_docs_retrieved=4,
     )
     data = req.dict()
     assert data["question"] == "q"
     assert data["chat_history"][0]["human"] == "h"
     assert data["index_name"] == "idx"
+    assert data["num_docs_retrieved"] == 4
 
 
 def test_settings_split_origins():

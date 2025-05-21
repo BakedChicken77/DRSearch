@@ -16,13 +16,13 @@ def test__engine_for_creates_and_caches(monkeypatch):
     monkeypatch.setattr("app.chain.api.ChatEngine", DummyChatEngine)
 
     # First call – should instantiate
-    engine = api._engine_for("TEST_INDEX")
+    engine = api._engine_for("TEST_INDEX", 3)
     assert isinstance(engine, DummyChatEngine)
     assert engine.index_name == "TEST_INDEX"
     assert engine.answer_chain is dummy_chain
 
     # Second call – should hit cache
-    cached = api._engine_for("TEST_INDEX")
+    cached = api._engine_for("TEST_INDEX", 3)
     assert cached is engine
 
 
@@ -37,11 +37,11 @@ def test_get_answer_chain(monkeypatch):
     api._engine_cache.clear()
 
     # Should use default index if None passed
-    result = api.get_answer_chain(None)
+    result = api.get_answer_chain(None, 3)
     assert result is dummy_chain
 
     # Should use custom index
-    result2 = api.get_answer_chain("ALT_INDEX")
+    result2 = api.get_answer_chain("ALT_INDEX", 3)
     assert result2 is dummy_chain
 
 
@@ -56,5 +56,5 @@ def test_answer_chain_lambda(monkeypatch):
     api._engine_cache.clear()
 
     # Call the global RunnableLambda (simulate LangChain request input)
-    result = api.answer_chain.invoke({"index_name": "JACSKE_Program"})
+    result = api.answer_chain.invoke({"index_name": "JACSKE_Program", "num_docs_retrieved": 3})
     assert result is dummy_chain
