@@ -162,4 +162,4 @@ def test_invalid_token_rejected(monkeypatch):
     client = TestClient(app)
     r = client.get("/secure", headers={"Authorization": "Bearer fake.jwt.token"})
     assert r.status_code == 401
-    assert "bad signature" in r.json()["detail"]
+    assert "Invalid token" in r.json()["detail"]
