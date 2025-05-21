@@ -250,7 +250,7 @@ describe("ChatMessageBubble component", () => {
         messageCompleted
       />,
     );
-    const heading = screen.getByText("Sources");
+    const heading = screen.getByText("View Sources");
     fireEvent.mouseEnter(heading);
     const link = await screen.findByText("Title");
     fireEvent.mouseEnter(link);
