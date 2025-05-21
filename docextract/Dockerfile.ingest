@@ -1,0 +1,105 @@
+
+##############################
+# STAGE 1: Base Environment
+##############################
+FROM python:3.11-slim as python-base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    POETRY_VERSION=1.8.5 \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1 \
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv"
+
+# Add Poetry and venv to PATH
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+
+##############################
+# STAGE 2: Builder
+##############################
+FROM python-base as builder
+
+
+# 2. Install build tools and Poetry
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    build-essential gcc g++ curl unzip \
+    libpq-dev unixodbc-dev \
+    libtesseract-dev poppler-utils texlive-xetex pandoc \
+    && rm -rf /var/lib/apt/lists/* 
+
+# Register custom CA certificates
+COPY CA_certificates/ /usr/local/share/ca-certificates/
+RUN find /usr/local/share/ca-certificates/ -type f \( -iname "*.pem" -o -iname "*.cer" \) -exec sh -c 'mv "$0" "${0%.*}.crt"' {} \; \
+ && update-ca-certificates    
+
+RUN curl -sSL https://install.python-poetry.org | python3 - \
+    && poetry --version 
+
+# Set working directory
+WORKDIR $PYSETUP_PATH
+
+# Copy dependency definitions
+COPY pyproject.toml poetry.lock* ./
+
+# Install runtime dependencies only
+RUN --mount=type=cache,target=/root/.cache \
+    poetry install --only main --no-root
+
+# Copy full application code
+WORKDIR /app
+COPY . .
+
+# Extract cached resources if provided
+COPY .cache.zip /root/.cache.zip
+RUN unzip /root/.cache.zip -d /root && rm /root/.cache.zip
+
+##############################
+# STAGE 3: Runtime
+##############################
+FROM python-base as production
+
+ENV FASTAPI_ENV=production \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    EP_PATH_DOCKER=/app/docs
+
+# Install minimal runtime deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr poppler-utils texlive-xetex pandoc \
+    libgl1 libglib2.0-0 unixodbc unzip ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+# Register custom CA certificates
+COPY CA_certificates/ /usr/local/share/ca-certificates/
+RUN find /usr/local/share/ca-certificates/ -type f \( -iname "*.pem" -o -iname "*.cer" \) -exec sh -c 'mv "$0" "${0%.*}.crt"' {} \; \
+ && update-ca-certificates
+
+# Set app working directory
+WORKDIR /app
+
+# Copy virtualenv and installed deps from builder
+COPY --from=builder /opt/pysetup /opt/pysetup
+
+# Copy application code
+COPY --from=builder /app /app
+COPY --from=builder /root/.cache /root/.cache
+
+# Include NLTK data
+COPY nltk_data /usr/local/share/nltk_data
+
+# Patch library files (not recommended long-term, but kept per request)
+COPY Modified_Unstructured_Library_Files/file_download.py \
+     /opt/pysetup/.venv/lib/python3.11/site-packages/huggingface_hub/file_download.py
+COPY Modified_Unstructured_Library_Files/tables.py \
+     /opt/pysetup/.venv/lib/python3.11/site-packages/unstructured_inference/models/tables.py
+
+# Create writable log file
+RUN touch /app/_RUN_INFO_WARNINGS_AND_ERRORS.txt && chmod 666 /app/_RUN_INFO_WARNINGS_AND_ERRORS.txt
+
+# Default command: run FastAPI app with uvicorn
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

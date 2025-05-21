@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Processing GUI</title>
+</head>
+<body>
+    <h1>Document Processing GUI</h1>
+    <button onclick="runScript()">Run Script</button>
+    
+    <!-- New input field and button for checking new documents -->
+    <input type="text" id="collectionName" placeholder="Enter collection name">
+    <button onclick="checkCollection()">Ingest</button>
+    
+    <pre id="log"></pre>
+
+    <script>
+        function runScript() {
+            fetch('/run-script/', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+
+        function checkCollection() {
+            const collection = document.getElementById('collectionName').value.trim();
+            if (collection === '') {
+                alert('Please enter a collection name.');
+                return;
+            }
+
+            fetch(`/run-script/${encodeURIComponent(collection)}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    alert(data.message);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function fetchLogs() {
+            fetch('/logs/')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('log').innerText = data;
+                });
+        }
+
+        setInterval(fetchLogs, 1000);
+    </script>
+</body>
+</html>
