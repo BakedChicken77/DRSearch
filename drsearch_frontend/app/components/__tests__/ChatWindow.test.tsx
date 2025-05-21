@@ -187,6 +187,34 @@ test("index change clears messages", async () => {
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""));
 });
 
+test("new chat button clears messages but keeps index", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    { name: "idx", display_name: "Index", example_questions: ["q1"] },
+  ]);
+  (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
+    opts.onmessage?.({
+      event: "data",
+      data: JSON.stringify({ streamed_output: ["hi"], id: "1", ops: [] }),
+    });
+    opts.onmessage?.({ event: "end" });
+  });
+  render(
+    <SessionProvider session={null}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  const select = await screen.findByRole("combobox");
+  fireEvent.change(select, { target: { value: "idx" } });
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "hi" } });
+  fireEvent.click(screen.getByLabelText("Send"));
+  await screen.findByText("hi");
+
+  fireEvent.click(screen.getByLabelText("start new chat"));
+  await screen.findByText("q1");
+  expect(select).toHaveValue("idx");
+  expect(screen.queryByText("hi")).toBeNull();
+});
+
 test("shows loading state when session loading", () => {
   (useSession as jest.Mock).mockReturnValueOnce({
     data: null,

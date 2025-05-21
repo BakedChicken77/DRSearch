@@ -24,7 +24,7 @@ import {
   Spinner,
   Select,
 } from "@chakra-ui/react";
-import { ArrowUpIcon } from "@chakra-ui/icons";
+import { ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
 import { Source } from "./SourceBubble";
 import { SettingsDrawer } from "./SettingsDrawer";
 import { apiBaseUrl } from "../utils/constants";
@@ -254,9 +254,29 @@ export function ChatWindow(props: {
   // initial question helper
   const sendInitialQuestion = (q: string) => sendMessage(q);
 
+  // reset chat while keeping index and settings
+  const handleNewChat = () => {
+    setMessages([]);
+    setChatHistory([]);
+    setInput("");
+    setConversationId(uuidv4());
+    if (messageContainerRef.current) {
+      messageContainerRef.current.classList.remove("grow");
+    }
+  };
+
   return (
     <div className="flex flex-col items-center p-8 rounded grow max-h-full">
       <SettingsDrawer numDocs={numDocs} setNumDocs={setNumDocs} />
+      <IconButton
+        aria-label="start new chat"
+        title="start new chat"
+        icon={<AddIcon boxSize={6} />}
+        position="absolute"
+        top={2}
+        right={2}
+        onClick={handleNewChat}
+      />
       {messages.length > 0 ? (
         <Flex direction="column" alignItems="center" pb="20px">
           <Heading fontSize="8xl" fontWeight="medium" mb={1} color="black">
