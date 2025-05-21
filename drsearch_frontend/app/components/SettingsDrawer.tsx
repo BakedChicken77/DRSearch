@@ -19,6 +19,7 @@ import {
   NumberDecrementStepper,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
+import { UI } from "../utils/constants";
 
 export function SettingsDrawer({
   numDocs,
@@ -31,7 +32,7 @@ export function SettingsDrawer({
   return (
     <>
       <IconButton
-        aria-label="Open settings"
+        aria-label={UI.openSettingsAriaLabel}
         icon={<SettingsIcon />}
         position="absolute"
         top={2}
@@ -42,10 +43,10 @@ export function SettingsDrawer({
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Settings</DrawerHeader>
+          <DrawerHeader>{UI.settingsTitle}</DrawerHeader>
           <DrawerBody>
             <FormControl>
-              <FormLabel>Documents to retrieve</FormLabel>
+              <FormLabel>{UI.settingsDocsLabel}</FormLabel>
               <NumberInput
                 min={1}
                 max={5}

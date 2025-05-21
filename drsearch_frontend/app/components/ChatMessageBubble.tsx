@@ -17,7 +17,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { sendFeedback } from "../utils/sendFeedback";
-import { apiBaseUrl } from "../utils/constants";
+import { apiBaseUrl, UI } from "../utils/constants";
 import { InlineCitation } from "./InlineCitation";
 import DOMPurify from "dompurify";
 
@@ -249,8 +249,8 @@ export function ChatMessageBubble(props: {
       const data = await response.json();
 
       if (data.code === 400) {
-        toast.error("Unable to view trace");
-        throw new Error("Unable to view trace");
+        toast.error(UI.unableToViewTrace);
+        throw new Error(UI.unableToViewTrace);
       } else {
         const url = data.replace(/['"]+/g, "");
         window.open(url, "_blank");
@@ -334,7 +334,7 @@ export function ChatMessageBubble(props: {
                 color={"blue.300"}
                 paddingBottom={"10px"}
               >
-                Sources
+                {UI.sourcesHeader}
               </Heading>
               <HStack spacing={"10px"} maxWidth={"100%"} overflow={"auto"}>
                 {filteredSources.map((source, index) => (
@@ -367,7 +367,7 @@ export function ChatMessageBubble(props: {
           </Flex>
 
           <Heading size="lg" fontWeight="medium" color="blue.300">
-            Answer
+            {UI.answerHeader}
           </Heading>
         </>
       )}
@@ -400,7 +400,7 @@ export function ChatMessageBubble(props: {
                   setFeedbackColor("border-4 border-green-300");
                 } else {
                   /* istanbul ignore next */
-                  toast.error("You have already provided your feedback.");
+                  toast.error(UI.feedbackAlreadyGiven);
                 }
               }}
             >
@@ -418,7 +418,7 @@ export function ChatMessageBubble(props: {
                   setFeedbackColor("border-4 border-red-300");
                 } else {
                   /* istanbul ignore next */
-                  toast.error("You have already provided your feedback.");
+                  toast.error(UI.feedbackAlreadyGiven);
                 }
               }}
             >
@@ -437,7 +437,7 @@ export function ChatMessageBubble(props: {
               loadingText="🔄"
               color="black"
             >
-              🚀🚀 View trace
+              {UI.traceButtonText}
             </Button>
           </HStack>
         )}

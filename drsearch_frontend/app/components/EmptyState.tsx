@@ -12,8 +12,9 @@ import {
 } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
 import { IndexOption } from "../utils/fetchIndexOptions";
+import { UI } from "../utils/constants";
 
-const iconSrc = "llama_cafe.ico";
+const iconSrc = UI.iconSrc;
 
 export function EmptyState(props: {
   onChoice: (question: string) => any;
@@ -61,13 +62,15 @@ export function EmptyState(props: {
       <div className="relative z-10">
         <VStack spacing={4} align="center" maxWidth="800px" width="100%">
           <Heading fontSize="8xl" fontWeight={"medium"} mb={1} color={"black"}>
-            DRS ASSISTANT
+            {UI.assistantTitle}
           </Heading>
-          <p style={{ color: "black", textAlign: "center" }}>Here to assist</p>
+          <p style={{ color: "black", textAlign: "center" }}>
+            {UI.emptyStateTagline}
+          </p>
           <Select
             value={selectedIndexName}
             onChange={(e) => setSelectedIndexName(e.target.value)}
-            placeholder="Select Document Index"
+            placeholder={UI.selectIndexPlaceholder}
             marginBottom="20px"
             width="100%"
           >

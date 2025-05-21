@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Card, CardBody, Heading } from "@chakra-ui/react";
 import { sendFeedback } from "../utils/sendFeedback";
 import { convertToHttpUrlIfNeeded } from "../utils/urlUtils";
+import { UI } from "../utils/constants";
 
 export type Source = {
   url: string | undefined; // Make url optional
@@ -35,11 +36,11 @@ export function SourceBubble({
     <Card
       onClick={async () => {
         if (fileUrl) {
-          const a = document.createElement('a');
+          const a = document.createElement("a");
           a.href = fileUrl;
           a.target = "_blank";
           a.rel = "noopener noreferrer"; // Security best practice
-          a.style.display = 'none';
+          a.style.display = "none";
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -73,7 +74,7 @@ export function SourceBubble({
     >
       <CardBody>
         <Heading size={"sm"} fontWeight={"normal"} color={"white"}>
-          {filetitle || "Unknown Document"}
+          {filetitle || UI.unknownDocument}
         </Heading>
       </CardBody>
     </Card>

@@ -27,7 +27,7 @@ import {
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import { Source } from "./SourceBubble";
 import { SettingsDrawer } from "./SettingsDrawer";
-import { apiBaseUrl } from "../utils/constants";
+import { apiBaseUrl, UI } from "../utils/constants";
 import { fetchIndexOptions, IndexOption } from "../utils/fetchIndexOptions";
 
 export function ChatWindow(props: {
@@ -46,7 +46,8 @@ export function ChatWindow(props: {
     { human: string; ai: string }[]
   >([]);
 
-  const { placeholder, titleText = "DRS ASSISTANT" } = props;
+  const { placeholder = UI.inputPlaceholder, titleText = UI.assistantTitle } =
+    props;
 
   // index selection
   const [selectedIndexName, setSelectedIndexName] = useState("");
@@ -263,14 +264,14 @@ export function ChatWindow(props: {
             {titleText}
           </Heading>
           <Heading fontSize="md" fontWeight="normal" mb={1} color="black">
-            Your DRS Assistant
+            {UI.assistantTagline}
           </Heading>
 
           {/* dropdown from backend */}
           <Select
             value={selectedIndexName}
             onChange={(e) => setSelectedIndexName(e.target.value)}
-            placeholder="Select Document Index"
+            placeholder={UI.selectIndexPlaceholder}
             mb="20px"
             width="auto"
             isDisabled={loadingOptions || (indexOptions?.length ?? 0) === 0}
@@ -359,12 +360,12 @@ export function ChatWindow(props: {
       {messages.length === 0 && (
         <footer className="flex justify-center absolute bottom-8">
           <a
-            href="https://www.leonardodrs.com/locations/airborne-intelligence-systems-fort-walton-beach/"
+            href={UI.homePageLinkUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="text-black flex items-center"
           >
-            View AIS‑FWB Home Page
+            {UI.homePageLinkText}
           </a>
         </footer>
       )}
