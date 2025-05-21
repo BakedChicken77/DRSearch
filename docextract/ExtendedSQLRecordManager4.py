@@ -171,7 +171,7 @@ INGESTION ABORTED!
         self,
         vectorstore,
         namespace,
-        group_ids
+        group_ids,
     ):
         """
         Delete documents from the vector store and the record manager based on the provided namespace and list of group_ids.
@@ -186,11 +186,15 @@ INGESTION ABORTED!
         keys = self.record_manager.list_keys(group_ids=group_ids)
 
         if not keys:
-             self.logger.info(f"No keys found in the namespace {namespace} for the provided group IDs.")
+            self.logger.info(
+                f"No keys found in the namespace {namespace} for the provided group IDs."
+            )
         else:
-            # Delete keys using the record manager
+            vectorstore.delete(ids=keys)
             self.record_manager.delete_keys(keys)
-            self.logger.info(f"All keys in the namespace '{namespace}' for the provided group IDs have been deleted from the record manager.")
+            self.logger.info(
+                f"All keys in the namespace '{namespace}' for the provided group IDs have been deleted from the record manager."
+            )
 
         """
         ISSUE SUMMARY:
@@ -232,30 +236,7 @@ INGESTION ABORTED!
 
 
 
-        # Initialize Weaviate client to delete data from Weaviate
-        client = vectorstore._client
-
-        try:
-            # Retrieve and delete all object IDs in the index in batches
-            while True:
-                response = client.query.get(namespace).with_additional("id").do()
-                if 'data' in response and namespace in response['data']:
-                    objects = response['data'][namespace]
-                    if not objects:
-                        break
-
-                    for obj in objects:
-                        object_id = obj['id']
-                        client.data_object.delete(object_id)
-
-                    self.logger.info(f"Batch of {len(objects)} objects deleted from Weaviate index '{namespace}'.")
-
-                else:
-                    self.logger.info(f"No more data found in Weaviate index '{namespace}'.")
-                    break
-
-        except Exception as e:
-            self.logger.error(f"Error deleting objects from Weaviate index '{namespace}': {e}")
+        return
 
 
     def update_document_record(self, session, group_id, file_hash, last_modified, ingestion_date, **kwargs):
@@ -436,7 +417,7 @@ INGESTION ABORTED!
                         indexing_stats = index(
                             batch_elements,
                             self.record_manager,
-                            vectorstore,
+                            vectorstore.inner,
                             cleanup=cleanup,
                             source_id_key="file_path",
                             force_update=force_update,
