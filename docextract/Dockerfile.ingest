@@ -32,10 +32,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libtesseract-dev poppler-utils texlive-xetex pandoc \
     && rm -rf /var/lib/apt/lists/* 
 
-# Register custom CA certificates
-COPY CA_certificates/ /usr/local/share/ca-certificates/
-RUN find /usr/local/share/ca-certificates/ -type f \( -iname "*.pem" -o -iname "*.cer" \) -exec sh -c 'mv "$0" "${0%.*}.crt"' {} \; \
- && update-ca-certificates    
+## Register custom CA certificates
+#COPY CA_certificates/ /usr/local/share/ca-certificates/
+#RUN find /usr/local/share/ca-certificates/ -type f \( -iname "*.pem" -o -iname "*.cer" \) -exec sh -c 'mv "$0" "${0%.*}.crt"' {} \; \
+# && update-ca-certificates    
+
+RUN update-ca-certificates 
 
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && poetry --version 
@@ -54,9 +56,9 @@ RUN --mount=type=cache,target=/root/.cache \
 WORKDIR /app
 COPY . .
 
-# Extract cached resources if provided
-COPY .cache.zip /root/.cache.zip
-RUN unzip /root/.cache.zip -d /root && rm /root/.cache.zip
+## Extract cached resources if provided
+#COPY .cache.zip /root/.cache.zip
+#RUN unzip /root/.cache.zip -d /root && rm /root/.cache.zip
 
 ##############################
 # STAGE 3: Runtime
@@ -73,10 +75,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 libglib2.0-0 unixodbc unzip ca-certificates \
  && rm -rf /var/lib/apt/lists/*
 
-# Register custom CA certificates
-COPY CA_certificates/ /usr/local/share/ca-certificates/
-RUN find /usr/local/share/ca-certificates/ -type f \( -iname "*.pem" -o -iname "*.cer" \) -exec sh -c 'mv "$0" "${0%.*}.crt"' {} \; \
- && update-ca-certificates
+## Register custom CA certificates
+#COPY CA_certificates/ /usr/local/share/ca-certificates/
+#RUN find /usr/local/share/ca-certificates/ -type f \( -iname "*.pem" -o -iname "*.cer" \) -exec sh -c 'mv "$0" "${0%.*}.crt"' {} \; \
+# && update-ca-certificates
+
+RUN update-ca-certificates
+
 
 # Set app working directory
 WORKDIR /app
@@ -88,8 +93,8 @@ COPY --from=builder /opt/pysetup /opt/pysetup
 COPY --from=builder /app /app
 COPY --from=builder /root/.cache /root/.cache
 
-# Include NLTK data
-COPY nltk_data /usr/local/share/nltk_data
+## Include NLTK data
+# COPY nltk_data /usr/local/share/nltk_data
 
 # Patch library files (not recommended long-term, but kept per request)
 COPY Modified_Unstructured_Library_Files/file_download.py \
