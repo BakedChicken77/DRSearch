@@ -2,18 +2,19 @@
 
 from __future__ import annotations
 
-import weaviate
 from langchain.schema.retriever import BaseRetriever
-from langchain_community.vectorstores import Weaviate as WeaviateStore
 
 from app.chain.exceptions import ConfigurationError
-from app.chain.embeddings import EmbeddingFactory
-from app.core.chain_config import _WEAVIATE_URL, _WEAVIATE_API_KEY, _NUMBER_OF_DOCS_RETRIEVED
+from app.core.chain_config import (
+    _VECTOR_BACKEND,
+    _NUMBER_OF_DOCS_RETRIEVED,
+)
 from app.index_config import INDEX_CONFIG
+from app.vector_store import get_vector_store
 
 
 class RetrieverFactory:
-    """Factory for langchain retrievers backed by Weaviate."""
+    """Factory for langchain retrievers backed by the configured vector store."""
 
     @staticmethod
     def build(index_name: str) -> BaseRetriever:
@@ -25,24 +26,21 @@ class RetrieverFactory:
         if cfg is None:
             raise ConfigurationError(f"Index '{index_name}' not defined in INDEX_CONFIG")
 
-        client = weaviate.Client(
-            url=_WEAVIATE_URL,
-            auth_client_secret=weaviate.AuthApiKey(api_key=_WEAVIATE_API_KEY),
-        )
-        store = WeaviateStore(
-            client=client,
-            index_name=index_name,
+        store = get_vector_store(
+            index_name,
             text_key=cfg["index_key"],
-            embedding=EmbeddingFactory.get(),
-            by_text=False,
             attributes=cfg["attributes"],
         )
 
-        filter_rag_only = {
-            "operator": "Equal",
-            "path": ["use4RAG"],
-            "valueBoolean": True,
-        }
-        return store.as_retriever(
-            search_kwargs={"k": _NUMBER_OF_DOCS_RETRIEVED, "where_filter": filter_rag_only}
-        )
+        filter_rag_only = {"use4RAG": True}
+        search_kwargs = {"k": _NUMBER_OF_DOCS_RETRIEVED}
+        if _VECTOR_BACKEND == "weaviate":
+            search_kwargs["where_filter"] = {
+                "operator": "Equal",
+                "path": ["use4RAG"],
+                "valueBoolean": True,
+            }
+        else:
+            search_kwargs["filter"] = filter_rag_only
+
+        return store.as_retriever(search_kwargs=search_kwargs)

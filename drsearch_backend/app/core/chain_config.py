@@ -37,6 +37,15 @@ else:  # Database details optional when RAG disabled
     _WEAVIATE_URL = os.getenv("WEAVIATE_URL", "")
     _WEAVIATE_API_KEY = os.getenv("WEAVIATE_API_KEY", "")
 
+#: Vector DB backend selection
+_VECTOR_BACKEND: str = os.getenv("VECTOR_BACKEND", "weaviate").lower()
+
+#: Connection string for pgvector when selected
+_PGVECTOR_CONNECTION: str = os.getenv(
+    "PGVECTOR_CONNECTION",
+    "postgresql://username:yourpassword@postgres_drsearch:5432/vector_db",
+)
+
 #: Whether Auth is enabled (True/False)
 _AUTH_ENABLED: bool = os.getenv("AUTH_ENABLED", "True") == "True"
 
