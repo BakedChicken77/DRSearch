@@ -1,6 +1,5 @@
 // app\components\ChatWindow.tsx
 
-
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
@@ -27,10 +26,14 @@ import {
 } from "@chakra-ui/react";
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import { Source } from "./SourceBubble";
+import { SettingsDrawer } from "./SettingsDrawer";
 import { apiBaseUrl } from "../utils/constants";
 import { fetchIndexOptions, IndexOption } from "../utils/fetchIndexOptions";
 
-export function ChatWindow(props: { placeholder?: string; titleText?: string }) {
+export function ChatWindow(props: {
+  placeholder?: string;
+  titleText?: string;
+}) {
   // conversation/session identifiers
   const [conversationId, setConversationId] = useState<string>(uuidv4());
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
@@ -39,14 +42,17 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState<{ human: string; ai: string }[]>(
-    []
-  );
+  const [chatHistory, setChatHistory] = useState<
+    { human: string; ai: string }[]
+  >([]);
 
   const { placeholder, titleText = "DRS ASSISTANT" } = props;
 
   // index selection
   const [selectedIndexName, setSelectedIndexName] = useState("");
+
+  // number of docs
+  const [numDocs, setNumDocs] = useState(3);
 
   // fetched options
   const [indexOptions, setIndexOptions] = useState<IndexOption[] | null>(null);
@@ -69,7 +75,7 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
     (async () => {
       try {
         const opts = await fetchIndexOptions(
-          AUTH_ENABLED             ? accessToken             : undefined
+          AUTH_ENABLED ? accessToken : undefined,
         );
         setIndexOptions(opts);
       } catch (e: any) {
@@ -94,7 +100,7 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
   } else {
     accessToken =
       process.env.NODE_ENV === "development"
-        ? process.env.NEXT_PUBLIC_DEV_ACCESS_TOKEN ?? ""
+        ? (process.env.NEXT_PUBLIC_DEV_ACCESS_TOKEN ?? "")
         : "";
   }
 
@@ -158,17 +164,18 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
             question: messageValue,
             chat_history: chatHistory,
             index_name: selectedIndexName,
+            num_docs_retrieved: numDocs,
           },
           config: { metadata: { conversation_id: conversationId } },
           include_names: ["FindDocs"],
         }),
         openWhenHidden: true,
-          onerror(err) {
-            /* istanbul ignore next */
-            console.error("Error in EventSource:", err);
-            /* istanbul ignore next */
-            throw err;
-          },
+        onerror(err) {
+          /* istanbul ignore next */
+          console.error("Error in EventSource:", err);
+          /* istanbul ignore next */
+          throw err;
+        },
         onmessage(msg) {
           if (msg.event === "end") {
             setChatHistory((h) => [
@@ -185,23 +192,17 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
             // ═ Apply patches to our persistent object ═
             streamedResponse = applyPatch(
               streamedResponse,
-              chunk.ops
+              chunk.ops,
             ).newDocument;
 
             const doc = streamedResponse;
 
             // extract sources if present
-            if (
-              Array.isArray(
-                doc.logs?.FindDocs?.final_output?.output
-              )
-            ) {
-              sources = doc.logs.FindDocs.final_output.output.map(
-                (d: any) => ({
-                  url: d.metadata.file_path,
-                  title: d.metadata.filename,
-                })
-              );
+            if (Array.isArray(doc.logs?.FindDocs?.final_output?.output)) {
+              sources = doc.logs.FindDocs.final_output.output.map((d: any) => ({
+                url: d.metadata.file_path,
+                title: d.metadata.filename,
+              }));
             }
 
             // track run ID
@@ -236,18 +237,18 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
           }
         },
       });
-      } catch (e) {
-        /* istanbul ignore next */
-        console.error("Send message error:", e);
-        /* istanbul ignore next */
-        setMessages((prev) => prev.slice(0, -1));
-        /* istanbul ignore next */
-        setIsLoading(false);
-        /* istanbul ignore next */
-        setInput(messageValue);
-        /* istanbul ignore next */
-        throw e;
-      }
+    } catch (e) {
+      /* istanbul ignore next */
+      console.error("Send message error:", e);
+      /* istanbul ignore next */
+      setMessages((prev) => prev.slice(0, -1));
+      /* istanbul ignore next */
+      setIsLoading(false);
+      /* istanbul ignore next */
+      setInput(messageValue);
+      /* istanbul ignore next */
+      throw e;
+    }
   };
 
   // initial question helper
@@ -255,6 +256,7 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
 
   return (
     <div className="flex flex-col items-center p-8 rounded grow max-h-full">
+      <SettingsDrawer numDocs={numDocs} setNumDocs={setNumDocs} />
       {messages.length > 0 ? (
         <Flex direction="column" alignItems="center" pb="20px">
           <Heading fontSize="8xl" fontWeight="medium" mb={1} color="black">
@@ -271,9 +273,7 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
             placeholder="Select Document Index"
             mb="20px"
             width="auto"
-            isDisabled={
-              loadingOptions || (indexOptions?.length ?? 0) === 0
-            }
+            isDisabled={loadingOptions || (indexOptions?.length ?? 0) === 0}
           >
             {indexOptions?.map((opt) => (
               <option key={opt.name} value={opt.name}>
@@ -317,14 +317,14 @@ export function ChatWindow(props: { placeholder?: string; titleText?: string }) 
           value={input}
           maxRows={20}
           mr="56px"
-            placeholder={placeholder}
-            textColor="black"
-            borderColor="rgb(58, 58, 61)"
-            isDisabled={!selectedIndexName}
-            _disabled={{
-              backgroundColor: "gray.200",
-              cursor: "not-allowed",
-            }} /* istanbul ignore next */
+          placeholder={placeholder}
+          textColor="black"
+          borderColor="rgb(58, 58, 61)"
+          isDisabled={!selectedIndexName}
+          _disabled={{
+            backgroundColor: "gray.200",
+            cursor: "not-allowed",
+          }} /* istanbul ignore next */
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
