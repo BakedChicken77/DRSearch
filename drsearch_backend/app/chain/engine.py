@@ -7,23 +7,28 @@ import os
 from operator import itemgetter
 from typing import Callable, List, Sequence
 
-from langchain_openai import AzureChatOpenAI
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
+from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain.schema import Document
 from langchain.schema.language_model import BaseLanguageModel
 from langchain.schema.retriever import BaseRetriever
-from langchain.schema.runnable import Runnable, RunnableBranch, RunnableLambda, RunnableMap
+from langchain.schema.runnable import (
+    Runnable,
+    RunnableBranch,
+    RunnableLambda,
+    RunnableMap,
+)
 from langchain_core.output_parsers import StrOutputParser
-from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_openai import AzureChatOpenAI
 
-from app.core.chain_config import RAG_ON, _DEFAULT_INDEX
-from app.index_config import INDEX_CONFIG
-from app.chain.mapping import PartNumberMapping
-from app.chain.retriever import RetrieverFactory
+from app import System_Prompts
+from app.chain.exceptions import ConfigurationError
 from app.chain.formatter import DocumentFormatter
 from app.chain.history import HistorySerializer
-from app.chain.exceptions import ConfigurationError
-from app import System_Prompts
+from app.chain.mapping import PartNumberMapping
+from app.chain.retriever import RetrieverFactory
+from app.core.chain_config import _DEFAULT_INDEX, RAG_ON
+from app.index_config import INDEX_CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -76,19 +81,29 @@ class ChatEngine:
         """Wire together *langchain* components according to current mode."""
         cfg = self._cfg
         response_template: str = (
-            self._cfg["response_template"]
-            if not RAG_ON
-            else cfg["response_template"]
+            cfg["response_template"]
+            if RAG_ON
+            else System_Prompts.RESPONSE_TEMPLATE_CHATBOT
         )
 
         retriever: BaseRetriever | None = None
         raw_retriever: BaseRetriever | None = None
         format_docs_fn: Callable[[Sequence[Document]], str] | None = None
 
+        enable_retrieval = False
         if RAG_ON:
-            retriever = RetrieverFactory.build(self._index_name)
-            raw_retriever = RetrieverFactory.build(self._index_name)
-            format_docs_fn = DocumentFormatter(self._mapping)
+            try:
+                retriever = RetrieverFactory.build(self._index_name)
+                raw_retriever = RetrieverFactory.build(self._index_name)
+                format_docs_fn = DocumentFormatter(self._mapping)
+                enable_retrieval = True
+            except Exception as exc:  # noqa: BLE001
+                logger.warning(
+                    "Failed to initialise retriever – running without RAG: %s",
+                    exc,
+                )
+                response_template = System_Prompts.RESPONSE_TEMPLATE_CHATBOT
+                enable_retrieval = False
         else:
             logger.info("Running in chatbot-only mode – retrieval disabled")
 
@@ -100,7 +115,7 @@ class ChatEngine:
             ]
         )
 
-        if RAG_ON and raw_retriever is not None:
+        if enable_retrieval and raw_retriever is not None:
             # decomposer_prompt = PromptTemplate.from_template(System_Prompts.REPHRASE_TEMPLATE)
             retriever = MultiQueryRetriever.from_llm(
                 retriever=raw_retriever,
@@ -111,11 +126,10 @@ class ChatEngine:
         else:
             retriever = None
 
-        if RAG_ON and retriever and format_docs_fn:
-            retriever_chain = (
-                self._build_retriever_chain(retriever, format_docs_fn)
-                .with_config(run_name="FindDocs")
-            )
+        if enable_retrieval and retriever and format_docs_fn:
+            retriever_chain = self._build_retriever_chain(
+                retriever, format_docs_fn
+            ).with_config(run_name="FindDocs")
             context_map = RunnableMap(
                 {
                     "context": retriever_chain,
@@ -132,7 +146,9 @@ class ChatEngine:
                 }
             )
 
-        final_step = (prompt | self._llm | StrOutputParser()).with_config(streaming=True)
+        final_step = (prompt | self._llm | StrOutputParser()).with_config(
+            streaming=True
+        )
 
         chain: Runnable = (
             {
