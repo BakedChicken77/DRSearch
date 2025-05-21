@@ -8,7 +8,7 @@ from langchain_community.vectorstores import Weaviate as WeaviateStore
 
 from app.chain.exceptions import ConfigurationError
 from app.chain.embeddings import EmbeddingFactory
-from app.core.chain_config import _WEAVIATE_URL, _WEAVIATE_API_KEY, _NUMBER_OF_DOCS_RETRIEVED
+from app.core import chain_config
 from app.index_config import INDEX_CONFIG
 
 
@@ -26,8 +26,8 @@ class RetrieverFactory:
             raise ConfigurationError(f"Index '{index_name}' not defined in INDEX_CONFIG")
 
         client = weaviate.Client(
-            url=_WEAVIATE_URL,
-            auth_client_secret=weaviate.AuthApiKey(api_key=_WEAVIATE_API_KEY),
+            url=chain_config._WEAVIATE_URL,
+            auth_client_secret=weaviate.AuthApiKey(api_key=chain_config._WEAVIATE_API_KEY),
         )
         store = WeaviateStore(
             client=client,
@@ -44,5 +44,5 @@ class RetrieverFactory:
             "valueBoolean": True,
         }
         return store.as_retriever(
-            search_kwargs={"k": _NUMBER_OF_DOCS_RETRIEVED, "where_filter": filter_rag_only}
+            search_kwargs={"k": chain_config._NUMBER_OF_DOCS_RETRIEVED, "where_filter": filter_rag_only}
         )
