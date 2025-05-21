@@ -1,0 +1,58 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.ingest
+    container_name: Ingest
+    env_file:
+      - ./.env
+    ports:
+      - 8000:8000
+    networks:
+      - drsearch_docker_drsearch-net
+    volumes:
+      - "./docs:/app/docs"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    develop:
+      watch:
+        - path: partition_pdf_and_docx_Final5.py
+          action: sync+restart
+          target: /app/partition_pdf_and_docx_Final5.py
+        - path: run_ingest.py
+          action: sync+restart
+          target: /app/run_ingest.py
+        - path: /static
+          action: sync+restart
+          target: /app/static
+        - path: ingestion_utilities.py
+          action: sync+restart
+          target: /app/ingestion_utilities.py
+        - path: main.py
+          action: sync+restart
+          target: /app/main.py
+        - path: Format_HTML_Table.py
+          action: sync+restart
+          target: /app/Format_HTML_Table.py
+        - path: ingest_docs.py
+          action: sync+restart
+          target: /app/ingest_docs.py
+        - path: HTML_Processing.py
+          action: sync+restart
+          target: /app/HTML_Processing.py
+        - path: document_filter.py
+          action: sync+restart
+          target: /app/document_filter.py
+        - path: Get_Docs_From_EmPower_with_DocViewer.py
+          action: sync+restart
+          target: /app/Get_Docs_From_EmPower_with_DocViewer.py
+
+networks:
+  drsearch_docker_drsearch-net:
+    external: true
