@@ -131,3 +131,14 @@ v2 authentication uses a self-contained ASGI middleware that:
 3. Validates every Bearer token (`RS256`, correct `aud`, correct `iss`).  
 4. Injects decoded claims into `request.state.user`.  
 5. Plays nicely with CORS, streaming responses, and a local-dev bypass flag.
+
+## Code Quality
+This project uses **pylint** for static code analysis. Run the linter with:
+
+```bash
+make lint
+```
+
+The configuration lives in `.pylintrc`. Common warnings are disabled to
+accommodate existing patterns, such as brief data container classes and
+camel-cased module names.

@@ -33,6 +33,7 @@ httpx = "^0.27.0"
 [tool.poetry.group.dev.dependencies]
 black = "^23.9.1"
 isort = "^5.12.0"
+pylint = "^3.1.0"
 pytest = "^8.1.1"
 pytest-mock = "^3.14.0"
 pytest-cov = "^6.1.1"
@@ -42,3 +43,4 @@ python-json-logger = "^3.3.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+

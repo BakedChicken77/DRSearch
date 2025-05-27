@@ -1,0 +1,15 @@
+[MASTER]
+ignore=tests
+
+[MESSAGES CONTROL]
+# Many files omit module docstrings intentionally.
+disable=
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring (simple data containers)
+    C0116, # missing-function-docstring (helpers)
+    R0903, # too-few-public-methods (dataclasses)
+    R0801, # duplicate-code across modules
+    C0103  # invalid-name for CamelCase modules like System_Prompts.py
+
+[FORMAT]
+max-line-length=120
