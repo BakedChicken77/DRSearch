@@ -1,12 +1,15 @@
-
 # file: app/__init__.py
 
 """Application package initialisation."""
 
 from fastapi import FastAPI
 
-from .core.config import Settings, get_settings
 from .core.logging import configure_logging
+from .core.blob_loader import fetch_startup_blobs
+
+fetch_startup_blobs()
+
+from .core.config import Settings, get_settings
 from .auth.middleware import AuthMiddleware
 from .api.v1.routes import build_router
 from fastapi.middleware.cors import CORSMiddleware

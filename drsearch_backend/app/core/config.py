@@ -33,6 +33,14 @@ class Settings(BaseSettings):
     cors_origins: List[AnyHttpUrl] = Field(..., env="CORS_ORIGINS")
 
     # ------------------------------------------------------------------
+    # Azure Blob Storage
+    # ------------------------------------------------------------------
+    azure_blob_connection_string: str | None = Field(
+        default=None, env="AZURE_BLOB_CONNECTION_STRING"
+    )
+    azure_blob_container: str | None = Field(default=None, env="AZURE_BLOB_CONTAINER")
+
+    # ------------------------------------------------------------------
     # FastAPI metadata
     # ------------------------------------------------------------------
     api_title: str = "DRSearch API"
