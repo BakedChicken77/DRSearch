@@ -23,11 +23,15 @@ load_dotenv()
 #: Toggle RAG vs. plain-chatbot mode
 RAG_ON: bool = os.getenv("RAG_ON", "True").lower() == "true"
 
-#: Vector database backend to use ("weaviate" or "pgvector")
+#: Vector database backend to use ("weaviate", "pgvector", or "azure")
 _VECTOR_BACKEND: str = os.getenv("VECTOR_BACKEND", "weaviate").lower()
 
 #: Connection string for pgvector when using the PostgreSQL backend
 _PGVECTOR_URL: str = os.getenv("PGVECTOR_URL", "")
+
+#: Azure Search connection settings
+_AZURE_SEARCH_ENDPOINT: str = os.getenv("AZURE_SEARCH_ENDPOINT", "")
+_AZURE_SEARCH_KEY: str = os.getenv("AZURE_SEARCH_KEY", "")
 
 #: How many documents to pull per query when RAG_ON
 _NUMBER_OF_DOCS_RETRIEVED: int = 3

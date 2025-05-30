@@ -19,6 +19,8 @@ _DUMMY_ENV: Dict[str, str] = {
     "AZURE_OPENAI_DEPLOYMENT_NAME": "dummy-model",
     "AZURE_OPENAI_ENDPOINT": "https://dummy-endpoint.openai.azure.com/",
     "AZURE_OPENAI_API_KEY": "dummy-key",
+    "AZURE_SEARCH_ENDPOINT": "https://dummy-search.search.windows.net",
+    "AZURE_SEARCH_KEY": "dummy-search-key",
     "VECTOR_BACKEND": "weaviate",
     "PGVECTOR_URL": "postgresql://user:pass@localhost/db",
     # RAG is enabled by default during tests
@@ -127,6 +129,14 @@ class _FakePgVector:
         return _DummyRetriever()
 
 
+class _FakeAzureStore:
+    def __init__(self, *a, **k):
+        ...
+
+    def as_retriever(self, *a, **k):
+        return _DummyRetriever()
+
+
 @pytest.fixture(autouse=True)
 def _patch_external(monkeypatch):
     # LLM & embeddings
@@ -148,6 +158,16 @@ def _patch_external(monkeypatch):
     monkeypatch.setattr(
         "app.vectorstores.pgvector_store.PGVector",
         _FakePgVector,
+        raising=False,
+    )
+    monkeypatch.setattr(
+        "langchain_community.vectorstores.azuresearch.AzureSearch",
+        _FakeAzureStore,
+        raising=False,
+    )
+    monkeypatch.setattr(
+        "app.vectorstores.azure_store.LangchainAzureSearch",
+        _FakeAzureStore,
         raising=False,
     )
     yield

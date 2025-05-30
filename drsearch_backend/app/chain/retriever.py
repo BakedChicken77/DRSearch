@@ -11,7 +11,7 @@ from app.vectorstores.factory import VectorStoreFactory
 
 
 class RetrieverFactory:
-    """Factory for langchain retrievers backed by Weaviate."""
+    """Factory for langchain retrievers backed by configured vector store."""
 
     @staticmethod
     def build(index_name: str) -> BaseRetriever:
