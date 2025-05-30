@@ -131,3 +131,12 @@ v2 authentication uses a self-contained ASGI middleware that:
 3. Validates every Bearer token (`RS256`, correct `aud`, correct `iss`).  
 4. Injects decoded claims into `request.state.user`.  
 5. Plays nicely with CORS, streaming responses, and a local-dev bypass flag.
+### Logging Configuration
+| Variable | Default |
+|----------|---------|
+| LOG_LEVEL | INFO |
+| LOG_FILE_MAX_MB | 20 |
+| LOG_BACKUP_COUNT | 10 |
+| LOG_FORMAT | json |
+| LOG_TO_BLOB | false |
+| BLOB_UPLOAD_INTERVAL_SEC | 300 |

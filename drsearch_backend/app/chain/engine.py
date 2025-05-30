@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+import time
 from operator import itemgetter
 from typing import Callable, List, Sequence
 
@@ -161,9 +162,25 @@ class ChatEngine:
                 }
             )
 
-        final_step = (prompt | self._llm | StrOutputParser()).with_config(
-            streaming=True
-        )
+        def _timed_llm(p: str) -> str:
+            start = time.time()
+            result = self._llm.invoke(p)
+            logger.info(
+                "llm_call",
+                extra={"latency_ms": int((time.time() - start) * 1000)},
+            )
+            return result
+
+        def _log_output(text: str) -> str:
+            logger.info("llm_response", extra={"output": text[:100]})
+            return text
+
+        final_step = (
+            prompt
+            | RunnableLambda(_timed_llm)
+            | StrOutputParser()
+            | RunnableLambda(_log_output)
+        ).with_config(streaming=True)
 
         chain: Runnable = (
             {

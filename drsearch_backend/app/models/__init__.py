@@ -4,6 +4,8 @@ from .chat import ChatRequest
 from .feedback import Feedback, FeedbackUpdate
 from .trace import TraceRequest
 from .shared import StandardResponse, IndexOption, IndexOptionsResponse
+from .blob import BlobSettings
+from .logging import LoggingSettings
 
 __all__ = [
     "ChatRequest",
@@ -13,5 +15,6 @@ __all__ = [
     "StandardResponse",
     "IndexOption",
     "IndexOptionsResponse",
+    "BlobSettings",
+    "LoggingSettings",
 ]
-

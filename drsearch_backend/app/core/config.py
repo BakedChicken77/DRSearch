@@ -33,6 +33,24 @@ class Settings(BaseSettings):
     cors_origins: List[AnyHttpUrl] = Field(..., env="CORS_ORIGINS")
 
     # ------------------------------------------------------------------
+    # Azure Blob Storage
+    # ------------------------------------------------------------------
+    azure_blob_connection_string: str | None = Field(
+        default=None, env="AZURE_BLOB_CONNECTION_STRING"
+    )
+    azure_blob_container: str | None = Field(default=None, env="AZURE_BLOB_CONTAINER")
+
+    # ------------------------------------------------------------------
+    # Logging
+    # ------------------------------------------------------------------
+    log_level: str = Field("INFO", env="LOG_LEVEL")
+    log_file_max_mb: int = Field(20, env="LOG_FILE_MAX_MB")
+    log_backup_count: int = Field(10, env="LOG_BACKUP_COUNT")
+    log_format: str = Field("json", env="LOG_FORMAT")
+    log_to_blob: bool = Field(False, env="LOG_TO_BLOB")
+    blob_upload_interval_sec: int = Field(300, env="BLOB_UPLOAD_INTERVAL_SEC")
+
+    # ------------------------------------------------------------------
     # FastAPI metadata
     # ------------------------------------------------------------------
     api_title: str = "DRSearch API"
