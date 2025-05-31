@@ -1,0 +1,706 @@
+{
+  "classes": [
+    {
+      "class": "SEPs_F_T_C_W_A_V",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "SEPs_F_T_C_W_A_V_Summaries",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "SEPs_F_T_C_W_A_V_Summaries_5000",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "LangChain_agent_docs",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "text",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "source",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "title",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "AZURE_10000MaxChunk",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_directory",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "WEAVIATE_DOCS",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_directory",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "JACSKE_HDD_GPT",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_directory",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "JACSKE_Program",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "test20240712",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "Injected_URL3",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "HFSS_GUIDE_20240813",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    },
+    {
+      "class": "Adacstest20250205",
+      "description": "Documents for RAG retrieval",
+      "vectorizer": "none",
+      "vectorIndexType": "hnsw",
+      "vectorIndexConfig": {
+        "distance": "cosine"
+      },
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ],
+          "description": "Document text content",
+          "tokenization": "word",
+          "indexSearchable": true,
+          "indexFilterable": false
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ],
+          "description": "Include in retrieval filter",
+          "indexSearchable": false,
+          "indexFilterable": true
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ],
+          "indexSearchable": true,
+          "indexFilterable": true,
+          "description": "Metadata"
+        }
+      ]
+    }
+  ]
+}
