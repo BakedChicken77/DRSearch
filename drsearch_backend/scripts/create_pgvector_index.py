@@ -43,6 +43,7 @@ def load_sample_documents(store: PGVector) -> None:
         "source": "example",
         "title": "Sample Document",
         "file_directory": "samples",
+        "page_content" : "This is the page content"
     }
     try:
         store.add_texts([content], metadatas=[metadata], ids=["1"])
