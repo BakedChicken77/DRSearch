@@ -10,39 +10,41 @@ readme = "README.md"
 requires-python = ">=3.11,<3.13"
 
 dependencies = [
-  "fastapi>=0.103.2",
-  "pydantic>=1.10.17",
+  "fastapi>=0.103.2,<1.0.0",
+  "pydantic>=1.10.17,<2.0.0",
   "langchain==0.1.20",
-  "uvicorn>=0.23.2",
+  "uvicorn>=0.23.2,<1.0.0",
   "tiktoken==0.7.0",
-  "lxml>=4.9.4",
-  "langserve[server]>=0.0.34",
-  "psycopg2-binary>=2.9.9",
-  "python-dotenv>=1.0.0",
+  "lxml>=4.9.4,<5.0.0",
+  "langserve[server]>=0.0.34,<1.0.0",
+  "psycopg2-binary>=2.9.9,<3.0.0",
+  "python-dotenv>=1.0.0,<2.0.0",
   "langchain-core==0.1.52",
   "langchain-community==0.0.38",
   "langchain-openai==0.1.7",
-  "weaviate-client>=3.26.5",
-  "langfuse>=2.35.0",
-  "pyjwt>=2.9.0",
-  "cryptography>=43.0.1",
-  "requests>=2.32.3",
-  "truststore>=0.10.1",
-  "python-json-logger>=3.3.0",
-  "httpx>=0.27.0",
-  "azure-core>=1.34.0",
-  "azure-search-documents>=11.5.2"
+  "weaviate-client>=3.26.5,<4.0.0",
+  "langfuse>=2.35.0,<3.0.0",
+  "pyjwt>=2.9.0,<3.0.0",
+  "cryptography>=43.0.1,<44.0.0",
+  "requests>=2.32.3,<3.0.0",
+  "truststore>=0.10.1,<1.0.0",
+  "python-json-logger>=3.3.0,<4.0.0",
+  "httpx>=0.27.0,<0.28.0",
+  "azure-core>=1.34.0,<2.0.0",
+  "azure-search-documents>=11.5.2,<12.0.0",
+  "pgvector>=0.4.1,<0.5.0"
 ]
 
 [project.optional-dependencies]
 dev = [
-  "black>=23.9.1",
-  "isort>=5.12.0",
-  "pytest>=8.1.1",
-  "pytest-mock>=3.14.0",
-  "pytest-cov>=6.1.1",
+  "black>=23.9.1,<24.0.0",
+  "isort>=5.12.0,<6.0.0",
+  "pytest>=8.1.1,<9.0.0",
+  "pytest-mock>=3.14.0,<4.0.0",
+  "pytest-cov>=6.1.1,<7.0.0",
   "starlette==0.27.0",
-  "python-json-logger>=3.3.0"
+  "python-json-logger>=3.3.0,<4.0.0",
+  "pylint>=3.1.0,<3.2.0"
 ]
 
 [tool.poetry]
@@ -51,3 +53,4 @@ packages = [{ include = "app" }]
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
