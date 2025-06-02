@@ -7,6 +7,16 @@ You are a helpful assistant. \
 Enclose all keywords, document numbers, part numbers and phrases with backticks (`).
 """
 
+# Prompt for the retrieval gating LLM call
+RETRIEVAL_GATING_PROMPT = (
+    "You are a message classifier. Decide whether a retrieval-augmented response "
+    "is required for this message. Respond with \"yes\" if the question clearly "
+    "needs external knowledge to answer accurately (e.g., technical, medical, "
+    "or document-based questions). Respond with \"no\" if the message is "
+    "conversational, generic, or self-contained. Only return \"yes\" or \"no\" — "
+    "nothing else."
+)
+
 # RESPONSE_TEMPLATE_text_as_html_to_text_chunk= """\
 # Your task is to provide a detailed, semantically relevant description of the provided HTML. \
 # This HTML represents content extracted from DOCX and PDF files using Unstructured-IO libraries. \

@@ -26,7 +26,7 @@ from app.chain.formatter import DocumentFormatter
 from app.chain.history import HistorySerializer
 from app.chain.mapping import PartNumberMapping
 from app.chain.retriever import RetrieverFactory
-from app.core.chain_config import _DEFAULT_INDEX, RAG_ON
+from app.core.chain_config import _DEFAULT_INDEX, RAG_ON, RETRIEVAL_GATING_ON
 from app.index_config import INDEX_CONFIG
 
 logger = logging.getLogger(__name__)
@@ -52,6 +52,9 @@ class ChatEngine:
             self._unknown_index = False
         self._mapping = PartNumberMapping(self._cfg["PN_TO_FILE_MAPPING"])
         self._llm = self._init_llm()
+        self._gating_llm = (
+            self._init_gating_llm() if RETRIEVAL_GATING_ON else None
+        )
         self._answer_chain = self._build_answer_chain()
 
     # ------------------------------------------------------------------
@@ -82,6 +85,26 @@ class ChatEngine:
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("Failed to initialise LLM: %s", exc)
+            raise
+
+    @staticmethod
+    def _init_gating_llm() -> BaseLanguageModel:
+        """Instantiate the lightweight model used for retrieval gating."""
+        try:
+            logger.info("Creating AzureChatOpenAI gating model")
+            return AzureChatOpenAI(
+                azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+                api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+                api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+                temperature=0.0,
+                model=os.getenv(
+                    "AZURE_OPENAI_GATING_DEPLOYMENT_NAME",
+                    os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
+                ),
+                streaming=False,
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.exception("Failed to initialise gating LLM: %s", exc)
             raise
 
     # ------------------------------------------------------------------
@@ -141,21 +164,22 @@ class ChatEngine:
         else:
             retriever = None
 
+        chatbot_context_map = RunnableMap(
+            {
+                "context": RunnableLambda(lambda _: ""),
+                "question": itemgetter("question"),
+                "chat_history": itemgetter("chat_history"),
+            }
+        )
+
+        rag_context_map: Runnable = chatbot_context_map
         if enable_retrieval and retriever and format_docs_fn:
             retriever_chain = self._build_retriever_chain(
                 retriever, format_docs_fn
             ).with_config(run_name="FindDocs")
-            context_map = RunnableMap(
+            rag_context_map = RunnableMap(
                 {
                     "context": retriever_chain,
-                    "question": itemgetter("question"),
-                    "chat_history": itemgetter("chat_history"),
-                }
-            )
-        else:
-            context_map = RunnableMap(
-                {
-                    "context": RunnableLambda(lambda _: ""),
                     "question": itemgetter("question"),
                     "chat_history": itemgetter("chat_history"),
                 }
@@ -165,13 +189,33 @@ class ChatEngine:
             streaming=True
         )
 
+        rag_chain = rag_context_map | final_step
+        chatbot_chain = chatbot_context_map | final_step
+
+        if enable_retrieval and RETRIEVAL_GATING_ON and self._gating_llm:
+            gate_prompt = ChatPromptTemplate.from_messages(
+                [
+                    ("system", System_Prompts.RETRIEVAL_GATING_PROMPT),
+                    ("human", "{question}"),
+                ]
+            )
+            gate_chain = gate_prompt | self._gating_llm | StrOutputParser()
+            gate_pred = RunnableLambda(
+                lambda d: gate_chain.invoke({"question": d["question"]})
+                .strip()
+                .lower()
+                .startswith("y")
+            )
+            context_branch = RunnableBranch((gate_pred, rag_chain), chatbot_chain)
+        else:
+            context_branch = rag_chain if enable_retrieval else chatbot_chain
+
         chain: Runnable = (
             {
                 "question": RunnableLambda(itemgetter("question")),
                 "chat_history": RunnableLambda(HistorySerializer()),
             }
-            | context_map
-            | final_step
+            | context_branch
         )
         return chain
 

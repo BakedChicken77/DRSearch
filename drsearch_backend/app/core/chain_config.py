@@ -23,6 +23,9 @@ load_dotenv()
 #: Toggle RAG vs. plain-chatbot mode
 RAG_ON: bool = os.getenv("RAG_ON", "True").lower() == "true"
 
+#: Enable the per-message LLM gating step before running retrieval
+RETRIEVAL_GATING_ON: bool = os.getenv("RETRIEVAL_GATING_ON", "True").lower() == "true"
+
 #: Vector database backend to use ("weaviate" or "pgvector")
 _VECTOR_BACKEND: str = os.getenv("VECTOR_BACKEND", "weaviate").lower()
 

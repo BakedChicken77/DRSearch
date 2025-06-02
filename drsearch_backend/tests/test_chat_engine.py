@@ -18,6 +18,17 @@ class DummyLLM:
 dummy_llm = RunnableLambda(DummyLLM())
 
 
+class _ConstantLLM:
+    def __init__(self, reply: str) -> None:
+        self._reply = reply
+
+    def __call__(self, *_, **__):
+        return self._reply
+
+    def invoke(self, *_, **__):
+        return self._reply
+
+
 def test_chat_engine_unknown_index(monkeypatch):
     """Unknown index should default to chatbot-only mode."""
 
@@ -81,6 +92,10 @@ def test_chat_engine_answer_chain_simple_RAG_ON(monkeypatch):
     monkeypatch.setattr(
         "app.chain.engine.AzureChatOpenAI",
         lambda *_, **__: _fake_llm_for_answer("LLM-OK"),
+    )
+    monkeypatch.setattr(
+        "app.chain.engine.ChatEngine._init_gating_llm",
+        lambda self: _ConstantLLM("yes"),
     )
 
     eng = ChatEngine()  # default index
@@ -153,6 +168,10 @@ def test_context_map_with_retriever(monkeypatch):
         "app.chain.engine.AzureChatOpenAI",
         lambda *_, **__: _fake_llm_for_answer("answer"),
     )
+    monkeypatch.setattr(
+        "app.chain.engine.ChatEngine._init_gating_llm",
+        lambda self: _ConstantLLM("yes"),
+    )
     monkeypatch.setattr("app.chain.engine.RAG_ON", True)
     monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
 
@@ -199,6 +218,78 @@ def test_modify_docs_enriches_path(monkeypatch, tmp_path):
     chain = engine._build_retriever_chain(retriever, format_fn)
     out = chain.invoke({"question": "test", "chat_history": []})
     assert out[0].metadata["file_path"] == "\\\\server\\abc.pdf"
+
+
+def test_gating_skips_retrieval(monkeypatch):
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
+    monkeypatch.setattr("app.chain.engine.RETRIEVAL_GATING_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RETRIEVAL_GATING_ON", True)
+
+    called = {"retrieved": False}
+
+    class RecordingRetriever(_DummyRetriever):
+        def _get_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
+            called["retrieved"] = True
+            return super()._get_relevant_documents(query, run_manager=run_manager)
+
+    monkeypatch.setattr(
+        "app.chain.retriever.RetrieverFactory.build",
+        lambda *_, **__: RecordingRetriever(),
+    )
+
+    monkeypatch.setattr(
+        "app.chain.engine.AzureChatOpenAI",
+        lambda *_, **__: _ConstantLLM("LLM-OK"),
+    )
+    monkeypatch.setattr(
+        "langchain.retrievers.multi_query.MultiQueryRetriever.from_llm",
+        lambda *_, **__: _DummyRetriever(),
+    )
+    monkeypatch.setattr(
+        "app.chain.engine.ChatEngine._init_gating_llm",
+        lambda self: _ConstantLLM("no"),
+    )
+
+    engine = ChatEngine("JACSKE_Program")
+
+    out = engine.answer_chain.invoke({"question": "hi", "chat_history": []})
+    assert out == "LLM-OK"
+    assert called["retrieved"] is False
+
+
+def test_gating_allows_retrieval(monkeypatch):
+    monkeypatch.setattr("app.chain.engine.RAG_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", True)
+    monkeypatch.setattr("app.chain.engine.RETRIEVAL_GATING_ON", True)
+    monkeypatch.setattr("app.core.chain_config.RETRIEVAL_GATING_ON", True)
+
+    called = {"retrieved": False}
+
+    class RecordingRetriever(_DummyRetriever):
+        def _get_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
+            called["retrieved"] = True
+            return super()._get_relevant_documents(query, run_manager=run_manager)
+
+    monkeypatch.setattr(
+        "app.chain.retriever.RetrieverFactory.build",
+        lambda *_, **__: RecordingRetriever(),
+    )
+
+    monkeypatch.setattr(
+        "app.chain.engine.AzureChatOpenAI",
+        lambda *_, **__: _fake_llm_for_answer("LLM-OK"),
+    )
+    monkeypatch.setattr(
+        "app.chain.engine.ChatEngine._init_gating_llm",
+        lambda self: _ConstantLLM("yes"),
+    )
+
+    engine = ChatEngine("JACSKE_Program")
+
+    out = engine.answer_chain.invoke({"question": "hi", "chat_history": []})
+    assert out == "LLM-OK"
+    assert called["retrieved"] is True
 
 
 # Helper to build a deterministic FakeListLLM for test scenarios
