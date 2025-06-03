@@ -1,0 +1,796 @@
+{
+  "classes": [
+    {
+      "class": "SEPs_F_T_C_W_A_V",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "SEPs_F_T_C_W_A_V_Summaries",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "SEPs_F_T_C_W_A_V_Summaries_5000",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "LangChain_agent_docs",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "text",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "source",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "title",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "AZURE_10000MaxChunk",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_directory",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "WEAVIATE_DOCS",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_directory",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "JACSKE_HDD_GPT",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_directory",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "JACSKE_Program",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "test20240712",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "Injected_URL3",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "HFSS_GUIDE_20240813",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    },
+    {
+      "class": "Adacstest20250205",
+      "description": "Documents for RAG retrieval",
+      "properties": [
+        {
+          "name": "page_content",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "file_path",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "filename",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "url",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "text_as_html",
+          "dataType": [
+            "text"
+          ]
+        },
+        {
+          "name": "use4RAG",
+          "dataType": [
+            "boolean"
+          ]
+        }
+      ],
+      "vectorIndexType": "hnsw",
+      "vectorizer": "none",
+      "vectorIndexConfig": {
+        "bq": {
+          "enabled": false
+        },
+        "cleanupIntervalSeconds": 300,
+        "distance": "cosine",
+        "dynamicEfFactor": 10,
+        "dynamicEfMax": 1000,
+        "dynamicEfMin": 500,
+        "ef": 1000,
+        "efConstruction": 200,
+        "flatSearchCutoff": 0,
+        "maxConnections": 128,
+        "pq": {
+          "bitCompression": false,
+          "centroids": 256,
+          "enabled": false,
+          "encoder": {
+            "distribution": "log-normal",
+            "type": "kmeans"
+          },
+          "segments": 0,
+          "trainingLimit": 100000
+        },
+        "skip": false,
+        "vectorCacheMaxObjects": 1000000000000
+      }
+    }
+  ]
+}
