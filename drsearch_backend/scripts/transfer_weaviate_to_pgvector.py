@@ -16,17 +16,29 @@ logger = logging.getLogger(__name__)
 
 
 def _fetch_weaviate_docs(
-    client: weaviate.Client, index: str, text_key: str, attrs: Sequence[str]
+    client: weaviate.Client, index: str, text_key: str, attrs: Sequence[str], batch_size: int = 100
 ) -> list[dict]:
-    """Return all documents for ``index`` filtered by ``use4RAG``."""
+    """Fetch all matching documents from Weaviate using pagination."""
     fields = [text_key, *attrs]
-    result = (
-        client.query.get(index, fields)
-        .with_additional(["id"])
-        .with_where({"path": ["use4RAG"], "operator": "Equal", "valueBoolean": True})
-        .do()
-    )
-    return result["data"]["Get"].get(index, [])
+    all_docs = []
+    offset = 0
+
+    while True:
+        result = (
+            client.query.get(index, fields)
+            .with_additional(["id"])
+            .with_where({"path": ["use4RAG"], "operator": "Equal", "valueBoolean": True})
+            .with_limit(batch_size)
+            .with_offset(offset)
+            .do()
+        )
+        docs = result.get("data", {}).get("Get", {}).get(index) or []
+        if not docs:
+            break
+        all_docs.extend(docs)
+        offset += batch_size
+
+    return all_docs
 
 
 def _upload_docs(
@@ -43,7 +55,7 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO)
 
     index_name = os.getenv(
-        "INDEX_NAME", os.getenv("WEAVIATE_INDEX", "SEPs_F_T_C_W_A_V")
+        "INDEX_NAME", os.getenv("WEAVIATE_INDEX", "JACSKE_Program")
     )
     conn_str = os.environ["PGVECTOR_URL"]
     dimension = int(os.getenv("PGVECTOR_DIMENSION", "1536"))
