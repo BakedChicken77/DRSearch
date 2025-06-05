@@ -13,13 +13,17 @@ afterEach(() => {
 test("fetches index options with token", async () => {
   (fetch as jest.Mock).mockResolvedValue({
     ok: true,
-    json: () => Promise.resolve({ code: 200, result: [{ name: "a" }] }),
+    json: () =>
+      Promise.resolve({
+        code: 200,
+        result: [{ name: "a", initialized: true }],
+      }),
   });
   const res = await fetchIndexOptions("tok");
   expect(fetch).toHaveBeenCalledWith(apiUrl, {
     headers: { Authorization: "Bearer tok" },
   });
-  expect(res).toEqual([{ name: "a" }]);
+  expect(res).toEqual([{ name: "a", initialized: true }]);
 });
 
 test("throws error on http failure", async () => {

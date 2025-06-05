@@ -296,7 +296,12 @@ export function ChatWindow(props: {
             isDisabled={loadingOptions || (indexOptions?.length ?? 0) === 0}
           >
             {indexOptions?.map((opt) => (
-              <option key={opt.name} value={opt.name}>
+              <option
+                key={opt.name}
+                value={opt.name}
+                disabled={!opt.initialized}
+                className={!opt.initialized ? "text-gray-400" : ""}
+              >
                 {opt.display_name}
               </option>
             ))}

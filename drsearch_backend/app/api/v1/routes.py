@@ -27,6 +27,7 @@ from app.models import (
     TraceRequest,
 )
 from ...core.logging import logging
+from app.warmup import INDEX_STATUS
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,13 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     @router.get("/index-options", response_model=IndexOptionsResponse)
     async def index_options() -> IndexOptionsResponse:  # noqa: D401
         try:
-            opts = [IndexOption(**o) for o in await _read_index_options()]
+            raw_opts = await _read_index_options()
+            opts = [
+                IndexOption(
+                    **o, initialized=INDEX_STATUS.get(o["name"], False)
+                )
+                for o in raw_opts
+            ]
             return IndexOptionsResponse(result=opts)
         except Exception as exc:  # pragma: no cover – catastrophic
             logger.error("Unable to read index options", exc_info=exc)
