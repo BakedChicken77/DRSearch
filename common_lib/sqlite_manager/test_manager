@@ -1,0 +1,132 @@
+import sqlite3
+import os
+import logging
+from manager import SQLite_Manager  # Importing your SQLite_Manager class
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+
+# Test Report
+failed_tests = []
+passed_tests = []
+
+def log_test_result(test_name, result, error=None):
+    if result:
+        passed_tests.append(test_name)
+        logging.info(f"{test_name}: PASS")
+    else:
+        failed_tests.append((test_name, error))
+        logging.error(f"{test_name}: FAIL - {error}")
+
+
+def test_set_field_values_for_all_ids(SM):
+    test_name = "set_field_values_for_all_ids"
+    try:
+        
+        SM.set_field_values_for_all_ids('plot_code', 1)
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+def test_set_field_values_by_ids(SM):
+    test_name = "set_field_values_by_ids"
+    try:
+        
+        ids = ['id1', 'id2']
+        SM.set_field_values_by_ids(ids, 'plot_code', 1)
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+def test_get_filtered_data(SM):
+    test_name = "get_filtered_data"
+    try:
+        
+        SM.get_filtered_data('plot_code', 1, ['uuid', 'plot_code'])
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+def test_get_property_keys(SM):
+    test_name = "get_property_keys"
+    try:
+        
+        SM.get_property_keys('plot_code')
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+def test_add_new_field(SM):
+    test_name = "add_new_field"
+    try:
+        
+        SM.add_new_field('new_field', 'TEXT', 'default_value')
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+def test_get_field_values(SM):
+    test_name = "get_field_values"
+    try:
+        
+        SM.get_field_values(['uuid', 'plot_code'])
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+def test_close_weaviate_client(SM):
+    test_name = "close_weaviate_client"
+    try:
+        
+        SM.close_weaviate_client()
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+def test_get_last_update_to_collection(SM):
+    test_name = "get_last_update_to_collection"
+    try:
+        
+        SM.get_last_update_to_collection()
+        log_test_result(test_name, True)
+    except Exception as e:
+        log_test_result(test_name, False, str(e))
+
+
+SM = SQLite_Manager(docs_index_name='test_db')
+# Run Tests
+
+test_set_field_values_for_all_ids(SM)
+test_set_field_values_by_ids(SM)
+test_get_filtered_data(SM)
+test_get_property_keys(SM)
+test_add_new_field(SM)
+test_get_field_values(SM)
+test_close_weaviate_client(SM)
+test_get_last_update_to_collection(SM)
+
+# Cleanup
+try:
+    if os.path.exists('test_db.db'):
+        SM.close_weaviate_client()  # Ensure the connection is closed
+        os.remove('test_db.db')
+        logging.info("Test database removed.")
+except PermissionError as e:
+    logging.error(f"Failed to remove test database: {e}")
+
+
+# Report Results
+print("\n--- Test Report ---")
+if passed_tests:
+    print("Passed Tests:")
+    for test in passed_tests:
+        print(f" - {test}")
+
+if failed_tests:
+    print("\nFailed Tests:")
+    for method, error in failed_tests:
+        print(f" - {method}: {error}")
+
+if not failed_tests:
+    print("\nAll tests passed successfully!")
+
