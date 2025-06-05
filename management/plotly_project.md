@@ -1687,7 +1687,7 @@ WEAVIATE_DOCS_INDEX_NAME = 'SEPs_F_T_C_W_A_V'
 
 llm = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"), 
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"), 
+    api_key=os.getenv(""), 
     api_version=api_version,
 )
 
@@ -2980,8 +2980,8 @@ from weaviate.classes.query import HybridFusion
 import pprint
 
 
-os.environ['AZURE_OPENAI_API_KEY'] = '64393fb9052e4efa8757fa0556890260'
-os.environ["AZURE_OPENAI_ENDPOINT"] = 'https://oai-eng-dev-usgov-east-01.openai.azure.us/'
+os.environ['AZURE_OPENAI_API_KEY'] = 'secret'
+os.environ["AZURE_OPENAI_ENDPOINT"] = 'secret'
 WEAVIATE_URL = os.environ.get("WEAVIATE_URL")
 WEAVIATE_API_KEY = os.environ.get("WEAVIATE_API_KEY")
 WEAVIATE_DOCS_INDEX_NAME = 'JACSKE_Program'
