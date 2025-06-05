@@ -1,0 +1,91 @@
+/* style.css */
+body {
+    display: flex;  /* Sets the body to use flexbox layout */
+    justify-content: center;  /* Aligns content to the center horizontally */
+    align-items: center;  /* Centers content vertically */
+    flex-direction: column;  /* Stacks content in a column */
+    min-height: 100vh;  /* Ensures the body takes up at least the full viewport height */
+    margin: 0;  /* Removes default margin */
+    padding: 2vh;  /* Adds padding to the body using viewport height */
+    background-color: #f4f4f4;  /* Optional: Background color for better visualization */
+}
+
+/* Hidden by default, shown when necessary */
+.hidden {
+    display: none;
+}
+
+/* Style for error message displayed during initialization check */
+.error-message {
+    color: red;
+    font-size: 3vh;
+    text-align: center;
+}
+
+/* Style for the Initialize Database button */
+#init-database-btn {
+    padding: 2vh 4vw;
+    font-size: 2vh;
+    margin-top: 2vh;
+}
+
+/* Ensure the main content is hidden until the database is initialized */
+#main-content {
+    display: none;
+
+    .control-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2vh;  /* Margin using viewport height */
+        gap: 2vw;  /* Gap using viewport width */
+    }
+    
+    .dropdown-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    #plot-select, #operation-select {
+        padding: 1vh 2vw;  /* Padding using viewport units */
+        font-size: 1.6vh;  /* Font size using viewport height */
+    }
+    
+    .plot-container {
+        width: 80vw;  /* Makes the container take 80% of the viewport width */
+        height: 60vh; /* Makes the container take 60% of the viewport height */
+        padding: 2vh;  /* Padding using viewport height */
+        background-color: white;  /* Optional: Background color for the plot container */
+        box-shadow: 0 0 1vh rgba(0, 0, 0, 0.1);  /* Optional: Box shadow for better appearance */
+        margin-bottom: 2vh;  /* Margin using viewport height */
+        text-align: center;  /* Center-aligns the text inside the container */
+        display: flex;  /* Sets the container to use flexbox layout */
+        justify-content: center;  /* Centers plot content horizontally */
+        align-items: center;  /* Centers plot content vertically */
+        z-index: 1; /* Lower z-index for plot container */
+    }
+    
+    .plots-wrapper {
+        display: flex;  /* Sets the wrapper to use flexbox layout */
+        flex-direction: column;  /* Stacks content in a column */
+        align-items: center;  /* Centers content horizontally */
+        justify-content: flex-start;  /* Aligns content to the start vertically */
+        width: 100%;  /* Makes the wrapper take the full width of its parent */
+    }
+    
+    .button-container {
+        margin-top: 2vh;
+        margin-bottom: 2vh; /* Adds space below the buttons */
+        display: flex;
+        justify-content: center;
+        gap: 2vw;  /* Gap using viewport width */
+        z-index: 2;  /* Ensure the buttons are on top */
+        position: relative; /* Ensure the buttons are positioned correctly */
+    }
+    
+    button {
+        padding: 1vh 2vw;  /* Padding using viewport units */
+        font-size: 1.6vh;  /* Font size using viewport height */
+    }
+    
+}

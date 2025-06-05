@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMOperations Interface</title>
+    <link rel="stylesheet" href="/static/weaviateui/weaviateui.css">
+</head>
+<body>
+    <div class="container">
+        <h1>RMOperations Interface</h1>
+
+        <!-- Input boxes for settings -->
+        <div class="input-group">
+            <label for="setting1">Setting 1:</label>
+            <input type="text" id="setting1">
+        </div>
+        <div class="input-group">
+            <label for="setting2">Setting 2:</label>
+            <input type="text" id="setting2">
+        </div>
+        <div class="input-group">
+            <label for="setting3">Setting 3:</label>
+            <input type="text" id="setting3">
+        </div>
+        <div class="input-group">
+            <label for="setting4">Setting 4:</label>
+            <input type="text" id="setting4">
+        </div>
+        <div class="input-group">
+            <label for="setting5">Setting 5:</label>
+            <input type="text" id="setting5">
+        </div>
+
+        <!-- Buttons for RMOperations methods -->
+        <div class="button-group">
+            <button onclick="retrievePDF('test.pdf')">View PDF</button>
+            <button onclick="sendRequest('set_all_values_per_filename')">Set All Values for a Filename </button>
+            <button onclick="sendRequest('get_collection_schema')">Get Schema Collection</button>
+            <button onclick="sendRequest('add_all_to_rag')">Add All Data Back To RAG Search</button>
+            <button onclick="sendRequest('set_ids_to_nonvisible')">Set IDs to Nonvisible</button>
+            <button onclick="sendRequest('get_filtered_data')">Get Filtered Data</button>
+            <button onclick="sendRequest('force_initialize_fields')">Force Initialize Fields</button>
+            <button onclick="sendRequest('get_all_collection_names')">Get Available Collections</button>
+        </div>
+
+        <!-- Clear button -->
+        <button id="clearButton" onclick="clearInputs()">Clear</button>
+
+        <!-- Message window for displaying responses -->
+        <div class="message-window" id="messageWindow"></div>
+    </div>
+
+    <script src="/static/weaviateui/weaviateui.js"></script>
+</body>
+</html>

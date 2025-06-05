@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Plotly Plots</title>
+    <style>
+        body {
+            display: flex;  /* Sets the body to use flexbox layout */
+            justify-content: flex-start;  /* Aligns content to the start vertically */
+            align-items: center;  /* Centers content horizontally */
+            flex-direction: column;  /* Stacks content in a column */
+            min-height: 100vh;  /* Ensures the body takes up at least the full viewport height */
+            margin: 0;  /* Removes default margin */
+            padding: 20px;  /* Adds padding to the body */
+            background-color: #f4f4f4;  /* Optional: Background color for better visualization */
+        }
+        .plot-container {
+            width: 100%;  /* Makes the container take the full width of its parent */
+            max-width: 800px;  /* Sets a maximum width for the container */
+            padding: 20px;  /* Adds padding inside the container */
+            background-color: white;  /* Optional: Background color for the plot container */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  /* Optional: Box shadow for better appearance */
+            margin-bottom: 20px;  /* Adds space below each container */
+            text-align: center;  /* Center-aligns the text inside the container */
+            display: flex;  /* Sets the container to use flexbox layout */
+            justify-content: center;  /* Centers plot content horizontally */
+            align-items: center;  /* Centers plot content vertically */
+            z-index: 1; /* Lower z-index for plot container */
+        }
+        .plots-wrapper {
+            display: flex;  /* Sets the wrapper to use flexbox layout */
+            flex-direction: column;  /* Stacks content in a column */
+            align-items: center;  /* Centers content horizontally */
+            justify-content: flex-start;  /* Aligns content to the start vertically */
+            width: 100%;  /* Makes the wrapper take the full width of its parent */
+        }
+        .button-container {
+            margin-top: 20px;
+            margin-bottom: 20px; /* Adds space below the buttons */
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 2;  /* Ensure the buttons are on top */
+            position: relative; /* Ensure the buttons are positioned correctly */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <!-- Buttons for interactive actions -->
+    <div class="button-container">
+        <button id="delete_cluster_btn">Delete Cluster</button>
+        <button id="delete_embedding_btn">Delete Embedding</button>
+        <button id="process_acronyms_btn">Process Acronyms</button>
+        <button id="clear_selected_embeddings_btn">Clear Selected Embeddings</button>
+    </div>
+    <div class="plots-wrapper">
+        <div class="plot-container">
+            <!-- Insert Scatter Plot here -->
+            <div id="scatter_plot"></div>
+        </div>
+        <div class="plot-container">
+            <!-- Insert Bar Plot here -->
+            <div id="bar_plot"></div>
+        </div>
+        <div class="plot-container">
+            <!-- Insert Centroid Plot here -->
+            <div id="centroid_plot"></div>
+        </div>
+    </div>
+    <script>
+        const port = 8025; // Define the port variable here
+
+        // Initialize selected cluster and embedding
+        window.selectedCluster = undefined;
+        window.selectedEmbedding = undefined;
+
+        async function loadJSON(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Error loading ${url}: ${response.statusText}`);
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+                alert(`Failed to load data from ${url}`);
+            }
+        }
+
+        async function createScatterPlot() {
+            // Construct the URL to fetch from the correct endpoint
+            const data = await loadJSON('/data/scatter_plot_data.json');
+            if (!data) return;
+
+            const traces = [];
+            const clusters = Array.from(new Set(data.map(d => d.cluster)));
+
+            clusters.forEach(cluster => {
+                const clusterData = data.filter(d => d.cluster === cluster);
+                traces.push({
+                    x: clusterData.map(d => d.tsne1),
+                    y: clusterData.map(d => d.tsne2),
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: `Cluster ${cluster}`,
+                    text: clusterData.map(d => `Cluster: ${d.cluster}<br>Filename: ${d.filename}<br>Content: ${d.content.substring(0, 80)}<br>ID: ${d.id}`),
+                    marker: { size: 10 }
+                });
+            });
+
+            const layout = {
+                title: 't-SNE Clustering of Documents',
+                dragmode: 'lasso',
+                hovermode: 'closest',  // Set the default hover mode to 'closest'
+                updatemenus: [{
+                    buttons: clusters.map(cluster => ({
+                        method: 'update',
+                        label: `Cluster ${cluster}`,
+                        args: [{'visible': clusters.map(c => c === cluster)}, {}]
+                    })).concat([{
+                        method: 'update',
+                        label: 'All',
+                        args: [{'visible': clusters.map(() => true)}, {}]
+                    }]),
+                    direction: 'down',
+                    showactive: true
+                }]
+            };
+
+            Plotly.newPlot('scatter_plot', traces, layout);
+
+            const scatterPlot = document.getElementById('scatter_plot');
+            scatterPlot.on('plotly_selected', function(eventData) {
+                const selectedPoints = eventData.points.map(point => {
+                    return {
+                        tsne1: point.x,
+                        tsne2: point.y,
+                        filename: point.text.split('<br>')[1].split(': ')[1],
+                        content: point.text.split('<br>')[2].split(': ')[1],
+                        id: point.text.split('<br>')[3].split(': ')[1]
+                    };
+                });
+
+                console.log('Sending selected embeddings:', selectedPoints);
+
+                fetch(`http://localhost:${port}/selected_embeddings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(selectedPoints)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Selected embeddings sent successfully:', data);
+                    reloadScatterPlot(); // Reload the scatter plot after saving embeddings
+                })
+                .catch(error => {
+                    console.error('Error sending selected embeddings:', error);
+                    alert('Failed to send selected embeddings');
+                });
+            });
+        }
+
+        async function createBarPlot() {
+            const data = await loadJSON('/data/bar_plot_data.json');
+            if (!data) return;
+
+            const trace = {
+                x: data.x,
+                y: data.y,
+                type: 'bar'
+            };
+
+            const layout = {
+                title: 'Cluster Distribution',
+                xaxis: { title: 'Cluster' },
+                yaxis: { title: 'Number of Documents' }
+            };
+
+            Plotly.newPlot('bar_plot', [trace], layout);
+        }
+
+        async function createCentroidPlot() {
+            const data = await loadJSON('/data/centroid_plot_data.json');
+            if (!data) return;
+
+            const trace = {
+                x: data.map(d => d.tsne1),
+                y: data.map(d => d.tsne2),
+                mode: 'markers',
+                type: 'scatter',
+                marker: { color: data.map(d => d.cluster) }
+            };
+
+            const layout = {
+                title: 't-SNE Visualization of Cluster Centroids',
+                xaxis: { title: 't-SNE 1' },
+                yaxis: { title: 't-SNE 2' }
+            };
+
+            Plotly.newPlot('centroid_plot', [trace], layout);
+        }
+
+        async function reloadScatterPlot() {
+            // Clear the existing scatter plot
+            Plotly.purge('scatter_plot');
+            // Recreate the scatter plot
+            await createScatterPlot();
+        }
+
+        window.onload = function() {
+            createScatterPlot();
+            createBarPlot();
+            createCentroidPlot();
+        };
+
+        document.getElementById('delete_cluster_btn').addEventListener('click', () => {
+            if (window.selectedCluster !== undefined) {
+                fetch(`/clusters/${window.selectedCluster}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        alert('Cluster deleted successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to delete cluster');
+                    });
+            } else {
+                alert('No cluster selected.');
+            }
+        });
+
+        document.getElementById('delete_embedding_btn').addEventListener('click', () => {
+            if (window.selectedEmbedding !== undefined) {
+                fetch(`/embeddings/${window.selectedEmbedding}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        alert('Embedding deleted successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to delete embedding');
+                    });
+            } else {
+                alert('No embedding selected.');
+            }
+        });
+
+        document.getElementById('process_acronyms_btn').addEventListener('click', () => {
+            if (window.selectedCluster !== undefined) {
+                fetch(`/process_acronyms/${window.selectedCluster}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        alert('Acronyms processed successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to process acronyms');
+                    });
+            } else {
+                alert('No cluster selected.');
+            }
+        });
+
+        document.getElementById('clear_selected_embeddings_btn').addEventListener('click', () => {
+            fetch('/clear_selected_embeddings', { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    alert('Selected embeddings cleared successfully');
+                    reloadScatterPlot(); // Reload the scatter plot after clearing embeddings
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to clear selected embeddings');
+                });
+        });
+    </script>
+</body>
+</html>

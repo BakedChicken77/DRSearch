@@ -1,0 +1,112 @@
+/* style2.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    overflow-x: auto; /* Add this line to enable horizontal scrolling */
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: auto; /* Change to auto to handle resizing */
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 8px;
+    text-align: left;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative; /* Add this line */
+}
+th:first-child, td:first-child {
+    width: 40px; /* Set a fixed width for the first column */
+}
+th {
+    background-color: #f2f2f2;
+    position: relative;
+}
+th a {
+    color: blue;
+    text-decoration: none;
+    cursor: pointer;
+}
+th a:hover {
+    text-decoration: underline;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-height: 70%;
+    overflow-y: auto;
+}
+.close, .close-config {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover, .close:focus, .close-config:hover, .close-config:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+button.sort-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007BFF;
+    font-size: 12px;
+    margin-left: 5px;
+}
+button.sort-btn::after {
+    content: '\25B2'; /* Up arrow */
+    display: inline-block;
+    margin-left: 2px;
+    font-size: 12px;
+}
+button.sort-btn.desc::after {
+    content: '\25BC'; /* Down arrow */
+}
+button {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.viewable-text {
+    /*color: blue;*/
+    cursor: pointer;
+}
+.viewable-text:hover {
+    text-decoration: underline;
+}
+.resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    cursor: col-resize;
+    background-color: transparent;
+}

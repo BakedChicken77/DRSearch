@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selected Embeddings</title>
+    <link rel="stylesheet" href="/static/style2.css">
+</head>
+<body>
+    <h1>Selected Embeddings</h1>
+    <button id="config_table_btn">Config Table</button>
+    <br>
+    <a href="#" id="removeFromRAGSearch">Remove From RAG Search</a>
+    <br>
+    <a href="#" id="add_back_plot">Add back to plot</a>
+    <table id="embeddings_table">
+        <thead>
+            <tr id="table_headers">
+                <th><input type="checkbox" id="select_all"></th>
+                <th>UUID <button class="sort-btn" onclick="sortTable('uuid')"></button></th>
+                <th>Filename <button class="sort-btn" onclick="sortTable('filename')"></button></th>
+                <th>Content <button class="sort-btn" onclick="sortTable('page_content')"></button></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <pre id="modalText" style="white-space: pre-wrap; word-wrap: break-word;"></pre>
+        </div>
+    </div>
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <span class="close-config">&times;</span>
+            <table id="config_table">
+                <thead>
+                    <tr>
+                        <th>Fields</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id="select_all_btn">Select All</button>
+            <button id="deselect_all_btn">Deselect All</button>
+            <button id="apply_config_btn">Accept</button>
+            <button id="cancel_config_btn">Cancel</button>
+        </div>
+    </div>
+    <script src="/static/script2.js"></script>
+</body>
+</html>

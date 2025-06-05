@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Plotly Plots</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <!-- This container is shown during database status check -->
+    <div id="status-container">
+        <h1 id="status-message" class="error-message">Checking database status...</h1>
+        <button id="init-database-btn" class="hidden">Initialize Database</button>
+    </div>
+    
+    <!-- Main content is hidden initially -->
+    <div id="main-content" class="hidden">
+        <div class="control-container">
+            <div class="dropdown-container">
+                <select id="plot-select" onchange="handlePlotSelection()">
+                    <option value="plot_type" disabled selected>Select Plot</option>
+                    <option value="scatter">Scatter</option>
+                    <option value="bar">Bar</option>
+                    <option value="centroid">Cluster</option>
+                </select>
+            </div>
+            <div class="dropdown-container">
+                <select id="operation-select" onchange="handleOperationSelection()">
+                    <option value="operations" disabled selected>Operations</option>
+                    <option value="delete_cluster">Delete Cluster</option>
+                    <option value="delete_embedding">Delete Embedding</option>
+                    <option value="process_acronyms">Process Acronyms</option>
+                    <option value="recalc_clusters">Recalc Clusters</option>
+                    <option value="remove_from_rag">Do Not Include in RAG Search</option>
+                </select>
+            </div>
+            <div class="button-container">
+                <button id="Reset_embeddings_btn">Reset Embeddings</button>
+            </div>
+            <div class="dropdown-container">
+                <select id="collection-select" onchange="handleCollectionSelection()">
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </div>
+        </div>
+        <div class="plots-wrapper">
+            <div class="plot-container" id="scatter_plot"></div>
+            <div class="plot-container" id="bar_plot"></div>
+            <div class="plot-container" id="centroid_plot"></div>
+        </div>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
