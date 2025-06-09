@@ -72,7 +72,7 @@ class ChatEngine:
         """Instantiate Azure Chat completion model (singleton per process)."""
         try:
             logger.info("Creating AzureChatOpenAI model")
-            return AzureChatOpenAI(
+            llm = AzureChatOpenAI(
                 azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
                 api_key=os.getenv("AZURE_OPENAI_API_KEY"),
                 api_version=os.environ["AZURE_OPENAI_API_VERSION"],
@@ -80,6 +80,28 @@ class ChatEngine:
                 model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
                 streaming=True,
             )
+
+            if hasattr(llm, "invoke"):
+                orig_invoke = llm.invoke
+
+                def _invoke(prompt, *a, **kw):
+                    import time
+
+                    start = time.perf_counter()
+                    result = orig_invoke(prompt, *a, **kw)
+                    dur = (time.perf_counter() - start) * 1000
+                    logger.info(
+                        "LLM invoke",
+                        extra={
+                            "latency_ms": round(dur, 2),
+                            "output": str(result)[:100],
+                        },
+                    )
+                    return result
+
+                object.__setattr__(llm, "invoke", _invoke)
+
+            return llm
         except Exception as exc:  # noqa: BLE001
             logger.exception("Failed to initialise LLM: %s", exc)
             raise
