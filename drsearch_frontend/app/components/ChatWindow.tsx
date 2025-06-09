@@ -267,7 +267,12 @@ export function ChatWindow(props: {
 
   return (
     <div className="flex flex-col items-center p-8 rounded grow max-h-full">
-      <SettingsDrawer numDocs={numDocs} setNumDocs={setNumDocs} />
+      <SettingsDrawer
+        numDocs={numDocs}
+        setNumDocs={setNumDocs}
+        indexOptions={indexOptions}
+        token={AUTH_ENABLED ? accessToken : undefined}
+      />
       <IconButton
         aria-label="start new chat"
         title="start new chat"

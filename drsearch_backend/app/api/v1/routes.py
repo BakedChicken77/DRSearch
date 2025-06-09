@@ -11,6 +11,8 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Response
 from fastapi.responses import FileResponse
+import psycopg2
+from psycopg2.extras import RealDictCursor
 from langserve import add_routes
 
 from ...core.config import Settings, get_settings
@@ -23,6 +25,7 @@ from app.models import (
     FeedbackUpdate,
     IndexOption,
     IndexOptionsResponse,
+    DocumentListResponse,
     StandardResponse,
     TraceRequest,
 )
@@ -66,6 +69,24 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
         except Exception as exc:  # pragma: no cover – catastrophic
             logger.error("Unable to read index options", exc_info=exc)
             raise HTTPException(status_code=500, detail="Unable to read index options") from exc
+
+    # ---- /documents
+    @router.get("/documents", response_model=DocumentListResponse)
+    async def document_list(index: str) -> DocumentListResponse:  # noqa: D401
+        db_url = os.getenv("RECORD_MANAGER_DB_URL")
+        if not db_url:
+            raise HTTPException(status_code=500, detail="Database URL not configured")
+        try:
+            with psycopg2.connect(db_url) as conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute(
+                    "SELECT DISTINCT group_id FROM doc_records WHERE namespace = %s",
+                    (index,),
+                )
+                rows = cur.fetchall()
+            return DocumentListResponse(result=[r["group_id"] for r in rows])
+        except Exception as exc:  # pragma: no cover – catastrophic
+            logger.error("Unable to fetch document list", exc_info=exc)
+            raise HTTPException(status_code=500, detail="Unable to read document list") from exc
 
     # ---- feedback endpoints -------------------------------------------------
     @router.post("/feedback", status_code=200, response_model=StandardResponse)

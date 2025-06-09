@@ -77,3 +77,35 @@ def test_patch_feedback_null_id(fastapi_client):
     r = fastapi_client.patch("/feedback", json=body)
     assert r.status_code == 400
     assert r.json()["detail"] == "Missing feedback_id"
+
+
+def test_document_list_endpoint(fastapi_client: TestClient, monkeypatch):
+    class DummyCursor:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            pass
+
+        def execute(self, *a, **k):
+            pass
+
+        def fetchall(self):
+            return [{"group_id": "a.pdf"}, {"group_id": "b.pdf"}]
+
+    class DummyConn:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            pass
+
+        def cursor(self, cursor_factory=None):
+            return DummyCursor()
+
+    monkeypatch.setenv("RECORD_MANAGER_DB_URL", "dummy")
+    monkeypatch.setattr("psycopg2.connect", lambda *_a, **_k: DummyConn())
+
+    r = fastapi_client.get("/documents?index=X")
+    assert r.status_code == 200
+    assert r.json()["result"] == ["a.pdf", "b.pdf"]

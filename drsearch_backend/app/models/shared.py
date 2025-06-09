@@ -28,3 +28,10 @@ class IndexOptionsResponse(BaseModel):
     result: List[IndexOption]
     code: int = Field(200, description="Application level status code")
 
+
+class DocumentListResponse(BaseModel):
+    """Response model for `/documents`."""
+
+    result: List[str]
+    code: int = Field(200, description="Application level status code")
+
