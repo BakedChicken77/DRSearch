@@ -1,18 +1,39 @@
+## app.py
+
 import asyncio
 import logging
 import os
 from functools import lru_cache
 from typing import List
 
+import nest_asyncio
 import pandas as pd
 import streamlit as st
+
 
 from drsearch_backend.app.azure_search_blob_manager.AzureBlobStorageWrapperAsync import (
     AzureBlobStorageAsync,
 )
-import truststore
 
+import truststore
 truststore.inject_into_ssl()
+
+# Patch the event loop to allow nested usage
+nest_asyncio.apply()
+
+# Safe wrapper to run async functions in both sync and async contexts
+def run_async(coro):
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop and loop.is_running():
+        return asyncio.ensure_future(coro)  # You may need to `await` this if inside an `async` function
+    else:
+        return asyncio.run(coro)
+
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -24,15 +45,15 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=1)
 def get_client() -> AzureBlobStorageAsync:
-    conn_str = os.getenv("AZURE_BLOB_CONNECTION_STRING")
+    conn_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     if not conn_str:
-        st.error("AZURE_BLOB_CONNECTION_STRING not set")
+        st.error("AZURE_STORAGE_CONNECTION_STRING not set")
         st.stop()
     return AzureBlobStorageAsync(conn_str)
 
 
-def run_async(coro):
-    return asyncio.run(coro)
+# def run_async(coro):
+#     return asyncio.run(coro)
 
 
 def list_containers(client: AzureBlobStorageAsync) -> List[str]:
@@ -40,7 +61,8 @@ def list_containers(client: AzureBlobStorageAsync) -> List[str]:
 
 
 def list_blobs(client: AzureBlobStorageAsync, container: str):
-    return run_async(client.list_blobs_in_container(container))
+    future = run_async(client.list_blobs_in_container(container))
+    return future.result() if hasattr(future, "result") else future
 
 
 def download_text(client: AzureBlobStorageAsync, container: str, blob: str) -> str:
@@ -55,6 +77,14 @@ def delete_blob(client: AzureBlobStorageAsync, container: str, blob: str):
     return run_async(client.delete_blob(container, blob))
 
 
+def delete_container_sync(client: AzureBlobStorageAsync, container: str):
+    # Create a fresh loop, run the coroutine, then close it
+    loop = asyncio.new_event_loop()
+    try:
+        return loop.run_until_complete(client.delete_container(container))
+    finally:
+        loop.close()
+
 st.title("Azure Blob Explorer")
 client = get_client()
 containers = list_containers(client)
@@ -63,9 +93,37 @@ if not containers:
     st.stop()
 
 sel_container = st.sidebar.selectbox("Container", containers)
+
+# Create new container
+with st.sidebar.expander("➕ Create New Container"):
+    new_container = st.text_input("New container name")
+    if st.button("Create Container") and new_container:
+        run_async(client.create_container(new_container))
+        st.success(f"Container '{new_container}' created.")
+        st.rerun()
+
+# Delete selected container with confirmation
+with st.sidebar.expander("❌ Delete Selected Container"):
+    if st.button("Delete This Container"):
+        confirm = st.radio(
+            f"Are you sure you want to delete '{sel_container}'?",
+            options=["No", "Yes"],
+            horizontal=True,
+            key="confirm_delete",
+        )
+        if confirm == "Yes":
+            future = run_async(client.delete_container(sel_container))
+            if hasattr(future, "result"):
+                future.result()  # wait for the deletion to finish
+            st.success(f"Container '{sel_container}' deleted.")
+            st.rerun()
+
+
+
+
 filter_text = st.sidebar.text_input("Filter by name")
 
-blobs = list_blobs(client, sel_container)
+blobs = asyncio.run(client.list_blobs_in_container(sel_container))
 rows = [
     {
         "name": b.name,
@@ -103,14 +161,14 @@ with col2:
 with col3:
     if st.button("Delete") and sel_blob:
         delete_blob(client, sel_container, sel_blob)
-        st.experimental_rerun()
+        st.rerun()
 
 st.subheader("Upload")
 upload = st.file_uploader("Choose file")
 if st.button("Upload") and upload is not None:
     upload_bytes(client, sel_container, upload.name, upload.getvalue())
     st.success("Uploaded")
-    st.experimental_rerun()
+    st.rerun()
 
 # Logs tab
 st.subheader("Logs / Feedback")
