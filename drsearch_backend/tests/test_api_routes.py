@@ -1,6 +1,7 @@
 import json
 import pathlib
 import os
+import app.api.v1.routes as routes
 from fastapi.testclient import TestClient
 import types
 
@@ -28,6 +29,25 @@ def test_feedback_create_and_patch(fastapi_client: TestClient):
     # PATCH ok
     body["feedback_id"] = "22222222-2222-2222-2222-222222222222"
     assert fastapi_client.patch("/feedback", json=body).status_code == 200
+
+
+def test_feedback_written_to_file(fastapi_client: TestClient, tmp_path, monkeypatch):
+    monkeypatch.setattr(routes, "FEEDBACK_DIR", tmp_path)
+    monkeypatch.setattr(routes, "FEEDBACK_PATH", tmp_path / "f.json")
+    body = {
+        "run_id": "11111111-1111-1111-1111-111111111111",
+        "key": "user_score",
+        "score": 1,
+        "comment": "text",
+        "conversation": [
+            {"role": "user", "content": "hi"},
+        ],
+        "documents": ["doc1"],
+    }
+    assert fastapi_client.post("/feedback", json=body).status_code == 200
+    data = json.loads((tmp_path / "f.json").read_text())
+    assert data[0]["thumb"] == "up"
+    assert data[0]["comment"] == "text"
 
 
 def test_get_trace_not_implemented(fastapi_client: TestClient):
