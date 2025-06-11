@@ -11,9 +11,13 @@ import os
 from pythonjsonlogger import jsonlogger
 
 from app.models.logging import LoggingSettings
-from app.azure_search_blob_manager.AzureBlobStorageWrapperAsync import AzureBlobStorageAsync
+from app.azure_search_blob_manager.AzureBlobStorageWrapperAsync import (
+    AzureBlobStorageAsync,
+)
 
-LOG_DIR = Path(os.environ.get("LOG_DIR", Path(__file__).resolve().parents[2] / "app_logs"))
+LOG_DIR = Path(
+    os.environ.get("LOG_DIR", Path(__file__).resolve().parents[2] / "app_logs")
+)
 COMPONENT = "backend"
 
 _listener: QueueListener | None = None
@@ -28,15 +32,27 @@ def _setup_handlers(settings: LoggingSettings) -> QueueListener:
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     formatter = _get_formatter()
     handlers = []
-    for level in ("debug", "info", "warning", "error"):
-        handler = RotatingFileHandler(
-            LOG_DIR / f"{level}.jsonl",
-            maxBytes=settings.log_file_max_mb * 1024 * 1024,
-            backupCount=settings.log_backup_count,
-        )
-        handler.setLevel(getattr(logging, level.upper()))
-        handler.setFormatter(formatter)
-        handlers.append(handler)
+
+    # General backend log file
+    backend_handler = RotatingFileHandler(
+        LOG_DIR / "drsearch_backend_log.jsonl",
+        maxBytes=settings.log_file_max_mb * 1024 * 1024,
+        backupCount=settings.log_backup_count,
+    )
+    backend_handler.setLevel(getattr(logging, settings.log_level.upper(), logging.INFO))
+    backend_handler.setFormatter(formatter)
+    handlers.append(backend_handler)
+
+    # Feedback log file
+    feedback_handler = RotatingFileHandler(
+        LOG_DIR / "feedback.jsonl",
+        maxBytes=settings.log_file_max_mb * 1024 * 1024,
+        backupCount=settings.log_backup_count,
+    )
+    feedback_handler.setLevel(logging.INFO)
+    feedback_handler.setFormatter(formatter)
+    feedback_handler.addFilter(logging.Filter("feedback"))
+    handlers.append(feedback_handler)
     queue: Queue = Queue(-1)
     root = logging.getLogger()
     root.handlers.clear()
@@ -46,7 +62,9 @@ def _setup_handlers(settings: LoggingSettings) -> QueueListener:
     return listener
 
 
-async def _upload_logs(settings: LoggingSettings, storage: AzureBlobStorageAsync) -> None:
+async def _upload_logs(
+    settings: LoggingSettings, storage: AzureBlobStorageAsync
+) -> None:
     date_str = datetime.utcnow().strftime("%Y-%m-%d")
     env = os.getenv("NODE_ENV", "dev")
     for file in LOG_DIR.glob("*.jsonl"):
@@ -54,7 +72,9 @@ async def _upload_logs(settings: LoggingSettings, storage: AzureBlobStorageAsync
         await storage.upload_blob(settings.log_to_blob_container, blob_path, str(file))
 
 
-async def _periodic_blob_upload(settings: LoggingSettings, storage: AzureBlobStorageAsync) -> None:
+async def _periodic_blob_upload(
+    settings: LoggingSettings, storage: AzureBlobStorageAsync
+) -> None:
     try:
         while True:
             await asyncio.sleep(settings.blob_upload_interval_sec)
@@ -63,7 +83,9 @@ async def _periodic_blob_upload(settings: LoggingSettings, storage: AzureBlobSto
         await storage.close()
 
 
-def _start_blob_uploader(loop: asyncio.AbstractEventLoop, settings: LoggingSettings) -> asyncio.Task:
+def _start_blob_uploader(
+    loop: asyncio.AbstractEventLoop, settings: LoggingSettings
+) -> asyncio.Task:
     conn = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     if not conn:
         return loop.create_task(asyncio.sleep(0))

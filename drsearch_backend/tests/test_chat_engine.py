@@ -4,6 +4,11 @@ from langchain_core.language_models.fake import FakeListLLM
 from langchain_core.runnables import RunnableLambda
 from langchain.prompts import ChatPromptTemplate
 
+import os
+
+os.environ["LOG_OUTPUT_MODE"] = "local"
+os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
+
 from app import System_Prompts
 
 from app.chain.engine import ChatEngine
