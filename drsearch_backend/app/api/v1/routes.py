@@ -71,7 +71,9 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     @router.post("/feedback", status_code=200, response_model=StandardResponse)
     async def create_feedback(body: Feedback) -> StandardResponse:  # noqa: D401
         # TODO: integrate LangSmith client when available
-        logger.info("Feedback received", extra=body.dict())
+        data = body.dict()
+        data["thumb"] = "up" if body.score and float(body.score) > 0 else "down"
+        logger.info("Feedback received", extra=data)
         return StandardResponse(result="posted feedback successfully")
 
     @router.patch("/feedback", status_code=200, response_model=StandardResponse)

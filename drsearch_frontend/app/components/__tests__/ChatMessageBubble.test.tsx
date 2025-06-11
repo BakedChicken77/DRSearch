@@ -87,6 +87,7 @@ describe("ChatMessageBubble component", () => {
         message={{ id: "1", content: "hi", role: "user" }}
         isMostRecent={false}
         messageCompleted
+        conversation={[]}
       />,
     );
     expect(container.innerHTML).toContain("hi");
@@ -110,12 +111,14 @@ describe("ChatMessageBubble component", () => {
         }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
 
     // first button is 👍
     const buttons = screen.getAllByRole("button");
     fireEvent.click(buttons[0]);
+    fireEvent.click(screen.getByText("Send"));
     jest.runAllTimers();
 
     await waitFor(() => {
@@ -146,10 +149,12 @@ describe("ChatMessageBubble component", () => {
         }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     const buttons = screen.getAllByRole("button");
     fireEvent.click(buttons[1]);
+    fireEvent.click(screen.getByText("Send"));
     await waitFor(() => expect(sendFeedback).toHaveBeenCalled());
   });
 
@@ -159,6 +164,7 @@ describe("ChatMessageBubble component", () => {
         message={{ id: "3", content: "hi", role: "assistant" }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     fireEvent.click(screen.getAllByRole("button")[0]);
@@ -183,11 +189,13 @@ describe("ChatMessageBubble component", () => {
         }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     const btn = screen.getAllByRole("button")[0];
     fireEvent.click(btn);
     fireEvent.click(btn);
+    fireEvent.click(screen.getByText("Send"));
     resolve({ code: 200, feedbackId: "ff" });
     await waitFor(() => expect(sendFeedback).toHaveBeenCalledTimes(1));
   });
@@ -208,6 +216,7 @@ describe("ChatMessageBubble component", () => {
         }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     fireEvent.click(screen.getByText(/view trace/i));
@@ -230,6 +239,7 @@ describe("ChatMessageBubble component", () => {
         }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     fireEvent.click(screen.getByText(/view trace/i));
@@ -248,6 +258,7 @@ describe("ChatMessageBubble component", () => {
         }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     const heading = screen.getByText("View Sources");
@@ -281,6 +292,7 @@ describe("ChatMessageBubble component", () => {
         message={{ id: "e", content: "a", role: "assistant" }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     await (__TEST__.sendUserFeedback as any)(1, "user_score");
@@ -297,6 +309,7 @@ describe("ChatMessageBubble component", () => {
         message={{ id: "c", content: "a", role: "assistant", runId: "r" }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     (__TEST__.setComment as any)("note");
@@ -310,6 +323,7 @@ describe("ChatMessageBubble component", () => {
         message={{ id: "b", content: "a", role: "assistant", runId: "r" }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     (__TEST__.animateButton as any)("unknown");
@@ -338,10 +352,12 @@ describe("ChatMessageBubble component", () => {
         }}
         isMostRecent
         messageCompleted
+        conversation={[]}
       />,
     );
     const [up] = screen.getAllByRole("button");
     fireEvent.click(up);
+    fireEvent.click(screen.getByText("Send"));
     await waitFor(() => expect(sendFeedback).toHaveBeenCalledTimes(1));
     await new Promise((r) => setTimeout(r, 0));
     fireEvent.click(up);

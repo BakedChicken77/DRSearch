@@ -327,6 +327,7 @@ export function ChatWindow(props: {
                 aiEmoji="🦜"
                 isMostRecent={i === 0}
                 messageCompleted={!isLoading}
+                conversation={messages}
               />
             ))}
       </div>

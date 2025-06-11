@@ -11,6 +11,8 @@ type SendFeedbackProps = {
   comment?: string;
   feedbackId?: string;
   isExplicit: boolean;
+  conversation?: unknown[];
+  documents?: unknown[];
 };
 
 type FeedbackResponse = {
@@ -26,6 +28,8 @@ export const sendFeedback = async ({
   comment,
   feedbackId,
   isExplicit = true,
+  conversation,
+  documents,
 }: SendFeedbackProps) => {
   const feedback_id = feedbackId ?? uuidv4();
   const response = await fetch(apiBaseUrl + "/feedback", {
@@ -40,6 +44,8 @@ export const sendFeedback = async ({
       value,
       feedback_id,
       comment,
+      conversation,
+      documents,
       source_info: {
         is_explicit: isExplicit,
       },
