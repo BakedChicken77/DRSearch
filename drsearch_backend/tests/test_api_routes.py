@@ -62,6 +62,9 @@ def test_feedback_logged(tmp_path, monkeypatch):
     entry = next(item for item in lines if item.get("message") == "feedback")
     assert entry["thumb"] == "up"
     assert entry["comment"] == "text"
+    # feedback should not appear in the general backend log
+    general_lines = (tmp_path / "drsearch_backend_log.jsonl").read_text().splitlines()
+    assert not any(json.loads(l).get("message") == "feedback" for l in general_lines)
 
 
 def test_get_trace_not_implemented(fastapi_client: TestClient):

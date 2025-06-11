@@ -24,6 +24,13 @@ _listener: QueueListener | None = None
 _blob_task: asyncio.Task | None = None
 
 
+class ExcludeFeedbackFilter(logging.Filter):
+    """Filter out records from the 'feedback' logger."""
+
+    def filter(self, record: logging.LogRecord) -> bool:  # noqa: D401 - simple filter
+        return not record.name.startswith("feedback")
+
+
 def _get_formatter() -> logging.Formatter:
     return jsonlogger.JsonFormatter()
 
@@ -41,6 +48,7 @@ def _setup_handlers(settings: LoggingSettings) -> QueueListener:
     )
     backend_handler.setLevel(getattr(logging, settings.log_level.upper(), logging.INFO))
     backend_handler.setFormatter(formatter)
+    backend_handler.addFilter(ExcludeFeedbackFilter())
     handlers.append(backend_handler)
 
     # Feedback log file
