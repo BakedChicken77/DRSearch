@@ -78,3 +78,17 @@ test("omits comment from request body when not provided", async () => {
   const body = JSON.parse((fetch as jest.Mock).mock.calls[0][1].body);
   expect(body).not.toHaveProperty("comment");
 });
+
+test("adds authorization header when token provided", async () => {
+  (fetch as jest.Mock).mockResolvedValue({
+    json: () => Promise.resolve({ code: 200, result: "ok" }),
+  });
+  await sendFeedback({
+    key: "k",
+    runId: "r",
+    accessToken: "abc",
+    isExplicit: true,
+  });
+  const headers = (fetch as jest.Mock).mock.calls[0][1].headers;
+  expect(headers.Authorization).toBe("Bearer abc");
+});

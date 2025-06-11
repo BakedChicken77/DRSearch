@@ -16,6 +16,8 @@ class Feedback(BaseModel):
     score: Union[float, int, bool, None] = None
     feedback_id: Optional[UUID] = None
     comment: Optional[str] = None
+    conversation: Optional[list] = None
+    documents: Optional[list[str]] = None
 
 
 class FeedbackUpdate(BaseModel):

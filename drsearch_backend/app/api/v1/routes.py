@@ -28,6 +28,23 @@ from app.models import (
 )
 from ...core.logging import logging
 from app.warmup import INDEX_STATUS
+import json
+
+FEEDBACK_DIR = Path(__file__).resolve().parents[3] / "user_feedback"
+FEEDBACK_PATH = FEEDBACK_DIR / "feedback.json"
+
+
+def _store_feedback(entry: dict) -> None:
+    """Append feedback entry to :data:`FEEDBACK_PATH`."""
+    FEEDBACK_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        existing = json.loads(FEEDBACK_PATH.read_text()) if FEEDBACK_PATH.exists() else []
+        if not isinstance(existing, list):
+            existing = []
+    except Exception:  # pragma: no cover - corrupted file
+        existing = []
+    existing.append(entry)
+    FEEDBACK_PATH.write_text(json.dumps(existing, indent=2, default=str))
 
 logger = logging.getLogger(__name__)
 
@@ -78,14 +95,18 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     @router.post("/feedback", status_code=200, response_model=StandardResponse)
     async def create_feedback(body: Feedback) -> StandardResponse:  # noqa: D401
         # TODO: integrate LangSmith client when available
-        logger.info("Feedback received", extra=body.dict())
+        data = body.dict()
+        data["thumb"] = "up" if body.score and float(body.score) > 0 else "down"
+        _store_feedback(data)
+        logger.info("Feedback stored")
         return StandardResponse(result="posted feedback successfully")
 
     @router.patch("/feedback", status_code=200, response_model=StandardResponse)
     async def patch_feedback(body: FeedbackUpdate) -> StandardResponse:  # noqa: D401
         if body.feedback_id is None:
             raise HTTPException(status_code=400, detail="Missing feedback_id")
-        logger.info("Feedback patched", extra=body.dict())
+        _store_feedback({"patch": body.dict()})
+        logger.info("Feedback patched")
         return StandardResponse(result="patched feedback successfully")
 
     # ---- get‑trace (stub) ---------------------------------------------------

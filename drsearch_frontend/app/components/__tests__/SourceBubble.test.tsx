@@ -1,13 +1,28 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { SourceBubble } from "../SourceBubble";
 import { sendFeedback } from "../../utils/sendFeedback";
+import { SessionProvider, useSession } from "next-auth/react";
 
 jest.mock("../../utils/sendFeedback");
+jest.mock("next-auth/react", () => ({
+  __esModule: true,
+  SessionProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  useSession: jest.fn(),
+}));
 
 const source = { url: "http://example.com", title: "Example" };
 
+const renderWithSession = (ui: React.ReactElement) =>
+  render(<SessionProvider session={null}>{ui}</SessionProvider>);
+
+beforeEach(() => {
+  (useSession as jest.Mock).mockReturnValue({ data: { accessToken: "t" } });
+});
+
 test("renders title", () => {
-  render(
+  renderWithSession(
     <SourceBubble
       source={source}
       highlighted={false}
@@ -21,7 +36,7 @@ test("renders title", () => {
 test("calls handlers on hover", () => {
   const enter = jest.fn();
   const leave = jest.fn();
-  render(
+  renderWithSession(
     <SourceBubble
       source={source}
       highlighted={false}
@@ -38,7 +53,7 @@ test("calls handlers on hover", () => {
 
 test("sends feedback on click", async () => {
   (sendFeedback as jest.Mock).mockResolvedValue({});
-  render(
+  renderWithSession(
     <SourceBubble
       source={source}
       highlighted={false}
@@ -54,13 +69,14 @@ test("sends feedback on click", async () => {
     runId: "123",
     value: source.url,
     isExplicit: false,
+    accessToken: "t",
   });
 });
 
 test("logs opened url after click", async () => {
   (sendFeedback as jest.Mock).mockResolvedValue({});
   const logSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-  render(
+  renderWithSession(
     <SourceBubble
       source={source}
       highlighted={false}

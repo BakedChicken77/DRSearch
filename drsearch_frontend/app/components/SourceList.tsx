@@ -2,6 +2,7 @@ import { VStack, Link } from "@chakra-ui/react";
 import { Source } from "./SourceBubble";
 import { sendFeedback } from "../utils/sendFeedback";
 import { convertToHttpUrlIfNeeded } from "../utils/urlUtils";
+import { useSession } from "next-auth/react";
 
 export function SourceList({
   sources,
@@ -16,6 +17,8 @@ export function SourceList({
   onMouseLeave: () => void;
   runId?: string;
 }) {
+  const { data: session } = useSession();
+  const accessToken = session?.accessToken as string | undefined;
   return (
     <VStack align="start" spacing={1}>
       {sources.map((source, index) => {
@@ -43,6 +46,7 @@ export function SourceList({
                   key: "user_click",
                   runId,
                   value: fileUrl,
+                  accessToken,
                   isExplicit: false,
                 });
               }

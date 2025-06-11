@@ -20,6 +20,14 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverBody,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody as ChakraModalBody,
+  ModalCloseButton,
+  Textarea,
 } from "@chakra-ui/react";
 import { sendFeedback } from "../utils/sendFeedback";
 import { apiBaseUrl } from "../utils/constants";
@@ -162,6 +170,7 @@ export function ChatMessageBubble(props: {
   aiEmoji?: string;
   isMostRecent: boolean;
   messageCompleted: boolean;
+  conversation: Message[];
 }) {
   const { role, content, runId } = props.message;
   console.log("Rendering ChatMessageBubble with props:", props);
@@ -175,6 +184,8 @@ export function ChatMessageBubble(props: {
   const [feedbackColor, setFeedbackColor] = useState("");
   const upButtonRef = useRef(null);
   const downButtonRef = useRef(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pendingScore, setPendingScore] = useState<number | null>(null);
 
   const { data: session } = useSession(); // Access the session data
   const accessToken = session?.accessToken; // Get the access token from session
@@ -215,6 +226,12 @@ export function ChatMessageBubble(props: {
         key,
         feedbackId: feedback?.feedback_id,
         comment,
+        conversation: props.conversation.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
+        documents: props.message.sources?.map((s) => s.url) ?? [],
+        accessToken,
         isExplicit: true,
       });
       if (data.code === 200) {
@@ -389,59 +406,93 @@ export function ChatMessageBubble(props: {
       {props.message.role !== "user" &&
         props.isMostRecent &&
         props.messageCompleted && (
-          <HStack spacing={2}>
-            <Button
-              ref={upButtonRef}
-              size="sm"
-              variant="outline" /* istanbul ignore next */
-              colorScheme={feedback === null ? "green" : "gray"}
-              onClick={() => {
-                if (feedback === null && props.message.runId) {
-                  sendUserFeedback(1, "user_score");
-                  animateButton("upButton");
-                  setFeedbackColor("border-4 border-green-300");
-                } else {
-                  /* istanbul ignore next */
-                  toast.error("You have already provided your feedback.");
-                }
-              }}
-            >
-              👍
-            </Button>
-            <Button
-              ref={downButtonRef}
-              size="sm"
-              variant="outline" /* istanbul ignore next */
-              colorScheme={feedback === null ? "red" : "gray"}
-              onClick={() => {
-                if (feedback === null && props.message.runId) {
-                  sendUserFeedback(0, "user_score");
-                  animateButton("downButton");
-                  setFeedbackColor("border-4 border-red-300");
-                } else {
-                  /* istanbul ignore next */
-                  toast.error("You have already provided your feedback.");
-                }
-              }}
-            >
-              👎
-            </Button>
-            <Spacer />
-            <Button
-              size="sm"
-              variant="outline" /* istanbul ignore next */
-              colorScheme={runId === null ? "black" : "black"}
-              onClick={(e) => {
-                e.preventDefault();
-                viewTrace();
-              }}
-              isLoading={traceIsLoading}
-              loadingText="🔄"
-              color="black"
-            >
-              🚀🚀 View trace
-            </Button>
-          </HStack>
+          <>
+            <HStack spacing={2}>
+              <Button
+                ref={upButtonRef}
+                size="sm"
+                variant="outline" /* istanbul ignore next */
+                colorScheme={feedback === null ? "green" : "gray"}
+                onClick={() => {
+                  if (feedback === null && props.message.runId) {
+                    setPendingScore(1);
+                    setIsModalOpen(true);
+                    setFeedbackColor("border-4 border-green-300");
+                  } else {
+                    /* istanbul ignore next */
+                    toast.error("You have already provided your feedback.");
+                  }
+                }}
+              >
+                👍
+              </Button>
+              <Button
+                ref={downButtonRef}
+                size="sm"
+                variant="outline" /* istanbul ignore next */
+                colorScheme={feedback === null ? "red" : "gray"}
+                onClick={() => {
+                  if (feedback === null && props.message.runId) {
+                    setPendingScore(0);
+                    setIsModalOpen(true);
+                    setFeedbackColor("border-4 border-red-300");
+                  } else {
+                    /* istanbul ignore next */
+                    toast.error("You have already provided your feedback.");
+                  }
+                }}
+              >
+                👎
+              </Button>
+              <Spacer />
+              <Button
+                size="sm"
+                variant="outline" /* istanbul ignore next */
+                colorScheme={runId === null ? "black" : "black"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  viewTrace();
+                }}
+                isLoading={traceIsLoading}
+                loadingText="🔄"
+                color="black"
+              >
+                🚀🚀 View trace
+              </Button>
+            </HStack>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Provide Feedback</ModalHeader>
+                <ModalCloseButton />
+                <ChakraModalBody>
+                  <Textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Enter your feedback"
+                  />
+                </ChakraModalBody>
+                <ModalFooter>
+                  <Button
+                    colorScheme="blue"
+                    mr={3}
+                    onClick={async () => {
+                      if (pendingScore !== null) {
+                        await sendUserFeedback(pendingScore, "user_score");
+                        animateButton(
+                          pendingScore === 1 ? "upButton" : "downButton",
+                        );
+                        setIsModalOpen(false);
+                      }
+                    }}
+                    isLoading={isLoading}
+                  >
+                    Send
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </>
         )}
 
       {!isUser && <Divider mt={4} mb={4} />}
