@@ -1,4 +1,3 @@
-
 # file: app/__init__.py
 
 """Application package initialisation."""
@@ -7,6 +6,7 @@ from fastapi import FastAPI
 
 from .core.config import Settings, get_settings
 from .core.logging import configure_logging
+from .core.logging_middleware import LoggingMiddleware
 from .auth.middleware import AuthMiddleware
 from .api.v1.routes import build_router
 from .warmup import warm_up_indexes
@@ -36,6 +36,7 @@ def create_app() -> FastAPI:
 
     # ------------------- middleware -------------------
     app.add_middleware(AuthMiddleware, settings=settings)
+    app.add_middleware(LoggingMiddleware)
 
     # -------------------- routers --------------------
     app.include_router(build_router(settings=settings))

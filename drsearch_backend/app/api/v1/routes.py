@@ -16,7 +16,7 @@ from langserve import add_routes
 from ...core.config import Settings, get_settings
 from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for side-effects
 from app.auth import jwt  # triggers cache warming on app-start
-from app.chain.api import answer_chain 
+from app.chain.api import answer_chain
 from app.models import (
     ChatRequest,
     Feedback,
@@ -26,25 +26,15 @@ from app.models import (
     StandardResponse,
     TraceRequest,
 )
-from ...core.logging import logging
 from app.warmup import INDEX_STATUS
 import json
 
-FEEDBACK_DIR = Path(__file__).resolve().parents[3] / "user_feedback"
-FEEDBACK_PATH = FEEDBACK_DIR / "feedback.json"
+feedback_logger = logging.getLogger("feedback")
 
 
 def _store_feedback(entry: dict) -> None:
-    """Append feedback entry to :data:`FEEDBACK_PATH`."""
-    FEEDBACK_DIR.mkdir(parents=True, exist_ok=True)
-    try:
-        existing = json.loads(FEEDBACK_PATH.read_text()) if FEEDBACK_PATH.exists() else []
-        if not isinstance(existing, list):
-            existing = []
-    except Exception:  # pragma: no cover - corrupted file
-        existing = []
-    existing.append(entry)
-    FEEDBACK_PATH.write_text(json.dumps(existing, indent=2, default=str))
+    feedback_logger.info("feedback", extra=entry)
+
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +52,7 @@ async def _read_index_options() -> list:  # pragma: no cover – pure I/O
 
 
 # ---------- router factory ----------
+
 
 def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     router = APIRouter()
@@ -81,15 +72,15 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
         try:
             raw_opts = await _read_index_options()
             opts = [
-                IndexOption(
-                    **o, initialized=INDEX_STATUS.get(o["name"], False)
-                )
+                IndexOption(**o, initialized=INDEX_STATUS.get(o["name"], False))
                 for o in raw_opts
             ]
             return IndexOptionsResponse(result=opts)
         except Exception as exc:  # pragma: no cover – catastrophic
             logger.error("Unable to read index options", exc_info=exc)
-            raise HTTPException(status_code=500, detail="Unable to read index options") from exc
+            raise HTTPException(
+                status_code=500, detail="Unable to read index options"
+            ) from exc
 
     # ---- feedback endpoints -------------------------------------------------
     @router.post("/feedback", status_code=200, response_model=StandardResponse)
@@ -111,7 +102,9 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
 
     # ---- get‑trace (stub) ---------------------------------------------------
     @router.post("/get_trace")
-    async def get_trace(_: TraceRequest) -> Response:  # noqa: D401 – not yet implemented
+    async def get_trace(
+        _: TraceRequest,
+    ) -> Response:  # noqa: D401 – not yet implemented
         raise HTTPException(status_code=501, detail="Trace sharing not implemented")
 
     # ---- file download proxy -----------------------------------------------
@@ -121,8 +114,12 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
         unc_path = os.path.normpath(os.path.join(BASE_DIR, decoded))  # Normalize path
 
         if not unc_path.startswith(str(BASE_DIR)):
-            logger.warning("Attempted access to unauthorized path", extra={"path": unc_path})
-            raise HTTPException(status_code=403, detail="Access to this file is forbidden")
+            logger.warning(
+                "Attempted access to unauthorized path", extra={"path": unc_path}
+            )
+            raise HTTPException(
+                status_code=403, detail="Access to this file is forbidden"
+            )
 
         if not os.path.exists(unc_path):
             logger.info("File not found", extra={"path": unc_path})
@@ -138,7 +135,9 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
             path=unc_path,
             media_type=media_type,
             filename=os.path.basename(unc_path),
-            headers={"Content-Disposition": f'inline; filename="{os.path.basename(unc_path)}"'},
+            headers={
+                "Content-Disposition": f'inline; filename="{os.path.basename(unc_path)}"'
+            },
         )
 
     return router

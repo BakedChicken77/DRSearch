@@ -38,6 +38,17 @@ Use this section verbatim (or excerpt as needed) in project documentation.
 
 No other environment variables are touched by auth.
 
+### Logging configuration
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `LOG_OUTPUT_MODE` | `local`, `blob`, or `both` to control log destination | `local` |
+| `LOG_LEVEL` | Minimum log level | `INFO` |
+| `LOG_FILE_MAX_MB` | Max size of a log file before rotation | `20` |
+| `LOG_BACKUP_COUNT` | Number of rotated files to keep | `10` |
+| `LOG_TO_BLOB_CONTAINER` | Azure container for uploaded logs | `drsearch-logs` |
+| `BLOB_UPLOAD_INTERVAL_SEC` | Interval for pushing logs to Azure | `300` |
+
 ---
 
 ## 3. Startup sequence
