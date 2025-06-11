@@ -1,0 +1,8 @@
+{
+  "columns": [
+    "filename",
+    "document",
+    "file_path",
+    "text_as_html"
+  ]
+}
