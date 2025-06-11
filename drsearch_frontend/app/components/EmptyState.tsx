@@ -72,7 +72,12 @@ export function EmptyState(props: {
             width="100%"
           >
             {indexOptions?.map((opt) => (
-              <option key={opt.name} value={opt.name}>
+              <option
+                key={opt.name}
+                value={opt.name}
+                disabled={!opt.initialized}
+                className={!opt.initialized ? "text-gray-400" : ""}
+              >
                 {opt.display_name}
               </option>
             ))}

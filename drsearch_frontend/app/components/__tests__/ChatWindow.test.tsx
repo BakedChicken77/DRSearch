@@ -56,7 +56,12 @@ jest.mock("@microsoft/fetch-event-source", () => ({
 
 test("shows options and sends initial question", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "idx", display_name: "Index", example_questions: ["q1"] },
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: ["q1"],
+      initialized: true,
+    },
   ]);
   const mockSession = { accessToken: "token" } as any;
   render(
@@ -84,6 +89,25 @@ test("send button disabled without index", async () => {
   expect(screen.getByLabelText("Send")).toBeDisabled();
 });
 
+test("uninitialized index option disabled", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: [],
+      initialized: false,
+    },
+  ]);
+  const mockSession = { accessToken: "token" } as any;
+  render(
+    <SessionProvider session={mockSession}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  const opt = await screen.findByRole("option", { name: "Index" });
+  expect(opt).toBeDisabled();
+});
+
 test("does not send message when index not selected", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([]);
   const mockSession = { accessToken: "token" } as any;
@@ -100,7 +124,12 @@ test("does not send message when index not selected", async () => {
 
 test("sends message and processes stream", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "idx", display_name: "Index", example_questions: ["q"] },
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: ["q"],
+      initialized: true,
+    },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
@@ -125,8 +154,18 @@ test("sends message and processes stream", async () => {
 
 test("changing index resets chat", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "idx", display_name: "Index", example_questions: ["q"] },
-    { name: "idx2", display_name: "Other", example_questions: ["q"] },
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: ["q"],
+      initialized: true,
+    },
+    {
+      name: "idx2",
+      display_name: "Other",
+      example_questions: ["q"],
+      initialized: true,
+    },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
@@ -153,8 +192,8 @@ test("changing index resets chat", async () => {
 
 test("index change clears messages", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "a", display_name: "A", example_questions: [] },
-    { name: "b", display_name: "B", example_questions: [] },
+    { name: "a", display_name: "A", example_questions: [], initialized: true },
+    { name: "b", display_name: "B", example_questions: [], initialized: true },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
@@ -189,7 +228,12 @@ test("index change clears messages", async () => {
 
 test("new chat button clears messages but keeps index", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "idx", display_name: "Index", example_questions: ["q1"] },
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: ["q1"],
+      initialized: true,
+    },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
@@ -231,7 +275,12 @@ test("shows loading state when session loading", () => {
 
 test("renders highlighted markdown and updates message", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "idx", display_name: "Index", example_questions: [] },
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: [],
+      initialized: true,
+    },
   ]);
 
   const highlightSpy = jest.spyOn(hljs, "highlight");
@@ -283,7 +332,12 @@ test("renders highlighted markdown and updates message", async () => {
 
 test("enter vs shift+enter", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "idx", display_name: "Index", example_questions: [] },
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: [],
+      initialized: true,
+    },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({ event: "end" });

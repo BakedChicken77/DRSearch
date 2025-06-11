@@ -9,6 +9,7 @@ from .core.config import Settings, get_settings
 from .core.logging import configure_logging
 from .auth.middleware import AuthMiddleware
 from .api.v1.routes import build_router
+from .warmup import warm_up_indexes
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -38,6 +39,10 @@ def create_app() -> FastAPI:
 
     # -------------------- routers --------------------
     app.include_router(build_router(settings=settings))
+
+    @app.on_event("startup")
+    async def warm_up() -> None:
+        await warm_up_indexes()
 
     return app
 
