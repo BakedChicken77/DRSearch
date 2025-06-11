@@ -285,40 +285,6 @@ class AzureBlobStorageAsync:
             print(f"Failed to download blob '{blob_name}' as base64: {e}")
             return ""
 
-    async def download_blob_text(
-        self, container_name: str, blob_name: str, encoding: str = "utf-8"
-    ) -> str:
-        try:
-            blob_client = self.blob_service_client.get_blob_client(
-                container=container_name, blob=blob_name
-            )
-            stream = await blob_client.download_blob()
-            data = await stream.readall()
-            return data.decode(encoding)
-        except ResourceNotFoundError:
-            print(f"Blob '{blob_name}' not found in container '{container_name}'.")
-            return ""
-        except HttpResponseError as e:
-            print(
-                f"Failed to download blob '{blob_name}' from container '{container_name}': {e}"
-            )
-            return ""
-
-    async def upload_blob_bytes(
-        self,
-        container_name: str,
-        blob_name: str,
-        data: bytes,
-        overwrite: bool = True,
-    ) -> None:
-        try:
-            blob_client = self.blob_service_client.get_blob_client(
-                container=container_name, blob=blob_name
-            )
-            await blob_client.upload_blob(data, overwrite=overwrite)
-        except HttpResponseError as e:
-            print(f"Failed to upload blob '{blob_name}': {e}")
-
     async def export_elements_images_to_html(
         self,
         elements: List[Element],
