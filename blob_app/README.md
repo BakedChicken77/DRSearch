@@ -17,10 +17,10 @@
 
 1. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   poetry install
    ```
 2. Set the `AZURE_BLOB_CONNECTION_STRING` environment variable.
 3. Run the app:
    ```bash
-   streamlit run app.py
+   poetry run streamlit run app.py
    ```
