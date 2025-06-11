@@ -6,13 +6,16 @@ export interface IndexOption {
   name: string;
   display_name: string;
   example_questions: string[];
+  initialized: boolean;
 }
 
 /**
  * Fetch dropdown choices from the backend.
  * Adds the bearer token when AUTH is enabled.
  */
-export async function fetchIndexOptions(token?: string): Promise<IndexOption[]> {
+export async function fetchIndexOptions(
+  token?: string,
+): Promise<IndexOption[]> {
   const headers: Record<string, string> = {};
   if (token) headers["Authorization"] = `Bearer ${token}`;
 

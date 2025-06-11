@@ -20,6 +20,7 @@ class IndexOption(BaseModel):
     name: str
     display_name: Optional[str] = None
     example_questions: Optional[List[str]] = None
+    initialized: bool = False
 
 
 class IndexOptionsResponse(BaseModel):

@@ -6,6 +6,7 @@ const options = [
     name: "index1",
     display_name: "Index 1",
     example_questions: ["q1", "q2", "q3", "q4"],
+    initialized: true,
   },
 ];
 
@@ -62,4 +63,24 @@ test("renders all example options and handles hover and click", () => {
     expect(onChoice).toHaveBeenCalledWith(q);
   });
   expect(onChoice).toHaveBeenCalledTimes(options[0].example_questions.length);
+});
+
+test("uninitialized options are disabled", () => {
+  render(
+    <EmptyState
+      onChoice={() => {}}
+      selectedIndexName=""
+      setSelectedIndexName={() => {}}
+      indexOptions={[
+        {
+          name: "i",
+          display_name: "I",
+          example_questions: [],
+          initialized: false,
+        },
+      ]}
+      loadingOptions={false}
+    />,
+  );
+  expect(screen.getByRole("option", { name: "I" })).toBeDisabled();
 });
