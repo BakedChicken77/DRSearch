@@ -3,6 +3,7 @@ import pathlib
 import os
 import importlib
 from fastapi.testclient import TestClient
+import types
 
 async def _ok():
     return [{"name": "x"}]
