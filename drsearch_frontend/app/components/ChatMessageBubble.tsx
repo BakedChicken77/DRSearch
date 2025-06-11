@@ -231,6 +231,7 @@ export function ChatMessageBubble(props: {
           content: m.content,
         })),
         documents: props.message.sources?.map((s) => s.url) ?? [],
+        accessToken,
         isExplicit: true,
       });
       if (data.code === 200) {

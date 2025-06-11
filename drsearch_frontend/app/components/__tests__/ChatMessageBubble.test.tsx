@@ -128,6 +128,7 @@ describe("ChatMessageBubble component", () => {
           score: 1,
           runId: "r",
           key: "user_score",
+          accessToken: "t",
         }),
       );
     });
@@ -155,7 +156,16 @@ describe("ChatMessageBubble component", () => {
     const buttons = screen.getAllByRole("button");
     fireEvent.click(buttons[1]);
     fireEvent.click(screen.getByText("Send"));
-    await waitFor(() => expect(sendFeedback).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(sendFeedback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          score: 0,
+          runId: "r",
+          key: "user_score",
+          accessToken: "t",
+        }),
+      ),
+    );
   });
 
   test("does not send feedback when runId missing", () => {

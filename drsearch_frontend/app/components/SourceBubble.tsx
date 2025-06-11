@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Card, CardBody, Heading } from "@chakra-ui/react";
 import { sendFeedback } from "../utils/sendFeedback";
 import { convertToHttpUrlIfNeeded } from "../utils/urlUtils";
+import { useSession } from "next-auth/react";
 
 export type Source = {
   url: string | undefined; // Make url optional
@@ -24,6 +25,9 @@ export function SourceBubble({
   runId?: string;
 }) {
   console.log("Source object:", source);
+
+  const { data: session } = useSession();
+  const accessToken = session?.accessToken as string | undefined;
 
   const fileUrl = source.url ? convertToHttpUrlIfNeeded(source.url) : "";
   const filetitle = source.title || "";
@@ -52,6 +56,7 @@ export function SourceBubble({
             key: "user_click",
             runId,
             value: fileUrl,
+            accessToken,
             isExplicit: false,
           });
           console.log("Feedback sent for runId:", runId);

@@ -13,6 +13,7 @@ type SendFeedbackProps = {
   isExplicit: boolean;
   conversation?: unknown[];
   documents?: unknown[];
+  accessToken?: string;
 };
 
 type FeedbackResponse = {
@@ -30,12 +31,14 @@ export const sendFeedback = async ({
   isExplicit = true,
   conversation,
   documents,
+  accessToken,
 }: SendFeedbackProps) => {
   const feedback_id = feedbackId ?? uuidv4();
   const response = await fetch(apiBaseUrl + "/feedback", {
     method: feedbackId ? "PATCH" : "POST",
     headers: {
       "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
     },
     body: JSON.stringify({
       score,
