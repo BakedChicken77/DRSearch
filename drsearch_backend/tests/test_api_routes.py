@@ -10,9 +10,13 @@ async def _ok():
 
 def test_index_options_happy_path(fastapi_client: TestClient, monkeypatch):
     monkeypatch.setattr("app.api.v1.routes._read_index_options", _ok)
+    monkeypatch.setattr("app.warmup.INDEX_STATUS", {"x": True})
+    monkeypatch.setattr("app.api.v1.routes.INDEX_STATUS", {"x": True})
     r = fastapi_client.get("/index-options")
     assert r.status_code == 200
-    assert r.json()["result"][0]["name"] == "x"
+    data = r.json()["result"][0]
+    assert data["name"] == "x"
+    assert data["initialized"] is True
 
 
 def test_feedback_create_and_patch(fastapi_client: TestClient):
