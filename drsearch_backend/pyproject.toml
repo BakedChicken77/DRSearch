@@ -49,7 +49,10 @@ dev = [
 ]
 
 [tool.poetry]
-packages = [{ include = "app" }]
+packages = [
+  { include = "app" },
+  { include = "drsearch_backend" }
+]
 
 [build-system]
 requires = ["poetry-core"]
