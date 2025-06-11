@@ -2,17 +2,9 @@
 name = "blob_app"
 version = "0.1.0"
 description = "Azure Blob Storage explorer"
-authors = [ { name = "S", email = "private@email.com" } ]
+authors = [
+  { name = "S", email = "private@email.com" }
+]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.dependencies]
-streamlit = "^1.45.1"
-pandas = "^2.3.0"
-azure-storage-blob = "^12.19.0"
-truststore = "^0.10.1"
