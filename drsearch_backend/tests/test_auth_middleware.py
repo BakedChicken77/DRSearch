@@ -5,6 +5,11 @@ from starlette.requests import Request
 import requests
 import types
 import pytest
+import os
+
+os.environ["LOG_OUTPUT_MODE"] = "local"
+os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
+
 from app.auth.jwt import TokenValidationError
 
 
@@ -19,9 +24,10 @@ def _base_app():  # returns 200 /json
     #     auth_enabled=False, whitelist=set()
     # )), endpoint  # noqa: E501
     app = Starlette()
-    app.add_middleware(AuthMiddleware, settings=types.SimpleNamespace(
-        auth_enabled=False, whitelist=set()
-    ))
+    app.add_middleware(
+        AuthMiddleware,
+        settings=types.SimpleNamespace(auth_enabled=False, whitelist=set()),
+    )
     return app, endpoint
 
 
@@ -34,8 +40,7 @@ def test_middleware_pass_through_when_disabled():
 
 def test_middleware_unauthenticated(monkeypatch):
     # ── 1. stub out token-decoder so we never verify real JWTs ───────────────
-    monkeypatch.setattr("app.auth.middleware.decode_bearer",
-                        lambda *_a, **_kw: {})
+    monkeypatch.setattr("app.auth.middleware.decode_bearer", lambda *_a, **_kw: {})
 
     # ── 2. stub the OIDC metadata HTTP call that AuthMiddleware makes ───────
     monkeypatch.setattr(
@@ -68,7 +73,7 @@ def test_middleware_unauthenticated(monkeypatch):
 
     # ── 4. exercise the middleware branches ────────────────────────────────
     with TestClient(app) as c:
-        assert c.get("/").status_code == 401           # no token
+        assert c.get("/").status_code == 401  # no token
         assert c.get("/", headers={"Authorization": "Bearer abc"}).status_code == 200
 
 
@@ -79,24 +84,27 @@ def test_oidc_fetch_fails(monkeypatch):
     monkeypatch.setattr("requests.get", raise_error)
 
     settings = types.SimpleNamespace(
-        auth_enabled=True,
-        whitelist=set(),
-        tenant_id="dummy",
-        client_id="client"
+        auth_enabled=True, whitelist=set(), tenant_id="dummy", client_id="client"
     )
 
     with pytest.raises(RuntimeError, match="Unable to start"):
         AuthMiddleware(app=lambda *_: None, settings=settings)
 
+
 def test_whitelisted_path(monkeypatch):
     monkeypatch.setattr("app.auth.middleware.decode_bearer", lambda *_a, **_kw: {})
-    monkeypatch.setattr("requests.get", lambda *_a, **_kw: types.SimpleNamespace(json=lambda: {"issuer": "i", "jwks_uri": "u"}))
+    monkeypatch.setattr(
+        "requests.get",
+        lambda *_a, **_kw: types.SimpleNamespace(
+            json=lambda: {"issuer": "i", "jwks_uri": "u"}
+        ),
+    )
 
     settings = types.SimpleNamespace(
         auth_enabled=True,
         whitelist={"/test-whitelist"},
         tenant_id="dummy",
-        client_id="client"
+        client_id="client",
     )
 
     app = Starlette()
@@ -112,15 +120,18 @@ def test_whitelisted_path(monkeypatch):
     assert r.status_code == 200
     assert r.json()["whitelisted"] is True
 
+
 def test_options_method_skips_auth(monkeypatch):
     monkeypatch.setattr("app.auth.middleware.decode_bearer", lambda *_a, **_kw: {})
-    monkeypatch.setattr("requests.get", lambda *_a, **_kw: types.SimpleNamespace(json=lambda: {"issuer": "i", "jwks_uri": "u"}))
+    monkeypatch.setattr(
+        "requests.get",
+        lambda *_a, **_kw: types.SimpleNamespace(
+            json=lambda: {"issuer": "i", "jwks_uri": "u"}
+        ),
+    )
 
     settings = types.SimpleNamespace(
-        auth_enabled=True,
-        whitelist=set(),
-        tenant_id="dummy",
-        client_id="client"
+        auth_enabled=True, whitelist=set(), tenant_id="dummy", client_id="client"
     )
 
     app = Starlette()
@@ -142,13 +153,15 @@ def test_invalid_token_rejected(monkeypatch):
         raise TokenValidationError("bad signature")
 
     monkeypatch.setattr("app.auth.middleware.decode_bearer", raise_invalid_token)
-    monkeypatch.setattr("requests.get", lambda *_a, **_kw: types.SimpleNamespace(json=lambda: {"issuer": "i", "jwks_uri": "u"}))
+    monkeypatch.setattr(
+        "requests.get",
+        lambda *_a, **_kw: types.SimpleNamespace(
+            json=lambda: {"issuer": "i", "jwks_uri": "u"}
+        ),
+    )
 
     settings = types.SimpleNamespace(
-        auth_enabled=True,
-        whitelist=set(),
-        tenant_id="dummy",
-        client_id="client"
+        auth_enabled=True, whitelist=set(), tenant_id="dummy", client_id="client"
     )
 
     app = Starlette()

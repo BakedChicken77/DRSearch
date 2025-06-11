@@ -5,8 +5,10 @@ import importlib
 from fastapi.testclient import TestClient
 import types
 
+
 async def _ok():
     return [{"name": "x"}]
+
 
 def test_index_options_happy_path(fastapi_client: TestClient, monkeypatch):
     monkeypatch.setattr("app.api.v1.routes._read_index_options", _ok)
@@ -39,8 +41,10 @@ def test_feedback_logged(tmp_path, monkeypatch):
     monkeypatch.setenv("LOG_DIR", str(tmp_path))
     monkeypatch.setenv("LOG_OUTPUT_MODE", "local")
     from app import core as core_pkg
+
     importlib.reload(core_pkg.logging)
     from app import create_app
+
     client = TestClient(create_app())
     body = {
         "run_id": "11111111-1111-1111-1111-111111111111",
@@ -52,10 +56,15 @@ def test_feedback_logged(tmp_path, monkeypatch):
     }
     assert client.post("/feedback", json=body).status_code == 200
     core_pkg.logging.shutdown_logging()
-    lines = [json.loads(l) for l in (tmp_path / "info.jsonl").read_text().splitlines()]
+    lines = [
+        json.loads(l) for l in (tmp_path / "feedback.jsonl").read_text().splitlines()
+    ]
     entry = next(item for item in lines if item.get("message") == "feedback")
     assert entry["thumb"] == "up"
     assert entry["comment"] == "text"
+    # feedback should not appear in the general backend log
+    general_lines = (tmp_path / "drsearch_backend_log.jsonl").read_text().splitlines()
+    assert not any(json.loads(l).get("message") == "feedback" for l in general_lines)
 
 
 def test_get_trace_not_implemented(fastapi_client: TestClient):
@@ -89,19 +98,14 @@ def test_file_proxy_ok(fastapi_client: TestClient, monkeypatch, tmp_path):
 
 
 def test_patch_feedback_missing_id(fastapi_client):
-    body = {
-        "score": 1,
-        "comment": "missing id"
-    }
+    body = {"score": 1, "comment": "missing id"}
     r = fastapi_client.patch("/feedback", json=body)
     assert r.status_code == 400
     assert r.json()["detail"] == "Missing feedback_id"
 
+
 def test_patch_feedback_null_id(fastapi_client):
-    body = {
-        "feedback_id": None,
-        "score": 1
-    }
+    body = {"feedback_id": None, "score": 1}
     r = fastapi_client.patch("/feedback", json=body)
     assert r.status_code == 400
     assert r.json()["detail"] == "Missing feedback_id"

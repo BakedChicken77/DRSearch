@@ -2,6 +2,11 @@ import json
 import logging
 import asyncio
 from pathlib import Path
+import os
+
+os.environ["LOG_OUTPUT_MODE"] = "local"
+os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
+
 from fastapi.testclient import TestClient
 from app import create_app
 import importlib
@@ -16,7 +21,10 @@ def test_local_logging(tmp_path, monkeypatch):
     logger = logging.getLogger("test")
     logger.info("hello", extra={"foo": "bar"})
     core_pkg.logging.shutdown_logging()
-    lines = [json.loads(l) for l in (tmp_path / "info.jsonl").read_text().splitlines()]
+    lines = [
+        json.loads(l)
+        for l in (tmp_path / "drsearch_backend_log.jsonl").read_text().splitlines()
+    ]
     data = next(item for item in lines if item.get("message") == "hello")
     assert data["message"] == "hello"
     assert data["foo"] == "bar"
@@ -30,7 +38,10 @@ def test_logging_middleware(tmp_path, monkeypatch):
     client = TestClient(app)
     client.get("/index-options")
     core_pkg.logging.shutdown_logging()
-    lines = [json.loads(l) for l in (tmp_path / "info.jsonl").read_text().splitlines()]
+    lines = [
+        json.loads(l)
+        for l in (tmp_path / "drsearch_backend_log.jsonl").read_text().splitlines()
+    ]
     record = next(item for item in lines if item.get("path") == "/index-options")
     assert record["path"] == "/index-options"
     assert "latency" in record

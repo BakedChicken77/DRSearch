@@ -1,6 +1,10 @@
 import asyncio
+import os
 
 import pytest
+
+os.environ["LOG_OUTPUT_MODE"] = "local"
+os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
 
 from app import warmup
 
