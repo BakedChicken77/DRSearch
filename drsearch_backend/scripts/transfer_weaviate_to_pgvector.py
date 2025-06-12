@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from typing import Sequence
@@ -16,10 +17,35 @@ logger = logging.getLogger(__name__)
 
 _INDEX2TRANSFER = "SEPS"
 _PRE_DELETE_COLLECTION = True
-_WEAVIATE_URL="http://localhost:8080" #os.environ["WEAVIATE_URL"]
+_WEAVIATE_URL = "http://localhost:8080"  # os.environ["WEAVIATE_URL"]
+
+
+def _load_schema(schema_file: str) -> tuple[list[str], dict[str, dict]]:
+    """Load property names and config from a Weaviate schema JSON file."""
+    with open(schema_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    props = data.get("result", data.get("properties", []))
+    attrs: list[str] = []
+    config: dict[str, dict] = {}
+    for prop in props:
+        name = prop.get("name")
+        if not name:
+            continue
+        attrs.append(name)
+        config[name] = {
+            "data_type": prop.get("dataType"),
+            "index_filterable": prop.get("indexFilterable"),
+            "index_searchable": prop.get("indexSearchable"),
+        }
+    return attrs, config
+
 
 def _fetch_weaviate_docs(
-    client: weaviate.Client, index: str, text_key: str, attrs: Sequence[str], batch_size: int = 100
+    client: weaviate.Client,
+    index: str,
+    text_key: str,
+    attrs: Sequence[str],
+    batch_size: int = 100,
 ) -> list[dict]:
     """Fetch all matching documents (including embeddings) from Weaviate using pagination."""
     fields = [text_key, *attrs]
@@ -30,7 +56,9 @@ def _fetch_weaviate_docs(
         result = (
             client.query.get(index, fields)
             .with_additional(["id", "vector"])
-            .with_where({"path": ["use4RAG"], "operator": "Equal", "valueBoolean": True})
+            .with_where(
+                {"path": ["use4RAG"], "operator": "Equal", "valueBoolean": True}
+            )
             .with_limit(batch_size)
             .with_offset(offset)
             .do()
@@ -45,7 +73,11 @@ def _fetch_weaviate_docs(
 
 
 def _upload_docs(
-    store: PGVector, docs: list[dict], text_key: str, attrs: Sequence[str]
+    store: PGVector,
+    docs: list[dict],
+    text_key: str,
+    attrs: Sequence[str],
+    schema: dict[str, dict],
 ) -> None:
     """Upload precomputed embeddings and metadata into the pgvector store in one batch."""
     texts: list[str] = []
@@ -56,7 +88,9 @@ def _upload_docs(
     for doc in docs:
         texts.append(doc.get(text_key, ""))
         embeddings.append(doc["_additional"]["vector"])
-        metadatas.append({a: doc.get(a) for a in attrs})
+        meta = {a: doc.get(a) for a in attrs}
+        meta["_schema"] = schema
+        metadatas.append(meta)
         ids.append(doc["_additional"]["id"])
 
     store.add_embeddings(
@@ -70,9 +104,7 @@ def _upload_docs(
 def main() -> None:
     logging.basicConfig(level=logging.INFO)
 
-    index_name = os.getenv(
-        "INDEX_NAME", os.getenv("WEAVIATE_INDEX", _INDEX2TRANSFER)
-    )
+    index_name = os.getenv("INDEX_NAME", os.getenv("WEAVIATE_INDEX", _INDEX2TRANSFER))
     conn_str = os.environ["PGVECTOR_URL"]
     dimension = int(os.getenv("PGVECTOR_DIMENSION", "1536"))
 
@@ -85,12 +117,20 @@ def main() -> None:
         auth_client_secret=weaviate.AuthApiKey(os.environ["WEAVIATE_API_KEY"]),
     )
 
-    store = create_collection_if_missing(conn_str, index_name, dimension,pre_delete_collection=_PRE_DELETE_COLLECTION)
+    store = create_collection_if_missing(
+        conn_str,
+        index_name,
+        dimension,
+        pre_delete_collection=_PRE_DELETE_COLLECTION,
+    )
 
-    docs = _fetch_weaviate_docs(client, index_name, cfg["index_key"], cfg["attributes"])
+    schema_file = os.getenv("WEAVIATE_SCHEMA_FILE", "docs/weaviate_schema.json")
+    attrs, schema_cfg = _load_schema(schema_file)
+
+    docs = _fetch_weaviate_docs(client, index_name, cfg["index_key"], attrs)
     logger.info("Fetched %s documents from Weaviate", len(docs))
 
-    _upload_docs(store, docs, cfg["index_key"], cfg["attributes"])
+    _upload_docs(store, docs, cfg["index_key"], attrs, schema_cfg)
     logger.info("Transfer complete: %s documents uploaded", len(docs))
 
 
