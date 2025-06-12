@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_collection_if_missing(
-    conn_str: str, collection: str, dimension: int
+    conn_str: str, collection: str, dimension: int, pre_delete_collection: bool = False
 ) -> PGVector:
     """Create the pgvector tables/collection if they do not exist."""
     try:
@@ -24,6 +24,7 @@ def create_collection_if_missing(
             collection_name=collection,
             use_jsonb=True,
             create_extension=True,
+            pre_delete_collection=pre_delete_collection
         )
     except Exception as exc:  # pragma: no cover - thin wrapper
         logger.error("Failed to create collection: %s", exc)
