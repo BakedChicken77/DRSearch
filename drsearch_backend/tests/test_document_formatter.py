@@ -31,3 +31,17 @@ def test_formatter_deduplicates_and_adds_mapping(tmp_path, monkeypatch):
     # assert "\\\\share\\abc.pdf" in out
     # UNC path injected into metadata, not the xml string
     assert formatter._mapping["abc.pdf"] == "\\\\share\\abc.pdf"
+
+
+def test_formatter_prefers_html():
+    formatter = DocumentFormatter(PartNumberMapping(None))
+
+    docs = [
+        Document(page_content="plain", metadata={"filename": "a", "text_as_html": "<b>html</b>"}),
+        Document(page_content="other", metadata={"filename": "b"}),
+    ]
+
+    out = formatter(docs)
+
+    assert "<doc id='0' source='a'><b>html</b></doc>" in out
+    assert "<doc id='1' source='b'>other</doc>" in out
