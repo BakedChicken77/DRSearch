@@ -24,12 +24,33 @@ class PgVectorStore(VectorStore):
             collection_name=index_name,
         )
 
+    @staticmethod
+    def _convert_filter(where: dict[str, Any] | None) -> dict[str, Any] | None:
+        """Translate Weaviate-style filters to PGVector format."""
+        if not where:
+            return None
+
+        op = where.get("operator")
+        path = where.get("path")
+        if op == "Equal" and isinstance(path, list) and path:
+            field = path[0]
+            for key in (
+                "valueBoolean",
+                "valueText",
+                "valueString",
+                "valueInt",
+                "valueNumber",
+            ):
+                if key in where:
+                    return {field: {"$eq": where[key]}}
+        return where
+
     def as_retriever(self, search_kwargs: dict[str, Any]) -> BaseRetriever:
         """Return retriever while normalising filters and metadata output."""
 
         kw = dict(search_kwargs)
         if "where_filter" in kw:
-            kw["filter"] = kw.pop("where_filter")
+            kw["filter"] = self._convert_filter(kw.pop("where_filter"))
 
         base = self._store.as_retriever(search_kwargs=kw)
 
