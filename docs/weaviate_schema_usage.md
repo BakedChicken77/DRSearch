@@ -185,3 +185,17 @@ Lines 19‑32 of `app/vectorstores/weaviate_store.py` show how the `langchain` W
 
 - **Content field** – each class has either `page_content` or `text` as the `text_key` used when `WeaviateVectorStore` is instantiated.
 - **Metadata fields** – attributes listed for each class in `INDEX_CONFIG` are included in the schema so their values can be returned as metadata.
+
+## PGVector Mirroring
+
+The transfer utility `scripts/transfer_weaviate_to_pgvector.py` now loads
+`docs/weaviate_schema.json` to determine the full list of class properties.
+The property used for the text content is stored in the `document` column and
+is removed from the metadata payload. All property configurations (data type and
+searchability flags) are embedded in a `_schema` metadata entry so the PGVector
+copy mirrors Weaviate’s schema.
+
+During retrieval, `PgVectorStore` converts the `where_filter` parameter into the
+`filter` format used by the underlying vector store and strips any metadata
+fields that are not defined for the index. This aligns the PGVector retriever
+with the behaviour of its Weaviate counterpart.

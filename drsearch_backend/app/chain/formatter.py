@@ -35,6 +35,8 @@ class DocumentFormatter:
             filename = doc.metadata.get("filename", "Unknown part number")
             if self._mapping and filename in self._mapping:
                 doc.metadata["file_path"] = self._mapping[filename]
-            formatted.append(f"<doc id='{idx}' source='{filename}'>{doc.page_content}</doc>")
+
+            content = doc.metadata.get("text_as_html") or doc.page_content
+            formatted.append(f"<doc id='{idx}' source='{filename}'>{content}</doc>")
 
         return "\n".join(formatted)

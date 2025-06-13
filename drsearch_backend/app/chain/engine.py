@@ -145,9 +145,10 @@ class ChatEngine:
             retriever_chain = self._build_retriever_chain(
                 retriever, format_docs_fn
             ).with_config(run_name="FindDocs")
+            formatted_chain = retriever_chain | RunnableLambda(format_docs_fn)
             context_map = RunnableMap(
                 {
-                    "context": retriever_chain,
+                    "context": formatted_chain,
                     "question": itemgetter("question"),
                     "chat_history": itemgetter("chat_history"),
                 }
