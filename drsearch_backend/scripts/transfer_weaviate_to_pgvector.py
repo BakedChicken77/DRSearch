@@ -100,6 +100,8 @@ def _upload_docs(
         texts.append(doc.get(text_key, ""))
         embeddings.append(doc["_additional"]["vector"])
         meta = {a: doc.get(a) for a in attrs}
+        # ensure rag flag is present for PGVector filtering
+        meta["use4RAG"] = doc.get("use4RAG", True)
         meta["_schema"] = schema
         metadatas.append(meta)
         ids.append(doc["_additional"]["id"])
