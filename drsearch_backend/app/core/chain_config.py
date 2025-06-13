@@ -22,6 +22,8 @@ load_dotenv()
 
 #: Toggle RAG vs. plain-chatbot mode
 RAG_ON: bool = os.getenv("RAG_ON", "True").lower() == "true"
+#: Select processing pipeline ("classic" or "agent")
+RAG_MODE: str = os.getenv("RAG_PROCESSING_MODE", "classic").lower()
 
 #: Vector database backend to use ("weaviate", "pgvector", or "azure")
 _VECTOR_BACKEND: str = os.getenv("VECTOR_BACKEND", "weaviate").lower()

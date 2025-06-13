@@ -2,6 +2,11 @@
 
 This document describes in detail how the `app/chain` package orchestrates the Retrieval Augmented Generation (RAG) pipeline within the DRSearch backend. It summarises the components, data flow and execution sequence observed in the source code.
 
+The backend now supports **two processing modes** controlled by the environment variable `RAG_PROCESSING_MODE`:
+
+1. `classic` – the original chain of question decomposer, retriever and response synthesiser built with LangChain.
+2. `agent` – an OpenAI based RAG Search Agent. The agent replaces the decomposer and retriever with a tool-driven approach powered by the `openai-agents` library.
+
 ## Key Components
 
 - **ChatEngine (`engine.py`)** – Builds and configures LangChain runnable chains for answering user questions. It initialises the language model, optional retriever and formatting logic.
@@ -18,6 +23,7 @@ This document describes in detail how the `app/chain` package orchestrates the R
 
 1. **Engine Selection**
    - Calls to `get_answer_chain()` (via API or CLI) resolve an index name and desired number of retrieved documents. `_engine_for()` maintains a cache keyed by `(index_name, num_docs)` to reuse `ChatEngine` instances.
+   - When `RAG_PROCESSING_MODE=agent`, `_agent_cache` stores agent instances built with `build_agent_chain()`.
 
 2. **ChatEngine Initialisation**
    - On first use, `ChatEngine` loads index-specific settings from `INDEX_CONFIG`.
@@ -29,6 +35,7 @@ This document describes in detail how the `app/chain` package orchestrates the R
    - `RetrieverFactory.build()` obtains a retriever from the configured vector store. A simple boolean filter (`use4RAG == True`) is applied to exclude irrelevant documents.
    - The retriever is wrapped with `MultiQueryRetriever` using a question decomposer prompt from `INDEX_CONFIG`. This expands the user query into multiple search queries handled by the vector database.
    - `DocumentFormatter` is prepared to convert retrieved documents into `<doc/>` XML fragments. It deduplicates results and optionally reorders them for better context.
+   - In agent mode the retriever is exposed to the OpenAI agent as a tool allowing similarity, keyword or hybrid searches.
 
 4. **Chain Construction**
    - A `ChatPromptTemplate` with system, history and user message placeholders is created. The system prompt is chosen based on the index configuration or falls back to a chatbot-only prompt.

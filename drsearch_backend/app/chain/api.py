@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 from typing import Dict, Tuple
+
 from langchain.schema.runnable import Runnable, RunnableLambda
 
+from app.chain.agent_engine import build_agent_chain
 from app.chain.engine import ChatEngine
-from app.core.chain_config import _DEFAULT_INDEX, _NUMBER_OF_DOCS_RETRIEVED
+from app.core.chain_config import _DEFAULT_INDEX, _NUMBER_OF_DOCS_RETRIEVED, RAG_MODE
 
 _engine_cache: Dict[Tuple[str, int], ChatEngine] = {}
+_agent_cache: Dict[Tuple[str, int], Runnable] = {}
 
 
 def _engine_for(index_name: str, num_docs: int) -> ChatEngine:
@@ -23,9 +26,21 @@ def _engine_for(index_name: str, num_docs: int) -> ChatEngine:
     return _engine_cache[key]
 
 
-def get_answer_chain(index_name: str | None = None, num_docs: int = _NUMBER_OF_DOCS_RETRIEVED) -> Runnable:
+def get_answer_chain(
+    index_name: str | None = None, num_docs: int = _NUMBER_OF_DOCS_RETRIEVED
+) -> Runnable:
     """Return the langchain Runnable for the specified index (cached)."""
-    return _engine_for(index_name or _DEFAULT_INDEX, num_docs).answer_chain
+    idx = index_name or _DEFAULT_INDEX
+    if RAG_MODE == "agent":
+        key = (idx, num_docs)
+        if key not in _agent_cache:
+            from app.core import chain_config
+
+            chain_config._NUMBER_OF_DOCS_RETRIEVED = num_docs
+            _agent_cache[key] = build_agent_chain(idx)
+        return _agent_cache[key]
+
+    return _engine_for(idx, num_docs).answer_chain
 
 
 answer_chain: Runnable = RunnableLambda(
