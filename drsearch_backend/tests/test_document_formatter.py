@@ -1,4 +1,7 @@
 from langchain.schema import Document
+import os
+
+os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
 
 from app.chain.formatter import DocumentFormatter
 from app.chain.mapping import PartNumberMapping
@@ -31,3 +34,17 @@ def test_formatter_deduplicates_and_adds_mapping(tmp_path, monkeypatch):
     # assert "\\\\share\\abc.pdf" in out
     # UNC path injected into metadata, not the xml string
     assert formatter._mapping["abc.pdf"] == "\\\\share\\abc.pdf"
+
+
+def test_formatter_prefers_html(monkeypatch):
+    """HTML documents should be preferred when content is duplicated."""
+    monkeypatch.setattr("app.core.chain_config.RAG_ON", False)
+    formatter = DocumentFormatter(PartNumberMapping(None))
+    docs = [
+        Document(page_content="same", metadata={"filename": "doc.html"}),
+        Document(page_content="same", metadata={"filename": "doc.pdf"}),
+    ]
+
+    out = formatter(docs)
+
+    assert out.startswith("<doc id='0' source='doc.html'>")

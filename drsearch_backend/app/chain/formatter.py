@@ -9,7 +9,7 @@ from langchain_community.document_transformers import LongContextReorder
 from langchain.schema import Document
 
 from app.chain.mapping import PartNumberMapping
-from app.core.chain_config import RAG_ON
+from app.core import chain_config
 
 
 class DocumentFormatter:
@@ -17,11 +17,15 @@ class DocumentFormatter:
 
     def __init__(self, mapping: PartNumberMapping):
         self._mapping = mapping.data
-        self._reorder = LongContextReorder() if RAG_ON else None
+        self._reorder = LongContextReorder() if chain_config.RAG_ON else None
 
     def __call__(self, docs: Sequence[Document]) -> str:
         """Return prompt-ready <doc/> XML fragments."""
-        unique_docs = list(OrderedDict((d.page_content, d) for d in docs).values())
+        unique_map = OrderedDict()
+        for d in docs:
+            if d.page_content not in unique_map:
+                unique_map[d.page_content] = d
+        unique_docs = list(unique_map.values())
         docs_reordered = (
             self._reorder.transform_documents(unique_docs) if self._reorder else unique_docs
         )
