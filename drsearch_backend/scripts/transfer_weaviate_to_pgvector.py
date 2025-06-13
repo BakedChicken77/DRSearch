@@ -137,7 +137,7 @@ def main() -> None:
         pre_delete_collection=_PRE_DELETE_COLLECTION,
     )
 
-    schema_file = os.getenv("WEAVIATE_SCHEMA_FILE", r"scripts/weaviate_schema.json")
+    schema_file = os.getenv("WEAVIATE_SCHEMA_FILE", r"scripts\weaviate_schema.json")
     attrs, schema_cfg = _load_schema(schema_file, cfg["index_key"])
 
     docs = _fetch_weaviate_docs(client, index_name, cfg["index_key"], attrs)
