@@ -20,6 +20,16 @@ _PRE_DELETE_COLLECTION = True
 _WEAVIATE_URL = "http://localhost:8080"  # os.environ["WEAVIATE_URL"]
 
 
+def _configure_logging() -> None:
+    """Configure module logging from environment."""
+    level_name = os.getenv("LOG_LEVEL", "INFO").upper()
+    level = getattr(logging, level_name, logging.INFO)
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+
+
 def _load_schema(schema_file: str, text_key: str) -> tuple[list[str], dict[str, dict]]:
     """Load property names and config from a Weaviate schema JSON file.
 
@@ -35,6 +45,7 @@ def _load_schema(schema_file: str, text_key: str) -> tuple[list[str], dict[str, 
     with open(schema_file, "r", encoding="utf-8") as f:
         data = json.load(f)
     props = data.get("result", data.get("properties", []))
+    logger.debug("Loaded %d schema properties", len(props))
     attrs: list[str] = []
     config: dict[str, dict] = {}
     for prop in props:
@@ -75,6 +86,7 @@ def _fetch_weaviate_docs(
             .do()
         )
         docs = result.get("data", {}).get("Get", {}).get(index) or []
+        logger.debug("Fetched %s docs at offset %s", len(docs), offset)
         if not docs:
             break
         all_docs.extend(docs)
@@ -91,6 +103,7 @@ def _upload_docs(
     schema: dict[str, dict],
 ) -> None:
     """Upload precomputed embeddings and metadata into the pgvector store in one batch."""
+    logger.debug("Uploading %s documents to pgvector", len(docs))
     texts: list[str] = []
     embeddings: list[list[float]] = []
     metadatas: list[dict] = []
@@ -115,11 +128,12 @@ def _upload_docs(
 
 
 def main() -> None:
-    logging.basicConfig(level=logging.INFO)
+    _configure_logging()
 
     index_name = os.getenv("INDEX_NAME", os.getenv("WEAVIATE_INDEX", _INDEX2TRANSFER))
     conn_str = os.environ["PGVECTOR_URL"]
     dimension = int(os.getenv("PGVECTOR_DIMENSION", "1536"))
+    logger.debug("Using index '%s' with dimension %s", index_name, dimension)
 
     cfg = INDEX_CONFIG.get(index_name)
     if cfg is None:
@@ -129,6 +143,7 @@ def main() -> None:
         url=_WEAVIATE_URL,
         auth_client_secret=weaviate.AuthApiKey(os.environ["WEAVIATE_API_KEY"]),
     )
+    logger.debug("Connected to Weaviate at %s", _WEAVIATE_URL)
 
     store = create_collection_if_missing(
         conn_str,
@@ -136,10 +151,14 @@ def main() -> None:
         dimension,
         pre_delete_collection=_PRE_DELETE_COLLECTION,
     )
+    logger.debug("PGVector collection '%s' ready", index_name)
 
     schema_file = os.getenv("WEAVIATE_SCHEMA_FILE", r"scripts\weaviate_schema.json")
+    logger.debug("Loading schema from %s", schema_file)
     attrs, schema_cfg = _load_schema(schema_file, cfg["index_key"])
+    logger.debug("Schema loaded with %s attributes", len(attrs))
 
+    logger.debug("Fetching documents from Weaviate")
     docs = _fetch_weaviate_docs(client, index_name, cfg["index_key"], attrs)
     logger.info("Fetched %s documents from Weaviate", len(docs))
 
