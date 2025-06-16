@@ -174,12 +174,33 @@ def test_context_map_with_retriever(monkeypatch):
     assert "answer" in result
 
 
-def test_modify_docs_enriches_path(monkeypatch, tmp_path):
-    csv_content = "file_name,Downloaded File\nabc.pdf,\\\\server\\abc.pdf\n"
-    mapping_file = tmp_path / "JACSKE_PROD_DEPLOY.csv"
-    mapping_file.write_text(csv_content, encoding="utf-8")
+def test_modify_docs_enriches_path(monkeypatch):
+    rows = [("abc.pdf", "\\\\server\\abc.pdf")]
 
-    monkeypatch.setattr("app.chain.mapping._MAPPING_DIR", tmp_path)
+    class DummyCursor:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def execute(self, _q):
+            pass
+
+        def fetchall(self):
+            return rows
+
+    class DummyConn:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def cursor(self):
+            return DummyCursor()
+
+    monkeypatch.setattr("app.chain.mapping.psycopg2.connect", lambda *_a, **_k: DummyConn())
 
     # Ensure retriever chain uses a predictable in-memory retriever instead of
     # the real Weaviate vector-store, which is outside the scope of unit tests.
