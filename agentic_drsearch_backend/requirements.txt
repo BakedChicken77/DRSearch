@@ -1,0 +1,8 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+openai>=1.15.0          # provides openai-agents
+psycopg[binary]==3.1.12
+pgvector==0.2.3
+pydantic==2.7.1
+tqdm==4.66.4            # ingestion progress bar
+python-dotenv==1.0.1

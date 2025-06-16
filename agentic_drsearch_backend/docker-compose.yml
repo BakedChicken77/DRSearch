@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: drsearch
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    ports: ["5432:5432"]
+
+  backend:
+    build: .
+    depends_on: [db]
+    environment:
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
+    volumes:
+      - ./app:/code/app
+      - ./data:/data
+    ports: ["8000:8000"]
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+
+volumes:
+  pgdata:
