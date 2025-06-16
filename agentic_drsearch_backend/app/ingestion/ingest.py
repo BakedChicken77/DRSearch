@@ -18,7 +18,7 @@ openai_client = AzureAsyncOpenAI(
     api_key=settings.AZURE_OPENAI_API_KEY,
     api_version= settings.AZURE_OPENAI_API_VERSION,
     azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
-    azure_deployment=settings.OPENAI_MODEL
+    azure_deployment=settings.AZURE_OPENAI_LLM_DEPLOYMENT
 )
 
 CHUNK_SIZE = 800  # tokens or characters – adapt as needed
