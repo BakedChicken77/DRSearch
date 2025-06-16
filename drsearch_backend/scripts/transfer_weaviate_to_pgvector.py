@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 _INDEX2TRANSFER = "SEPS"
 _PRE_DELETE_COLLECTION = True
-_WEAVIATE_URL = "http://localhost:8080"  # os.environ["WEAVIATE_URL"]
+_WEAVIATE_URL = os.getenv("WEAVIATE_URL", "http://localhost:8080")
 
 
 def _configure_logging() -> None:
@@ -133,6 +133,9 @@ def main() -> None:
     index_name = os.getenv("INDEX_NAME", os.getenv("WEAVIATE_INDEX", _INDEX2TRANSFER))
     conn_str = os.environ["PGVECTOR_URL"]
     dimension = int(os.getenv("PGVECTOR_DIMENSION", "1536"))
+    logger.info(
+        "Starting transfer for index '%s' using Weaviate at %s", index_name, _WEAVIATE_URL
+    )
     logger.debug("Using index '%s' with dimension %s", index_name, dimension)
 
     cfg = INDEX_CONFIG.get(index_name)
