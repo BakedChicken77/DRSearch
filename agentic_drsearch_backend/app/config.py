@@ -1,3 +1,4 @@
+# app\config.py
 """
 Centralised configuration using Pydantic Settings.
 Loads environment variables or .env file values at runtime.
@@ -17,7 +18,7 @@ class Settings(BaseSettings):
     PG_POOL_SIZE: int = 10
     # Agent
 
-    OPENAI_MODEL: str = os.environ.get("AZURE_OPENAI_LLM_DEPLOYMENT")
+    AZURE_OPENAI_LLM_DEPLOYMENT: str = os.getenv("AZURE_OPENAI_LLM_DEPLOYMENT")
     AZURE_OPENAI_API_KEY: str = os.getenv("AZURE_OPENAI_API_KEY")
     AZURE_OPENAI_API_VERSION: str = os.getenv("AZURE_OPENAI_API_VERSION")
     AZURE_OPENAI_ENDPOINT: str = os.getenv("AZURE_OPENAI_ENDPOINT")
