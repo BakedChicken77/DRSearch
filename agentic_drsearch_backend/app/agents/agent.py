@@ -2,14 +2,15 @@
 Defines the OpenAI Agent configured with our retrieval tool.
 """
 
-from agents import Agent, ModelSettings, Runner
+from agents import Agent, ModelSettings, Runner, OpenAIChatCompletionsModel
 from .tools import search_documents
 from ..config import get_settings
+from openai import AsyncAzureOpenAI
 
 settings = get_settings()
 
 _SYSTEM_INSTRUCTIONS = """\
-You are DR-Search, an internal research assistant.
+You are a research assistant.
 Your knowledge comes ONLY from the company's private document store, \
 accessed through the `search_documents` tool.
 
@@ -22,10 +23,17 @@ numeric id in square brackets, e.g. [0].
 — NEVER fabricate citations or reference documents you have not retrieved.
 """
 
+openai_client = AsyncAzureOpenAI(
+    api_key=settings.AZURE_OPENAI_API_KEY,
+    api_version= settings.AZURE_OPENAI_API_VERSION,
+    azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
+    azure_deployment=settings.OPENAI_MODEL
+)
+
 agent = Agent(
-    name="drsearch_agentic_rag",
+    name="PG Vector RAG Agent",
     instructions=_SYSTEM_INSTRUCTIONS,
-    model=settings.OPENAI_MODEL,
+    model=OpenAIChatCompletionsModel(settings.OPENAI_MODEL,openai_client=openai_client),
     model_settings=ModelSettings(
         temperature=settings.AGENT_TEMPERATURE,
         max_tokens=settings.MAX_TOKENS,
