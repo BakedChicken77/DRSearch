@@ -2,10 +2,12 @@
 Defines the OpenAI Agent configured with our retrieval tool.
 """
 
-from agents import Agent, ModelSettings, Runner, OpenAIChatCompletionsModel
+from agents import Agent, ModelSettings, Runner, OpenAIChatCompletionsModel, set_tracing_disabled
 from .tools import search_documents
 from ..config import get_settings
 from openai import AsyncAzureOpenAI
+
+set_tracing_disabled(True)
 
 settings = get_settings()
 
