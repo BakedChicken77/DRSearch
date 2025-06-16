@@ -3,20 +3,23 @@ Tool functions exposed to the OpenAI agent.
 Each tool must be decorated with @function_tool.
 """
 from typing import List, Literal
+
 from agents import function_tool
+from langchain_openai import AzureOpenAIEmbeddings
+from langchain_postgres import PGVector
+from langchain_postgres.vectorstores import DistanceStrategy
 from openai import AsyncAzureOpenAI
 
 from ..config import get_settings
-from ..database import get_conn
 from ..logging import logger
 
 settings = get_settings()
 
 openai_client = AsyncAzureOpenAI(
     api_key=settings.AZURE_OPENAI_API_KEY,
-    api_version= settings.AZURE_OPENAI_API_VERSION,
+    api_version=settings.AZURE_OPENAI_API_VERSION,
     azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
-    azure_deployment=settings.AZURE_OPENAI_EMBEDDER
+    azure_deployment=settings.AZURE_OPENAI_EMBEDDER,
 )
 
 
@@ -41,31 +44,36 @@ async def search_documents(
             <doc id="0" source="policy.pdf">...</doc>
             <doc id="1" source="manual.md">...</doc>
     """
-    # 1. Embed the query
-    embed_resp = await openai_client.embeddings.create(
-        input=[query], model=settings.AZURE_OPENAI_EMBEDDER
+    # 1. Initialise embedding model and vector store
+    embeddings = AzureOpenAIEmbeddings(
+        azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
+        api_key=settings.AZURE_OPENAI_API_KEY,
+        api_version=settings.AZURE_OPENAI_API_VERSION,
+        azure_deployment=settings.AZURE_OPENAI_EMBEDDER,
+        async_client=openai_client,
     )
-    embedding = embed_resp.data[0].embedding
-
-    # 2. Build SQL
-    op = "<->" if distance_metric == "euclidean" else "<=>"
-    sql = (
-        f"SELECT id, filename, content "
-        f"FROM documents "
-        f"ORDER BY embedding {op} %s LIMIT %s"
+    store = PGVector(
+        embeddings=embeddings,
+        connection=settings.PGVECTOR_URL,
+        collection_name=settings.PGVECTOR_INDEX,
+        async_mode=True,
+        distance_strategy=(
+            DistanceStrategy.EUCLIDEAN
+            if distance_metric == "euclidean"
+            else DistanceStrategy.COSINE
+        ),
     )
 
-    # 3. Run query
-    async with get_conn() as cur:
-        await cur.execute(sql, (embedding, top_k))
-        rows = await cur.fetchall()
+    # 2. Run similarity search via PGVector
+    docs = await store.asimilarity_search(query=query, k=top_k)
 
-    # 4. Format result
+    # 3. Format result
     snippets: List[str] = []
-    for idx, (_, filename, content) in enumerate(rows):
-        snippet = content[:1000].replace("\n", " ")
+    for idx, doc in enumerate(docs):
+        filename = doc.metadata.get("filename", "unknown")
+        snippet = doc.page_content[:1000].replace("\n", " ")
         snippets.append(f'<doc id="{idx}" source="{filename}">{snippet}</doc>')
 
     joined = "\n".join(snippets)
-    logger.debug("search_documents returned %d docs", len(rows))
+    logger.debug("search_documents returned %d docs", len(docs))
     return joined

@@ -22,7 +22,8 @@ dependencies = [
   "psycopg-pool (>=3.2.6,<4.0.0)",
   "openai-agents (>=0.0.17,<0.0.18)",
   "truststore (>=0.10.1,<0.11.0)",
-  "langchain-postgres (>=0.0.14,<0.0.15)"
+  "langchain-postgres (>=0.0.14,<0.0.15)",
+  "langchain-openai>=0.1.7,<0.2.0"
 ]
 
 [project.optional-dependencies]
