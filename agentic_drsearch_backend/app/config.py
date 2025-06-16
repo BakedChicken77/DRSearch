@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     ENV: str = Field("development", env="ENV")
     # Postgres / pgvector
     PGVECTOR_URL: str = os.getenv("PGVECTOR_URL")
-    PGVECTOR_INDEX: str = os.getenv("PGVECTOR_INDEX", "default")
+    PGVECTOR_INDEX: str = os.getenv("PGVECTOR_INDEX", "SEPS")
     PG_POOL_SIZE: int = 10
     # Agent
 
