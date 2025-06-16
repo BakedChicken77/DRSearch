@@ -7,6 +7,9 @@ import logging
 import os
 from pathlib import Path
 
+import psycopg2
+from psycopg2 import sql
+
 from app.chain.mapping import create_mapping_table_from_csv
 
 logger = logging.getLogger(__name__)
@@ -27,8 +30,16 @@ def main() -> None:
     args = parser.parse_args()
 
     csv_path = Path(args.csv)
+
+    # Drop the table so the load is always deterministic
+    with psycopg2.connect(conn_str) as conn, conn.cursor() as cur:
+        cur.execute(
+            sql.SQL("DROP TABLE IF EXISTS {}").format(sql.Identifier(args.table))
+        )
+        conn.commit()
+
     create_mapping_table_from_csv(csv_path, conn_str, args.table)
-    logger.info("Mapping table '%s' updated from %s", args.table, csv_path)
+    logger.info("Mapping table '%s' recreated from %s", args.table, csv_path)
 
 
 if __name__ == "__main__":
