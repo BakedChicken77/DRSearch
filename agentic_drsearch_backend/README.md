@@ -3,17 +3,19 @@
 A drop-in replacement for `drsearch_backend` built on **OpenAI Agents** and **pgvector**.
 
 ### Quick start (Docker)
-
+#### Run Locally
 ```bash
-# 1. Export your OpenAI key
-export OPENAI_API_KEY=sk-...
-# 2. Build & run
+poetry install
+poetry run uvicorn app.main:app --host 0.0.0.0 --port 8011 
+```
+#### Run in Container
+```bash
+# 1. Build & run
 docker compose up --build
-# 3. Open docs (non-prod) at http://localhost:8000/docs
+# 2. Open docs (non-prod) at http://localhost:8000/docs
 ```
 
 Ingesting documents
-
 ```bash
 docker compose exec backend python -m app.ingestion.ingest /data/raw_docs
 ```
