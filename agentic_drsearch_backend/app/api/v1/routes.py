@@ -47,7 +47,8 @@ async def index_options() -> IndexOptionsResponse:
 @router.get("/files/{filename}")
 async def get_file(filename: str = Path(..., min_length=1)) -> FileResponse:
     # Serve raw source documents stored under DATA_DIR/files
-    file_path = FsPath(get_settings().DATA_DIR) / "files" / filename
-    if not file_path.exists():
-        raise HTTPException(status_code=404, detail="File not found")
+    base_dir = FsPath(get_settings().DATA_DIR) / "files"
+    file_path = (base_dir / filename).resolve()
+    if not file_path.exists() or not str(file_path).startswith(str(base_dir)):
+        raise HTTPException(status_code=404, detail="File not found or access denied")
     return FileResponse(file_path)
