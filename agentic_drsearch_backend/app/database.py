@@ -12,8 +12,7 @@ settings = get_settings()
 # Initialise a global async pool (lazy connection).
 pool = psycopg_pool.AsyncConnectionPool(
     conninfo=(
-        f"postgresql://{settings.PG_USER}:{settings.PG_PASSWORD}"
-        f"@{settings.PG_HOST}:{settings.PG_PORT}/{settings.PG_DATABASE}"
+        settings.PGVECTOR_URL
     ),
     open=False,
     max_size=settings.PG_POOL_SIZE,
