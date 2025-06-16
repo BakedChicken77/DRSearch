@@ -12,7 +12,7 @@ from typing import Dict, Optional
 import psycopg2
 from psycopg2 import sql
 
-from app.core.chain_config import _MAPPING_DIR
+
 
 logger = logging.getLogger(__name__)
 

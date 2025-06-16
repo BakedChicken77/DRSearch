@@ -5,9 +5,12 @@
 from __future__ import annotations
 
 from typing import Any
+import os
 
 import pytest
 from fastapi.testclient import TestClient
+
+os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
 
 from app import create_app
 
