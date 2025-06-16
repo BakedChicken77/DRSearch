@@ -19,6 +19,8 @@ from azure.search.documents.indexes.models import (
     VectorSearch,
     VectorSearchAlgorithmConfiguration,
     VectorSearchProfile,
+    VectorSearchAlgorithmKind,
+    HnswParameters,
 )
 
 from app.chain.embeddings import EmbeddingFactory
@@ -32,13 +34,23 @@ def _build_fields(dimension: int) -> Sequence[SearchField | SimpleField]:
     return [
         SimpleField(name="id", type=SearchFieldDataType.String, key=True, filterable=True),
         SearchableField(name="content", type=SearchFieldDataType.String),
-        SearchableField(name="file_path", type=SearchFieldDataType.String, filterable=True, retrievable=True),
-        SearchableField(name="filename", type=SearchFieldDataType.String, filterable=True, retrievable=True),
+        SearchableField(
+            name="file_path", type=SearchFieldDataType.String, filterable=True, retrievable=True
+        ),
+        SearchableField(
+            name="filename", type=SearchFieldDataType.String, filterable=True, retrievable=True
+        ),
         SearchableField(name="url", type=SearchFieldDataType.String, filterable=True, retrievable=True),
         SearchableField(name="text_as_html", type=SearchFieldDataType.String, retrievable=True),
-        SearchableField(name="source", type=SearchFieldDataType.String, filterable=True, retrievable=True),
-        SearchableField(name="title", type=SearchFieldDataType.String, filterable=True, retrievable=True),
-        SearchableField(name="file_directory", type=SearchFieldDataType.String, filterable=True, retrievable=True),
+        SearchableField(
+            name="source", type=SearchFieldDataType.String, filterable=True, retrievable=True
+        ),
+        SearchableField(
+            name="title", type=SearchFieldDataType.String, filterable=True, retrievable=True
+        ),
+        SearchableField(
+            name="file_directory", type=SearchFieldDataType.String, filterable=True, retrievable=True
+        ),
         SearchField(
             name="content_vector",
             type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
@@ -49,23 +61,37 @@ def _build_fields(dimension: int) -> Sequence[SearchField | SimpleField]:
 
 
 def _build_index(index_name: str, dimension: int) -> SearchIndex:
+    vector_search_config = VectorSearch(
+        algorithms=[
+            VectorSearchAlgorithmConfiguration(
+                name="drsearch-hnsw",
+                kind=VectorSearchAlgorithmKind.HNSW,
+                hnsw_parameters=HnswParameters(
+                    m=4,
+                    ef_construction=400,
+                    ef_search=500,
+                    metric="cosine",
+                ),
+            )
+        ],
+        profiles=[
+            VectorSearchProfile(
+                name="drsearch-vectors",
+                algorithm_configuration_name="drsearch-hnsw",
+            )
+        ],
+    )
+
     return SearchIndex(
         name=index_name,
         fields=list(_build_fields(dimension)),
-        vector_search=VectorSearch(
-            algorithms=[
-                VectorSearchAlgorithmConfiguration(name="drsearch-hnsw", kind="hnsw")
-            ],
-            profiles=[
-                VectorSearchProfile(
-                    name="drsearch-vectors", algorithm_configuration_name="drsearch-hnsw"
-                )
-            ],
-        ),
+        vector_search=vector_search_config,
     )
 
 
-def create_index_if_missing(endpoint: str, key: str, index_name: str, dimension: int) -> SearchClient:
+def create_index_if_missing(
+    endpoint: str, key: str, index_name: str, dimension: int
+) -> SearchClient:
     """Create the Azure Search index if it does not exist and return a search client."""
     credential = AzureKeyCredential(key)
     iclient = SearchIndexClient(endpoint=endpoint, credential=credential)
