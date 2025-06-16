@@ -8,13 +8,18 @@ import asyncio
 from pathlib import Path
 import sys
 from tqdm import tqdm
-from openai import AsyncOpenAI
+from openai import AzureAsyncOpenAI
 from ..database import get_conn, open_pool_once
 from ..config import get_settings
 from ..logging import logger
 
 settings = get_settings()
-openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+openai_client = AzureAsyncOpenAI(
+    api_key=settings.AZURE_OPENAI_API_KEY,
+    api_version= settings.AZURE_OPENAI_API_VERSION,
+    azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
+    azure_deployment=settings.OPENAI_MODEL
+)
 
 CHUNK_SIZE = 800  # tokens or characters – adapt as needed
 
@@ -32,7 +37,7 @@ async def process_file(path: Path):
     async with get_conn() as cur:
         for chunk in chunk_text(text):
             emb = await openai_client.embeddings.create(
-                input=[chunk], model="text-embedding-ada-002"
+                input=[chunk], model=settings.AZURE_OPENAI_EMBEDDER
             )
             await cur.execute(
                 "INSERT INTO documents (filename, content, embedding) VALUES (%s,%s,%s)",
