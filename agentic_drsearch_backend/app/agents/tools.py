@@ -2,17 +2,22 @@
 Tool functions exposed to the OpenAI agent.
 Each tool must be decorated with @function_tool.
 """
-
 from typing import List, Literal
 from agents import function_tool
-from openai import AsyncOpenAI
+from openai import AsyncAzureOpenAI
 
 from ..config import get_settings
 from ..database import get_conn
 from ..logging import logger
 
 settings = get_settings()
-openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+
+openai_client = AsyncAzureOpenAI(
+    api_key=settings.AZURE_OPENAI_API_KEY,
+    api_version= settings.AZURE_OPENAI_API_VERSION,
+    azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
+    azure_deployment=settings.OPENAI_MODEL
+)
 
 
 @function_tool
@@ -38,7 +43,7 @@ async def search_documents(
     """
     # 1. Embed the query
     embed_resp = await openai_client.embeddings.create(
-        input=[query], model="text-embedding-ada-002"
+        input=[query], model=settings.AZURE_OPENAI_EMBEDDER
     )
     embedding = embed_resp.data[0].embedding
 
