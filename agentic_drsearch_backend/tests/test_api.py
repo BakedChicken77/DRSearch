@@ -1,5 +1,16 @@
+import os
 import httpx
 import pytest
+
+# Minimal env vars so Settings can load during tests
+os.environ.setdefault("PGVECTOR_URL", "postgresql://user:pass@localhost/db")
+os.environ.setdefault("PGVECTOR_INDEX", "test")
+os.environ.setdefault("AZURE_OPENAI_LLM_DEPLOYMENT", "gpt4")
+os.environ.setdefault("AZURE_OPENAI_API_KEY", "dummy")
+os.environ.setdefault("AZURE_OPENAI_API_VERSION", "2024-10-21")
+os.environ.setdefault("AZURE_OPENAI_ENDPOINT", "https://example.com")
+os.environ.setdefault("AZURE_OPENAI_EMBEDDER", "text-embedding-ada-002")
+
 from app.main import app
 from app.api.v1 import routes
 from app.rag_agents import agent
