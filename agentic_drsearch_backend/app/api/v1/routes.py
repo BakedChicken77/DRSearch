@@ -49,6 +49,6 @@ async def get_file(filename: str = Path(..., min_length=1)) -> FileResponse:
     # Serve raw source documents stored under DATA_DIR/files
     base_dir = FsPath(get_settings().DATA_DIR) / "files"
     file_path = (base_dir / filename).resolve()
-    if not file_path.exists() or not str(file_path).startswith(str(base_dir)):
+    if not file_path.exists() or not base_dir in file_path.parents:
         raise HTTPException(status_code=404, detail="File not found or access denied")
     return FileResponse(file_path)
