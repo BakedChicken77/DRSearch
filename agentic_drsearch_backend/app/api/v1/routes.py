@@ -1,7 +1,7 @@
 """
 API v1 – mimics original drsearch_backend endpoints.
 """
-
+import os
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import FileResponse
 from pathlib import Path as FsPath
@@ -46,9 +46,11 @@ async def index_options() -> IndexOptionsResponse:
 # -------- /files/{filename} --------
 @router.get("/files/{filename}")
 async def get_file(filename: str = Path(..., min_length=1)) -> FileResponse:
-    # Serve raw source documents stored under DATA_DIR/files
+    # Disallow any path separators in filename
+    if "/" in filename or "\\" in filename or filename != os.path.basename(filename):
+        raise HTTPException(status_code=400, detail="Invalid filename")
     base_dir = FsPath(get_settings().DATA_DIR) / "files"
     file_path = (base_dir / filename).resolve()
-    if not file_path.exists() or not base_dir in file_path.parents:
+    if not file_path.exists() or not str(file_path).startswith(str(base_dir)):
         raise HTTPException(status_code=404, detail="File not found or access denied")
     return FileResponse(file_path)
