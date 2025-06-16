@@ -1,10 +1,11 @@
-"""Transfer data from Weaviate to a pgvector collection."""
+#!/usr/bin/env python
+"""Transfer data from Weaviate to a pgvector collection (interactive index selection)."""
 
 from __future__ import annotations
 
-import json
 import logging
 import os
+import sys
 from typing import Sequence
 
 import weaviate
@@ -15,29 +16,37 @@ from scripts.create_pgvector_index import create_collection_if_missing
 
 logger = logging.getLogger(__name__)
 
-_INDEX2TRANSFER = "SEPS"
 _PRE_DELETE_COLLECTION = True
-_WEAVIATE_URL = "http://localhost:8080"  # os.environ["WEAVIATE_URL"]
+_WEAVIATE_URL = "http://localhost:8080"  # or os.getenv("WEAVIATE_URL")
 
 
-def _load_schema(schema_file: str, text_key: str) -> tuple[list[str], dict[str, dict]]:
-    """Load property names and config from a Weaviate schema JSON file.
+def _configure_logging() -> None:
+    """Configure module logging from environment."""
+    level_name = os.getenv("LOG_LEVEL", "INFO").upper()
+    level = getattr(logging, level_name, logging.INFO)
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
 
-    Parameters
-    ----------
-    schema_file: str
-        Path to the exported Weaviate schema JSON file.
-    text_key: str
-        Name of the property that stores the document text. This field is
-        excluded from the returned attribute list so it can be stored in the
-        ``document`` column rather than metadata.
+
+def _extract_schema(
+    client: weaviate.Client,
+    class_name: str,
+    text_key: str,
+) -> tuple[list[str], dict[str, dict]]:
     """
-    with open(schema_file, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    props = data.get("result", data.get("properties", []))
+    Pull the class schema directly from Weaviate and return:
+      - attrs  : list of non-text_key property names
+      - config : dict mapping property → schema details
+    """
+    class_schema = client.schema.get(class_name)
+    if not class_schema:
+        raise ValueError(f"Class '{class_name}' not found in Weaviate schema")
+
     attrs: list[str] = []
     config: dict[str, dict] = {}
-    for prop in props:
+    for prop in class_schema.get("properties", []):
         name = prop.get("name")
         if not name:
             continue
@@ -48,6 +57,7 @@ def _load_schema(schema_file: str, text_key: str) -> tuple[list[str], dict[str, 
             "index_filterable": prop.get("indexFilterable"),
             "index_searchable": prop.get("indexSearchable"),
         }
+
     return attrs, config
 
 
@@ -75,6 +85,7 @@ def _fetch_weaviate_docs(
             .do()
         )
         docs = result.get("data", {}).get("Get", {}).get(index) or []
+        logger.debug("Fetched %s docs at offset %s", len(docs), offset)
         if not docs:
             break
         all_docs.extend(docs)
@@ -91,6 +102,7 @@ def _upload_docs(
     schema: dict[str, dict],
 ) -> None:
     """Upload precomputed embeddings and metadata into the pgvector store in one batch."""
+    logger.debug("Uploading %s documents to pgvector", len(docs))
     texts: list[str] = []
     embeddings: list[list[float]] = []
     metadatas: list[dict] = []
@@ -100,7 +112,6 @@ def _upload_docs(
         texts.append(doc.get(text_key, ""))
         embeddings.append(doc["_additional"]["vector"])
         meta = {a: doc.get(a) for a in attrs}
-        # ensure rag flag is present for PGVector filtering
         meta["use4RAG"] = doc.get("use4RAG", True)
         meta["_schema"] = schema
         metadatas.append(meta)
@@ -114,35 +125,72 @@ def _upload_docs(
     )
 
 
+def _choose_index(client: weaviate.Client) -> str:
+    """Interactively select or validate the target Weaviate class (index)."""
+    schema = client.schema.get()
+    classes = [c["class"] for c in schema.get("classes", [])]
+    if not classes:
+        raise RuntimeError("No classes found in Weaviate schema.")
+
+    # Command-line argument override
+    if len(sys.argv) > 1:
+        arg = sys.argv[1]
+        if arg in classes:
+            return arg
+        print(f"Provided index '{arg}' not found.\n")
+
+    # Interactive prompt
+    while True:
+        print("Available Weaviate classes:")
+        for i, name in enumerate(classes, start=1):
+            print(f"  {i}. {name}")
+        choice = input("Select an index by number or name: ").strip()
+        if choice.isdigit():
+            idx = int(choice)
+            if 1 <= idx <= len(classes):
+                return classes[idx - 1]
+        elif choice in classes:
+            return choice
+        print(f"Invalid selection: '{choice}'. Please try again.\n")
+
+
 def main() -> None:
-    logging.basicConfig(level=logging.INFO)
+    _configure_logging()
 
-    index_name = os.getenv("INDEX_NAME", os.getenv("WEAVIATE_INDEX", _INDEX2TRANSFER))
-    conn_str = os.environ["PGVECTOR_URL"]
-    dimension = int(os.getenv("PGVECTOR_DIMENSION", "1536"))
+    # connect
+    client = weaviate.Client(
+        url=_WEAVIATE_URL,
+        auth_client_secret=weaviate.AuthApiKey(os.getenv("WEAVIATE_API_KEY", "")),
+    )
+    logger.info("Connected to Weaviate at %s", _WEAVIATE_URL)
 
+    # choose index/class
+    index_name = _choose_index(client)
+    logger.info("Using index/class '%s' for transfer", index_name)
+
+    # load index config
     cfg = INDEX_CONFIG.get(index_name)
     if cfg is None:
         raise ValueError(f"Index '{index_name}' not defined in INDEX_CONFIG")
 
-    client = weaviate.Client(
-        url=_WEAVIATE_URL,
-        auth_client_secret=weaviate.AuthApiKey(os.environ["WEAVIATE_API_KEY"]),
-    )
-
+    # prepare PGVector
+    conn_str = os.environ["PGVECTOR_URL"]
+    dimension = int(os.getenv("PGVECTOR_DIMENSION", "1536"))
     store = create_collection_if_missing(
         conn_str,
         index_name,
         dimension,
         pre_delete_collection=_PRE_DELETE_COLLECTION,
     )
+    logger.debug("PGVector collection '%s' ready", index_name)
 
-    schema_file = os.getenv("WEAVIATE_SCHEMA_FILE", r"scripts\weaviate_schema.json")
-    attrs, schema_cfg = _load_schema(schema_file, cfg["index_key"])
+    # dynamic schema pull
+    attrs, schema_cfg = _extract_schema(client, index_name, cfg["index_key"])
+    logger.debug("Schema loaded with %s attributes", len(attrs))
 
+    # fetch & upload
     docs = _fetch_weaviate_docs(client, index_name, cfg["index_key"], attrs)
     logger.info("Fetched %s documents from Weaviate", len(docs))
-
     _upload_docs(store, docs, cfg["index_key"], attrs, schema_cfg)
     logger.info("Transfer complete: %s documents uploaded", len(docs))
 
@@ -150,6 +198,6 @@ def main() -> None:
 if __name__ == "__main__":
     try:
         main()
-    except Exception as exc:  # pragma: no cover - script entry point
+    except Exception as exc:
         logger.error("Transfer failed: %s", exc)
         raise
