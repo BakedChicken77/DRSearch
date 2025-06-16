@@ -10,7 +10,7 @@ from ..schema import (
     FeedbackRequest, FeedbackResponse,
     IndexOptionsResponse, IndexOption,
 )
-from ...agents.agent import run_agent
+from ...rag_agents.agent import run_agent
 from ...config import get_settings
 from ...logging import logger
 
