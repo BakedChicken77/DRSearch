@@ -1,0 +1,12 @@
+[
+  {"document": "Fake content 1", "cmetadata": {"file_path": "/docs/file1.pdf", "filename": "file1.pdf", "url": "http://example.com/file1", "text_as_html": "<p>Fake content 1</p>"}},
+  {"document": "Fake content 2", "cmetadata": {"file_path": "/docs/file2.pdf", "filename": "file2.pdf", "url": "http://example.com/file2", "text_as_html": "<p>Fake content 2</p>"}},
+  {"document": "Fake content 3", "cmetadata": {"file_path": "/docs/file3.pdf", "filename": "file3.pdf", "url": "http://example.com/file3", "text_as_html": "<p>Fake content 3</p>"}},
+  {"document": "Fake content 4", "cmetadata": {"file_path": "/docs/file4.pdf", "filename": "file4.pdf", "url": "http://example.com/file4", "text_as_html": "<p>Fake content 4</p>"}},
+  {"document": "Fake content 5", "cmetadata": {"file_path": "/docs/file5.pdf", "filename": "file5.pdf", "url": "http://example.com/file5", "text_as_html": "<p>Fake content 5</p>"}},
+  {"document": "Fake content 6", "cmetadata": {"file_path": "/docs/file6.pdf", "filename": "file6.pdf", "url": "http://example.com/file6", "text_as_html": "<p>Fake content 6</p>"}},
+  {"document": "Fake content 7", "cmetadata": {"file_path": "/docs/file7.pdf", "filename": "file7.pdf", "url": "http://example.com/file7", "text_as_html": "<p>Fake content 7</p>"}},
+  {"document": "Fake content 8", "cmetadata": {"file_path": "/docs/file8.pdf", "filename": "file8.pdf", "url": "http://example.com/file8", "text_as_html": "<p>Fake content 8</p>"}},
+  {"document": "Fake content 9", "cmetadata": {"file_path": "/docs/file9.pdf", "filename": "file9.pdf", "url": "http://example.com/file9", "text_as_html": "<p>Fake content 9</p>"}},
+  {"document": "Fake content 10", "cmetadata": {"file_path": "/docs/file10.pdf", "filename": "file10.pdf", "url": "http://example.com/file10", "text_as_html": "<p>Fake content 10</p>"}}
+]

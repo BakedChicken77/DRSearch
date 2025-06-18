@@ -69,15 +69,22 @@ class ChatEngine:
 
     @staticmethod
     def _init_llm() -> BaseLanguageModel:
-        """Instantiate Azure Chat completion model (singleton per process)."""
+        """Instantiate a chat model based on ``LLM_SERVICE`` env-var."""
+        service = os.getenv("LLM_SERVICE", "azure").lower()
         try:
+            if service == "fake":
+                from langchain.llms.fake import FakeListLLM
+
+                logger.info("Using FakeListLLM model")
+                return FakeListLLM(responses=["fake response"])
+
             logger.info("Creating AzureChatOpenAI model")
             return AzureChatOpenAI(
                 azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
                 api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-                api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+                api_version=os.environ.get("AZURE_OPENAI_API_VERSION"),
                 temperature=0.0,
-                model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
+                model=os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME"),
                 streaming=True,
             )
         except Exception as exc:  # noqa: BLE001
