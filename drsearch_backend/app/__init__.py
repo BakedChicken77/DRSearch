@@ -2,6 +2,7 @@
 
 """Application package initialisation."""
 
+import os
 from fastapi import FastAPI
 
 from .core.config import Settings, get_settings
@@ -48,5 +49,10 @@ def create_app() -> FastAPI:
     return app
 
 
-# Eagerly instantiate so ``uvicorn app:app`` still works.
-app = create_app()
+# Application instance for `uvicorn app:app` style invocation. Set the
+# environment variable ``INIT_APP=false`` during tests to defer creation
+# until explicitly requested.
+if os.getenv("INIT_APP", "false").lower() == "true":
+    app = create_app()
+else:
+    app = FastAPI()

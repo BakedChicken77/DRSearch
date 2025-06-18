@@ -4,7 +4,7 @@ from typing import Any
 
 import weaviate
 from langchain_community.vectorstores import Weaviate as LangchainWeaviate
-from langchain.schema.retriever import BaseRetriever
+from langchain_core.retrievers import BaseRetriever
 
 from app.chain.embeddings import EmbeddingFactory
 from app.core import chain_config
@@ -20,7 +20,9 @@ class WeaviateVectorStore(VectorStore):
         cfg = INDEX_CONFIG[index_name]
         client = weaviate.Client(
             url=chain_config._WEAVIATE_URL,
-            auth_client_secret=weaviate.AuthApiKey(api_key=chain_config._WEAVIATE_API_KEY),
+            auth_client_secret=weaviate.AuthApiKey(
+                api_key=chain_config._WEAVIATE_API_KEY
+            ),
         )
         self._store = LangchainWeaviate(
             client=client,

@@ -7,9 +7,7 @@ def _patch_jwt(monkeypatch, ok=True):
     """Replace PyJWKClient & jwt.decode so no network / crypto is needed."""
     # -- PyJWKClient with dummy .get_signing_key_from_jwt ---------------------
     fake_key = types.SimpleNamespace(key="public-key")
-    fake_client = types.SimpleNamespace(
-        get_signing_key_from_jwt=lambda _t: fake_key
-    )
+    fake_client = types.SimpleNamespace(get_signing_key_from_jwt=lambda _t: fake_key)
     monkeypatch.setattr("app.auth.jwt.PyJWKClient", lambda *_a, **_kw: fake_client)
 
     # -- jwt.decode behaviour -------------------------------------------------
@@ -19,10 +17,10 @@ def _patch_jwt(monkeypatch, ok=True):
             return {"sub": "user", "aud": "api://id", "iss": "issuer"}
 
     else:
-
         # def _dec(*_a, **_kw):
         #     raise Exception("bad token")  # noqa: BLE001
-        import jwt                                   # keep inside helper
+        import jwt  # keep inside helper
+
         def _dec(*_a, **_kw):
             raise jwt.InvalidTokenError("bad")
 

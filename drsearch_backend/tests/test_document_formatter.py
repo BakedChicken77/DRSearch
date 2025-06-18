@@ -1,4 +1,4 @@
-from langchain.schema import Document
+from langchain_core.documents import Document
 import os
 
 os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
@@ -33,7 +33,9 @@ def test_formatter_deduplicates_and_adds_mapping(monkeypatch):
         def cursor(self):
             return DummyCursor()
 
-    monkeypatch.setattr("app.chain.mapping.psycopg2.connect", lambda *_a, **_k: DummyConn())
+    monkeypatch.setattr(
+        "app.chain.mapping.psycopg2.connect", lambda *_a, **_k: DummyConn()
+    )
 
     mapping = PartNumberMapping("tbl")
     formatter = DocumentFormatter(mapping)

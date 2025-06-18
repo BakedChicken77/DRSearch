@@ -13,7 +13,6 @@ import psycopg2
 from psycopg2 import sql
 
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -36,13 +35,15 @@ class PartNumberMapping:
 
         try:
             with psycopg2.connect(conn_str) as conn, conn.cursor() as cur:
-                query = sql.SQL(
-                    "SELECT file_name, downloaded_file FROM {}"
-                ).format(sql.Identifier(self._table_name))
+                query = sql.SQL("SELECT file_name, downloaded_file FROM {}").format(
+                    sql.Identifier(self._table_name)
+                )
                 cur.execute(query)
                 rows = cur.fetchall()
         except Exception as exc:  # noqa: BLE001
-            logger.warning("Failed to load mapping table '%s': %s", self._table_name, exc)
+            logger.warning(
+                "Failed to load mapping table '%s': %s", self._table_name, exc
+            )
             return None
 
         mapping: Dict[str, str] = {file: path for file, path in rows}
@@ -57,16 +58,15 @@ def create_mapping_table_from_csv(
     with psycopg2.connect(conn_str) as conn, conn.cursor() as cur:
         cur.execute(
             sql.SQL(
-                "CREATE TABLE IF NOT EXISTS {} (" "file_name TEXT PRIMARY KEY, "
+                "CREATE TABLE IF NOT EXISTS {} ("
+                "file_name TEXT PRIMARY KEY, "
                 "downloaded_file TEXT)"
             ).format(sql.Identifier(table_name))
         )
 
         with csv_path.open(newline="", encoding="utf-8") as handle:
             reader = csv.DictReader(handle)
-            rows = [
-                (row["file_name"], row["Downloaded File"]) for row in reader
-            ]
+            rows = [(row["file_name"], row["Downloaded File"]) for row in reader]
 
         cur.executemany(
             sql.SQL(

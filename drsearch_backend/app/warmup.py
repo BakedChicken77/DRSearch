@@ -22,4 +22,3 @@ async def warm_up_indexes() -> None:
         except Exception as exc:  # noqa: BLE001
             logger.exception("Warm-up failed for %s", index_name, exc_info=exc)
             INDEX_STATUS[index_name] = False
-

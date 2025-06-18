@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Dict, Tuple
-from langchain.schema.runnable import Runnable, RunnableLambda
+from langchain_core.runnables import Runnable, RunnableLambda
 
 from app.chain.engine import ChatEngine
 from app.core.chain_config import _DEFAULT_INDEX, _NUMBER_OF_DOCS_RETRIEVED
@@ -23,7 +23,9 @@ def _engine_for(index_name: str, num_docs: int) -> ChatEngine:
     return _engine_cache[key]
 
 
-def get_answer_chain(index_name: str | None = None, num_docs: int = _NUMBER_OF_DOCS_RETRIEVED) -> Runnable:
+def get_answer_chain(
+    index_name: str | None = None, num_docs: int = _NUMBER_OF_DOCS_RETRIEVED
+) -> Runnable:
     """Return the langchain Runnable for the specified index (cached)."""
     return _engine_for(index_name or _DEFAULT_INDEX, num_docs).answer_chain
 

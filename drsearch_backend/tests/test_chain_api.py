@@ -56,5 +56,7 @@ def test_answer_chain_lambda(monkeypatch):
     api._engine_cache.clear()
 
     # Call the global RunnableLambda (simulate LangChain request input)
-    result = api.answer_chain.invoke({"index_name": "JACSKE_Program", "num_docs_retrieved": 3})
+    result = api.answer_chain.invoke(
+        {"index_name": "JACSKE_Program", "num_docs_retrieved": 3}
+    )
     assert result is dummy_chain

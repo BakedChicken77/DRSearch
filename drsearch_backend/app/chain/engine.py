@@ -7,12 +7,20 @@ import os
 from operator import itemgetter
 from typing import Callable, List, Sequence
 
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
-from langchain.retrievers.multi_query import MultiQueryRetriever
-from langchain.schema import Document
-from langchain.schema.language_model import BaseLanguageModel
-from langchain.schema.retriever import BaseRetriever
-from langchain.schema.runnable import (
+from langchain_core.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    PromptTemplate,
+)
+
+try:
+    from langchain_community.retrievers.multi_query import MultiQueryRetriever
+except ImportError:  # Fallback for older package versions
+    from langchain.retrievers.multi_query import MultiQueryRetriever
+from langchain_core.documents import Document
+from langchain_core.language_models import BaseLanguageModel
+from langchain_core.retrievers import BaseRetriever
+from langchain_core.runnables import (
     Runnable,
     RunnableBranch,
     RunnableLambda,

@@ -26,4 +26,3 @@ class FeedbackUpdate(BaseModel):
     feedback_id: Optional[UUID]
     score: Union[float, int, bool, None] | None = None
     comment: Optional[str] = None
-

@@ -1,8 +1,8 @@
-#System_Prompts
-from langchain.prompts import  PromptTemplate
+# System_Prompts
+from langchain_core.prompts import PromptTemplate
 
 
-RESPONSE_TEMPLATE_CHATBOT= """\
+RESPONSE_TEMPLATE_CHATBOT = """\
 You are a helpful assistant. \
 Enclose all keywords, document numbers, part numbers and phrases with backticks (`).
 """
@@ -19,7 +19,7 @@ Enclose all keywords, document numbers, part numbers and phrases with backticks 
 # Your description shall be no more than 1000 words.
 
 # If the HTML lacks semantic content (e.g., empty tags, whitespace, \
-# purely structural or decorative elements), respond with 'None.' 
+# purely structural or decorative elements), respond with 'None.'
 # If the HTML contains an acronym list, respond with 'I FOUND YOU AN ACRONYM LIST.'
 
 # Write descriptions as if viewing the original content, not the HTML. Speak directly to the content \
@@ -27,7 +27,6 @@ Enclose all keywords, document numbers, part numbers and phrases with backticks 
 # the text was extracted or converted to HTML.
 
 # """
-
 
 
 RESPONSE_TEMPLATE_text_as_html_to_text_chunk = """\
@@ -70,11 +69,7 @@ Respond with the category number and the appropriate JSON format:
 """
 
 
-
-
-
 RESPONSE_TEMPLATE_EMPOWER = """TBD"""
-
 
 
 RESPONSE_TEMPLATE_PROGRAMMER = """\
@@ -224,8 +219,6 @@ Original question: {question}""",
 )
 
 
-
-
 RESPONSE_TEMPLATE_JAC_SKE = """\
 You are a seasoned veteran Engineer with extensive experience in Electrical Engineering. \
 You are tasked with answering any question about Hardware Design and Test Documentation.
@@ -327,11 +320,6 @@ Anything between the preceding 'context' html blocks is retrieved from a knowled
 """
 
 
-
-  
-
-
-
 RESPONSE_TEMPLATE_SEPS = """\
 You are a seasoned veteran employee. You have extensive experience across all company Deparments including but not limited to Quality Management, Process Engineering, \
 Compliance, and Engineering Management. Your job is to answer employee questions about company documentation.
@@ -414,7 +402,6 @@ user.
 
 Remember, the goal is to provide code that is ready to be integrated and used in a project, demonstrating the practical application and power of the Langchain framework in solving real-world problems.\
 """
-
 
 
 RESPONSE_TEMPLATE_WEAVIATE = """\

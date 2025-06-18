@@ -28,4 +28,3 @@ class ChatRequest(BaseModel):
         le=5,
         description="How many documents to retrieve for each query",
     )
-

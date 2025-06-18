@@ -11,4 +11,3 @@ class TraceRequest(BaseModel):
     """Model for *POST /get_trace* requests."""
 
     run_id: UUID
-

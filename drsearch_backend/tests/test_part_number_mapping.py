@@ -70,7 +70,9 @@ def test_part_number_mapping_reads_table(monkeypatch):
         def cursor(self):
             return DummyCursor()
 
-    monkeypatch.setattr("app.chain.mapping.psycopg2.connect", lambda *_a, **_k: DummyConn())
+    monkeypatch.setattr(
+        "app.chain.mapping.psycopg2.connect", lambda *_a, **_k: DummyConn()
+    )
 
     m = PartNumberMapping("dummy_table")
     assert m.data == {"x.pdf": "\\\\srv\\x.pdf"}

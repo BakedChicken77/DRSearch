@@ -1,8 +1,8 @@
 import pytest
-from langchain.schema import Document
+from langchain_core.documents import Document
 from langchain_core.language_models.fake import FakeListLLM
 from langchain_core.runnables import RunnableLambda
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 
 import os
 
@@ -200,7 +200,9 @@ def test_modify_docs_enriches_path(monkeypatch):
         def cursor(self):
             return DummyCursor()
 
-    monkeypatch.setattr("app.chain.mapping.psycopg2.connect", lambda *_a, **_k: DummyConn())
+    monkeypatch.setattr(
+        "app.chain.mapping.psycopg2.connect", lambda *_a, **_k: DummyConn()
+    )
 
     # Ensure retriever chain uses a predictable in-memory retriever instead of
     # the real Weaviate vector-store, which is outside the scope of unit tests.

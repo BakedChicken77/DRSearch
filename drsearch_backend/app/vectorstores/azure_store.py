@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from langchain_community.vectorstores.azuresearch import AzureSearch as LangchainAzureSearch
-from langchain.schema.retriever import BaseRetriever
+from langchain_community.vectorstores.azuresearch import (
+    AzureSearch as LangchainAzureSearch,
+)
+from langchain_core.retrievers import BaseRetriever
 
 from app.chain.embeddings import EmbeddingFactory
 from app.core import chain_config

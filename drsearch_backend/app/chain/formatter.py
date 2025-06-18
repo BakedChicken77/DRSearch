@@ -27,7 +27,9 @@ class DocumentFormatter:
                 unique_map[d.page_content] = d
         unique_docs = list(unique_map.values())
         docs_reordered = (
-            self._reorder.transform_documents(unique_docs) if self._reorder else unique_docs
+            self._reorder.transform_documents(unique_docs)
+            if self._reorder
+            else unique_docs
         )
 
         formatted: list[str] = []

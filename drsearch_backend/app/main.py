@@ -27,7 +27,7 @@ async def _shutdown(loop: asyncio.AbstractEventLoop) -> None:  # pragma: no cove
         await asyncio.gather(*tasks)
 
 
-def main() -> None:  
+def main() -> None:
     """CLI that mirrors legacy *python main.py* behaviour."""
 
     settings = get_settings()
@@ -42,9 +42,11 @@ def main() -> None:
     for sig in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(sig, lambda s=sig: asyncio.create_task(_shutdown(loop)))
 
-    logger.info("Starting DRSearch API", extra={"port": 8010, "auth": settings.auth_enabled})
+    logger.info(
+        "Starting DRSearch API", extra={"port": 8010, "auth": settings.auth_enabled}
+    )
     loop.run_until_complete(server.serve())
 
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
     main()

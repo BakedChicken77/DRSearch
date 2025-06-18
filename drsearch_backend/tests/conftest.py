@@ -6,7 +6,7 @@ from typing import Any, Dict
 
 import pytest
 from fastapi.testclient import TestClient
-from langchain.schema import BaseRetriever
+from langchain_core.retrievers import BaseRetriever
 
 # --------------------------------------------------------------------------- #
 #  Global environment & dummy values
@@ -31,6 +31,7 @@ _DUMMY_ENV: Dict[str, str] = {
     "AZURE_AD_TENANT_ID": "11111111-1111-1111-1111-111111111111",
     "AZURE_AD_CLIENT_ID": "22222222-2222-2222-2222-222222222222",
     "LOG_OUTPUT_MODE": "local",
+    "INIT_APP": "false",
 }
 
 
@@ -97,7 +98,7 @@ class _DummyRetriever(BaseRetriever):
     """
 
     def _get_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
-        from langchain.schema import Document
+        from langchain_core.documents import Document
 
         return [
             Document(

@@ -1,6 +1,6 @@
 import types
 import pytest
-from langchain.schema import BaseRetriever
+from langchain_core.retrievers import BaseRetriever
 
 from app.chain.retriever import RetrieverFactory
 from app.chain.exceptions import ConfigurationError

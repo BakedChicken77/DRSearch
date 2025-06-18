@@ -23,7 +23,9 @@ def _jwks_client(jwks_uri: str) -> PyJWKClient:  # pragma: no cover
     return PyJWKClient(jwks_uri)
 
 
-def decode_bearer(token: str, audience: str, issuer: str, jwks_uri: str) -> Dict[str, Any]:
+def decode_bearer(
+    token: str, audience: str, issuer: str, jwks_uri: str
+) -> Dict[str, Any]:
     """Validate *token* and return decoded claims.
 
     Args:

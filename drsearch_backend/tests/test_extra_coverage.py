@@ -157,7 +157,7 @@ def test_main_module_execution(monkeypatch):
 def test_engine_modify_docs_mapping_none(monkeypatch):
     """Cover the branch where _modify_docs early-returns when mapping is None."""
     from app.chain.engine import ChatEngine
-    from langchain.schema import Document
+    from langchain_core.documents import Document
     from langchain_core.runnables import RunnableLambda
 
     # Force RAG_ON so retriever logic is active but patch everything heavy.

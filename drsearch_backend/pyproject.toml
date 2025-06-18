@@ -11,17 +11,17 @@ requires-python = ">=3.11,<3.13"
 
 dependencies = [
   "fastapi>=0.103.2,<1.0.0",
-  "pydantic>=1.10.17,<2.0.0",
-  "langchain==0.1.20",
+  "pydantic>=2.7.4,<3.0.0",
+  
   "uvicorn>=0.23.2,<1.0.0",
   "tiktoken==0.7.0",
   "lxml>=4.9.4,<5.0.0",
-  "langserve[server]>=0.0.34,<1.0.0",
+  "langserve[server]>=0.3.1,<1.0.0",
   "psycopg2-binary>=2.9.9,<3.0.0",
   "python-dotenv>=1.0.0,<2.0.0",
-  "langchain-core==0.1.52",
-  "langchain-community==0.0.38",
-  "langchain-openai==0.1.7",
+  "langchain-core>=0.2.43",
+  "langchain-community==0.3.25",
+  "langchain-openai==0.3.23",
   "weaviate-client>=3.26.5,<4.0.0",
   "langfuse>=2.35.0,<3.0.0",
   "pyjwt>=2.9.0,<3.0.0",

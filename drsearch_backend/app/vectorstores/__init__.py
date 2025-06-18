@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from langchain.schema.retriever import BaseRetriever
+from langchain_core.retrievers import BaseRetriever
 
 
 class VectorStore(ABC):

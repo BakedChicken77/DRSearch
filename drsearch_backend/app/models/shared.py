@@ -28,4 +28,3 @@ class IndexOptionsResponse(BaseModel):
 
     result: List[IndexOption]
     code: int = Field(200, description="Application level status code")
-

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Iterable
 
 from langchain_community.vectorstores.pgvector import PGVector
-from langchain.schema.retriever import BaseRetriever
+from langchain_core.retrievers import BaseRetriever
 
 from app.chain.embeddings import EmbeddingFactory
 from app.core import chain_config
