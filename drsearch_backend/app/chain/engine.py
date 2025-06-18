@@ -20,6 +20,7 @@ from langchain.schema.runnable import (
 )
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import AzureChatOpenAI
+from langchain.llms.fake import FakeStreamingListLLM
 
 from app import System_Prompts
 from app.chain.formatter import DocumentFormatter
@@ -69,8 +70,12 @@ class ChatEngine:
 
     @staticmethod
     def _init_llm() -> BaseLanguageModel:
-        """Instantiate Azure Chat completion model (singleton per process)."""
+        """Instantiate the configured language model."""
+        llm_service = os.getenv("LLM_SERVICE", "azure").lower()
         try:
+            if llm_service == "fake":
+                logger.info("Creating FakeStreamingListLLM model")
+                return FakeStreamingListLLM(responses=["fake response"])
             logger.info("Creating AzureChatOpenAI model")
             return AzureChatOpenAI(
                 azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
