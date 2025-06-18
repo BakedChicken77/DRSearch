@@ -26,9 +26,12 @@ class EmbeddingFactory:
             service = os.getenv("LLM_SERVICE", "azure").lower()
             logger.info("Instantiating embedding model")
             if service == "fake":
+
                 class FakeEmbedder(Embeddings):
                     def _embed(self, text: str) -> list[float]:
-                        rnd = random.Random(int(hashlib.md5(text.encode()).hexdigest(), 16))
+                        rnd = random.Random(
+                            int(hashlib.md5(text.encode()).hexdigest(), 16)
+                        )
                         return [rnd.random() for _ in range(1536)]
 
                     def embed_query(self, text: str) -> list[float]:
