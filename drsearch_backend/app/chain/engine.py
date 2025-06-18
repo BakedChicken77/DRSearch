@@ -20,7 +20,8 @@ from langchain.schema.runnable import (
 )
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import AzureChatOpenAI
-from langchain.llms.fake import FakeStreamingListLLM
+# from langchain.llms.fake import FakeStreamingListLLM
+from langchain_community.llms.fake import FakeStreamingListLLM
 
 from app import System_Prompts
 from app.chain.formatter import DocumentFormatter
