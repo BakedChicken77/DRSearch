@@ -9,7 +9,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 export LLM_SERVICE=fake
 export VECTOR_BACKEND=pgvector
-export PGVECTOR_URL="${PGVECTOR_URL:-postgresql://username:password@localhost:5432/pgvector_db}"
+# export PGVECTOR_URL="${PGVECTOR_URL:-postgresql://username:password@localhost:5432/pgvector_db}"
 export AUTH_ENABLED=False
 export RAG_ON=True
 export LOG_OUTPUT_MODE=local
