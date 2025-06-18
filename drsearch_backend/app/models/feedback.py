@@ -23,6 +23,6 @@ class Feedback(BaseModel):
 class FeedbackUpdate(BaseModel):
     """Model for *PATCH /feedback* requests."""
 
-    feedback_id: Optional[UUID]
+    feedback_id: Optional[UUID] = None
     score: Union[float, int, bool, None] | None = None
     comment: Optional[str] = None

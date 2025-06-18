@@ -27,7 +27,7 @@ _DUMMY_ENV: Dict[str, str] = {
     "RAG_ON": "True",
     # Auth (turned OFF for most tests – can be re-enabled where needed)
     "AUTH_ENABLED": "False",
-    "CORS_ORIGINS": "http://localhost",
+    "CORS_ORIGINS": '["http://localhost"]',
     "AZURE_AD_TENANT_ID": "11111111-1111-1111-1111-111111111111",
     "AZURE_AD_CLIENT_ID": "22222222-2222-2222-2222-222222222222",
     "LOG_OUTPUT_MODE": "local",

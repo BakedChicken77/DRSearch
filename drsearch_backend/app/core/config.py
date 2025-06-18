@@ -16,22 +16,22 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------------
     # General
     # ------------------------------------------------------------------
-    debug: bool = Field(False, env="DEBUG")
-    node_env: str = Field("production", env="NODE_ENV")
+    debug: bool = Field(False, validation_alias="DEBUG")
+    node_env: str = Field("production", validation_alias="NODE_ENV")
 
     # ------------------------------------------------------------------
     # Authentication
     # ------------------------------------------------------------------
-    auth_enabled: bool = Field(True, env="AUTH_ENABLED")
-    whitelist: List[str] = Field(default_factory=list, env="WHITELIST")
+    auth_enabled: bool = Field(True, validation_alias="AUTH_ENABLED")
+    whitelist: List[str] = Field(default_factory=list, validation_alias="WHITELIST")
 
-    tenant_id: str = Field(..., env="AZURE_AD_TENANT_ID")
-    client_id: str = Field(..., env="AZURE_AD_CLIENT_ID")
+    tenant_id: str = Field(..., validation_alias="AZURE_AD_TENANT_ID")
+    client_id: str = Field(..., validation_alias="AZURE_AD_CLIENT_ID")
 
     # ------------------------------------------------------------------
     # CORS / Front‑end
     # ------------------------------------------------------------------
-    cors_origins: List[AnyHttpUrl] = Field(..., env="CORS_ORIGINS")
+    cors_origins: List[AnyHttpUrl] = Field(..., validation_alias="CORS_ORIGINS")
 
     # ------------------------------------------------------------------
     # FastAPI metadata
@@ -43,8 +43,21 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=True,
+        populate_by_name=True,
         extra="ignore",
     )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls,
+        init_settings,
+        env_settings,
+        dotenv_settings,
+        file_secret_settings,
+    ):
+        """Prioritize init settings over environment for test overrides."""
+        return env_settings, dotenv_settings, file_secret_settings, init_settings
 
     # ----------------- computed / validated -----------------
     @field_validator("cors_origins", mode="before")
