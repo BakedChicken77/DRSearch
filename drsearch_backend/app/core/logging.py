@@ -73,7 +73,7 @@ def _setup_handlers(settings: LoggingSettings) -> QueueListener:
 async def _upload_logs(
     settings: LoggingSettings, storage: AzureBlobStorageAsync
 ) -> None:
-    date_str = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d")
+    date_str = datetime.now()(datetime.UTC).strftime("%Y-%m-%d")
     env = os.getenv("NODE_ENV", "dev")
     for file in LOG_DIR.glob("*.jsonl"):
         blob_path = f"logs/{env}/{date_str}/{COMPONENT}/{file.name}"
