@@ -64,6 +64,7 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
         path="/chat",
         input_type=ChatRequest,
         config_keys=["metadata"],
+        playground_type="chat",
     )
 
     # ---- /index-options
