@@ -94,9 +94,12 @@ def test_settings_split_origins():
     os.environ.pop("CORS_ORIGINS", None)
 
     cfg = Settings(
-        cors_origins="http://a.com , http://b.com", tenant_id="t", client_id="c"
+        cors_origins="http://a.com , http://b.com",
+        tenant_id="t",
+        client_id="c",
+        _env_file=None,
     )
-    assert cfg.cors_origins == ["http://a.com", "http://b.com"]
+    assert [str(u) for u in cfg.cors_origins] == ["http://a.com/", "http://b.com/"]
 
 
 def test_index_options_structure():

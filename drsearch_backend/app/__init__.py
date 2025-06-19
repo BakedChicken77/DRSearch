@@ -49,10 +49,10 @@ def create_app() -> FastAPI:
     return app
 
 
-# Application instance for `uvicorn app:app` style invocation. Set the
-# environment variable ``INIT_APP=false`` during tests to defer creation
-# until explicitly requested.
-if os.getenv("INIT_APP", "false").lower() == "true":
+# Application instance for `uvicorn app:app` style invocation.
+# By default the application is fully initialised.  Tests can set
+# ``INIT_APP=false`` to defer creation until explicitly requested.
+if os.getenv("INIT_APP", "true").lower() == "true":
     app = create_app()
 else:
     app = FastAPI()

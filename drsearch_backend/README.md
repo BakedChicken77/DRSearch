@@ -1,8 +1,17 @@
 # DRSearch
+
 A RAG Chatbot
 
+## Running the Backend Locally
 
+The FastAPI application is fully initialised by default. You can start it with:
 
+```bash
+poetry run uvicorn app:app --host 0.0.0.0 --port 8011
+```
+
+If you need to disable automatic initialisation (for example during tests), set
+the environment variable `INIT_APP=false` before running Uvicorn.
 
 ## To run test, use this command:
 ### This will:

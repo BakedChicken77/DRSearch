@@ -13,6 +13,7 @@ from typing import Union, List, Optional
 from pathlib import Path
 
 from pydantic import BaseModel
+from pydantic_settings import SettingsConfigDict
 
 
 class ElementMetadata(BaseModel):
@@ -26,16 +27,14 @@ class ElementMetadata(BaseModel):
     embedding: Optional[List[float]] = None
     images: Optional[List[str]] = None
 
-    class Config:
-        extra = "allow"
+    model_config = SettingsConfigDict(extra="allow")
 
 
 class Element(BaseModel):
     page_content: str | None = None
     metadata: ElementMetadata
 
-    class Config:
-        extra = "allow"
+    model_config = SettingsConfigDict(extra="allow")
 
 
 class AzureBlobStorageAsync:

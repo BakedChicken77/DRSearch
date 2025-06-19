@@ -6,7 +6,7 @@ from collections import OrderedDict
 from typing import Sequence
 
 from langchain_community.document_transformers import LongContextReorder
-from langchain.schema import Document
+from langchain_core.documents import Document
 
 from app.chain.mapping import PartNumberMapping
 from app.core import chain_config

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from langchain.schema.retriever import BaseRetriever
+from langchain_core.retrievers import BaseRetriever
 
 from app.chain.exceptions import ConfigurationError
 from app.core import chain_config
