@@ -6,6 +6,7 @@ A RAG Chatbot
 
 The FastAPI application is fully initialised by default. You can start it with:
 
+The API exposes two chat endpoints: `/chat` for standard RAG and `/agent-chat` for an agent-driven workflow.
 ```bash
 poetry run uvicorn app:app --host 0.0.0.0 --port 8011
 ```

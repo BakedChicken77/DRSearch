@@ -17,6 +17,7 @@ def test_warm_up_success(monkeypatch):
             return "ok"
 
     monkeypatch.setattr(warmup, "get_answer_chain", lambda name: Dummy())
+    monkeypatch.setattr(warmup, "get_agent_executor", lambda name: Dummy())
 
     asyncio.run(warmup.warm_up_indexes())
     assert warmup.INDEX_STATUS["idx"] is True
@@ -30,6 +31,7 @@ def test_warm_up_failure(monkeypatch):
             raise ValueError("boom")
 
     monkeypatch.setattr(warmup, "get_answer_chain", lambda name: Dummy())
+    monkeypatch.setattr(warmup, "get_agent_executor", lambda name: Dummy())
 
     asyncio.run(warmup.warm_up_indexes())
     assert warmup.INDEX_STATUS["idx"] is False

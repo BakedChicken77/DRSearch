@@ -13,6 +13,7 @@ from fastapi import APIRouter, HTTPException, Response
 from fastapi.responses import FileResponse
 from langserve import add_routes
 
+from .agent_routes import build_agent_router
 from ...core.config import Settings, get_settings
 from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for side-effects
 from app.auth import jwt  # triggers cache warming on app-start
@@ -66,6 +67,8 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
         config_keys=["metadata"],
         playground_type="chat",
     )
+
+    router.include_router(build_agent_router())
 
     # ---- /index-options
     @router.get("/index-options", response_model=IndexOptionsResponse)

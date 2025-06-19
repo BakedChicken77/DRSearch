@@ -6,6 +6,8 @@ import logging
 from app.index_options import INDEX_OPTIONS
 from app.chain.api import get_answer_chain
 
+from app.agent.rag_agent import get_agent_executor
+
 logger = logging.getLogger(__name__)
 
 # Track whether each index has been successfully warmed up
@@ -16,6 +18,8 @@ async def warm_up_indexes() -> None:
     """Initialise all indexes so first user request is fast."""
     for index_name in INDEX_STATUS.keys():
         try:
+            agent = get_agent_executor(index_name)
+            await agent.ainvoke({"question": "warmup", "chat_history": []})
             engine = get_answer_chain(index_name)
             await engine.ainvoke({"question": "warmup", "chat_history": []})
             INDEX_STATUS[index_name] = True
