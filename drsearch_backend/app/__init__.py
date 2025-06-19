@@ -3,7 +3,10 @@
 """Application package initialisation."""
 
 import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from .core.config import Settings, get_settings
 from .core.logging import configure_logging
@@ -11,7 +14,6 @@ from .core.logging_middleware import LoggingMiddleware
 from .auth.middleware import AuthMiddleware
 from .api.v1.routes import build_router
 from .warmup import warm_up_indexes
-from fastapi.middleware.cors import CORSMiddleware
 
 
 def create_app() -> FastAPI:
@@ -24,7 +26,13 @@ def create_app() -> FastAPI:
     settings: Settings = get_settings()
     configure_logging()
 
-    app = FastAPI(debug=settings.debug)
+    # -------------------- lifespan --------------------
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        await warm_up_indexes()
+        yield
+
+    app = FastAPI(debug=settings.debug, lifespan=lifespan)
 
     # ------------------- ADD CORS -------------------
     app.add_middleware(
@@ -63,7 +71,6 @@ def create_app() -> FastAPI:
                     try:
                         obj.model_rebuild(force=True)
                     except AttributeError:
-                        # Some models may not expose rebuild in newer pydantic versions
                         pass
             app.openapi_schema = get_openapi(
                 title=app.title,
@@ -73,10 +80,6 @@ def create_app() -> FastAPI:
         return app.openapi_schema
 
     app.openapi = custom_openapi
-
-    @app.on_event("startup")
-    async def warm_up() -> None:
-        await warm_up_indexes()
 
     return app
 
