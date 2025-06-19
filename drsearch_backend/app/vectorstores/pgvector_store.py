@@ -67,8 +67,7 @@ class PgVectorStore(VectorStore):
                 return _strip(docs)
 
             async def _aget_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
-                config = {"callbacks": run_manager} if run_manager else None
-                docs = await base.ainvoke(query, config=config)
+                docs = await base.aget_relevant_documents(query, callbacks=run_manager)
                 return _strip(docs)
 
         return _FilteredRetriever()
