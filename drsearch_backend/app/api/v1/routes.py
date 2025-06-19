@@ -17,6 +17,8 @@ from ...core.config import Settings, get_settings
 from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for side-effects
 from app.auth import jwt  # triggers cache warming on app-start
 from app.chain.api import answer_chain
+from langchain_core.runnables import RunnableLambda
+from app.search_agent.agent import run_agent
 from app.models import (
     ChatRequest,
     Feedback,
@@ -58,9 +60,18 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     router = APIRouter()
 
     # ---- /chat  (langserve wires up streaming handlers etc.)
+    async def _call_agent(inputs: dict) -> str:
+        history = []
+        for item in inputs.get("chat_history", []):
+            history.append(f"User: {item.get('human', '')}")
+            history.append(f"Assistant: {item.get('ai', '')}")
+        return await run_agent(inputs["question"], history)
+
+    agent_chain = RunnableLambda(_call_agent)
+
     add_routes(
         router,
-        answer_chain,
+        agent_chain,
         path="/chat",
         input_type=ChatRequest,
         config_keys=["metadata"],
