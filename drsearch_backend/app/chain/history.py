@@ -12,7 +12,7 @@ class HistorySerializer:
 
     def __call__(self, request_dict: Dict[str, Any]) -> List[AIMessage | HumanMessage]:
         """Serialize raw history into LangChain Message objects."""
-        history_raw = request_dict.get("chat_history", [])
+        history_raw = request_dict.get("chat_history") or []
         messages: List[AIMessage | HumanMessage] = []
 
         for item in history_raw:
