@@ -63,11 +63,21 @@ class PgVectorStore(VectorStore):
 
         class _FilteredRetriever(BaseRetriever):
             def _get_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
-                docs = base.get_relevant_documents(query, callbacks=run_manager)
+                callbacks = (
+                    list(run_manager.handlers)
+                    if run_manager and hasattr(run_manager, "handlers")
+                    else None
+                )
+                docs = base.get_relevant_documents(query, callbacks=callbacks)
                 return _strip(docs)
 
             async def _aget_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
-                docs = await base.ainvoke(query, config={"callbacks": run_manager})
+                callbacks = (
+                    list(run_manager.handlers)
+                    if run_manager and hasattr(run_manager, "handlers")
+                    else None
+                )
+                docs = await base.ainvoke(query, config={"callbacks": callbacks})
                 return _strip(docs)
 
         return _FilteredRetriever()
