@@ -60,7 +60,11 @@ def create_app() -> FastAPI:
         except PydanticUserError:
             for obj in lv.__dict__.values():
                 if isinstance(obj, type) and issubclass(obj, BaseModel):
-                    obj.model_rebuild(force=True)
+                    try:
+                        obj.model_rebuild(force=True)
+                    except AttributeError:
+                        # Some models may not expose rebuild in newer pydantic versions
+                        pass
             app.openapi_schema = get_openapi(
                 title=app.title,
                 version=app.version,
