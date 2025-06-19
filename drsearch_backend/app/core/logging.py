@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
+from datetime import datetime, timezone
 from logging.handlers import QueueHandler, QueueListener, RotatingFileHandler
 from pathlib import Path
 from queue import Queue
-from datetime import datetime
-import os
 
 from pythonjsonlogger import jsonlogger
 
-from app.models.logging import LoggingSettings
 from app.azure_search_blob_manager.AzureBlobStorageWrapperAsync import (
     AzureBlobStorageAsync,
 )
+from app.models.logging import LoggingSettings
 
 LOG_DIR = Path(
     os.environ.get("LOG_DIR", Path(__file__).resolve().parents[2] / "app_logs")
@@ -73,7 +73,7 @@ def _setup_handlers(settings: LoggingSettings) -> QueueListener:
 async def _upload_logs(
     settings: LoggingSettings, storage: AzureBlobStorageAsync
 ) -> None:
-    date_str = datetime.now()(datetime.UTC).strftime("%Y-%m-%d")
+    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     env = os.getenv("NODE_ENV", "dev")
     for file in LOG_DIR.glob("*.jsonl"):
         blob_path = f"logs/{env}/{date_str}/{COMPONENT}/{file.name}"
