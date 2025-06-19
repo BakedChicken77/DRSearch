@@ -49,12 +49,19 @@ docker-compose -f docker-compose.fullapp.yml up -d
 
 ## Testing Instructions
 
+*The PGvector database is available in your environment. If you need to investigate why PGvector database is not available or functioning correctly, refer to folder codex_environment_setup_scripts in the project root for pgvector database information.*
+
 ### Backend Testing
 - Run all unit tests with coverage reporting:
   ```bash
   cd drsearch_backend
   poetry run pytest --cov=app --cov-report=term-missing -q
   ```
+- Verify server boots, warmup completes with no errors, and documents are retrieved from TEST_INDEX (note: the other indexes are not avialable)
+```bash
+  poetry run uvicorn app:app --host 0.0.0.0 --port 8011
+```
+  
 - For specific test files:
   ```bash
   poetry run pytest tests/path/to/test_file.py -v
