@@ -3,41 +3,46 @@ from __future__ import annotations
 from typing import List, Optional, Literal
 
 from agents import function_tool
-from langchain_openai import AzureOpenAIEmbeddings
-from langchain_postgres import PGVector
-from langchain_postgres.vectorstores import DistanceStrategy
-from openai import AsyncAzureOpenAI
-import os
 
-from app.core.chain_config import _PGVECTOR_URL, _DEFAULT_INDEX
-
-openai_client = AsyncAzureOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    azure_deployment=os.getenv("AZURE_OPENAI_EMBEDDER"),
-)
+from app.core.chain_config import _DEFAULT_INDEX, _VECTOR_BACKEND
+from app.vectorstores.factory import VectorStoreFactory
 
 
-def _pgvector_store(index_name: str, distance_metric: str) -> PGVector:
-    embeddings = AzureOpenAIEmbeddings(
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-        api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-        azure_deployment=os.getenv("AZURE_OPENAI_EMBEDDER"),
-        async_client=openai_client,
-    )
-    return PGVector(
-        embeddings=embeddings,
-        connection_string=_PGVECTOR_URL,
-        collection_name=index_name,
-        async_mode=True,
-        distance_strategy=(
-            DistanceStrategy.EUCLIDEAN
-            if distance_metric == "euclidean"
-            else DistanceStrategy.COSINE
-        ),
-    )
+
+async def _retrieve(
+    query: str,
+    top_k: int,
+    index_name: str,
+    filenames: Optional[List[str]] = None,
+) -> List:
+    """Fetch documents using the configured vector store."""
+    store = VectorStoreFactory.create(index_name)
+
+    def _filename_filter(names: List[str]) -> dict:
+        if not names:
+            return {}
+        if _VECTOR_BACKEND == "pgvector":
+            return {"filename": {"$in": names}}
+        if len(names) == 1:
+            return {
+                "operator": "Equal",
+                "path": ["filename"],
+                "valueText": names[0],
+            }
+        return {
+            "operator": "Or",
+            "operands": [
+                {"operator": "Equal", "path": ["filename"], "valueText": n}
+                for n in names
+            ],
+        }
+
+    search_kwargs = {"k": top_k}
+    if filenames:
+        search_kwargs["where_filter"] = _filename_filter(filenames)
+
+    retriever = store.as_retriever(search_kwargs=search_kwargs)
+    return await retriever.aget_relevant_documents(query)
 
 
 def _format_docs(docs: List) -> str:
@@ -52,14 +57,22 @@ def _format_docs(docs: List) -> str:
 @function_tool
 async def similarity_search(
     query: str,
-    top_k: int = 3,
-    index_name: str = _DEFAULT_INDEX,
-    distance_metric: Literal["cosine", "euclidean"] = "cosine",
-    filenames: Optional[List[str]] = None,
+    # top_k: int = 3,
+    # index_name: str = _DEFAULT_INDEX,
+    # distance_metric: Literal["cosine", "euclidean"] = "cosine",
+    # filenames: Optional[List[str]] = None,
 ) -> str:
-    store = _pgvector_store(index_name, distance_metric)
-    filter_ = {"filename": {"$in": filenames}} if filenames else None
-    docs = await store.asimilarity_search(query=query, k=top_k, filter=filter_)
+    """
+    Tool to perform a similarity search.
+    Returns matching content and relevance scores.
+    """
+
+    top_k = 2
+    index_name = "JACSKE_Program"
+    distance_metric = "cosine"
+    filenames = None
+
+    docs = await _retrieve(query, top_k, index_name, filenames)
     return _format_docs(docs)
 
 
@@ -70,14 +83,7 @@ async def keyword_search(
     index_name: str = _DEFAULT_INDEX,
     filenames: Optional[List[str]] = None,
 ) -> str:
-    store = _pgvector_store(index_name, "cosine")
-    filter_ = {"filename": {"$in": filenames}} if filenames else None
-    docs = await store.asearch(
-        query=query,
-        search_type="similarity",
-        k=top_k,
-        filter=filter_,
-    )
+    docs = await _retrieve(query, top_k, index_name, filenames)
     return _format_docs(docs)
 
 
@@ -88,14 +94,5 @@ async def hybrid_search(
     index_name: str = _DEFAULT_INDEX,
     filenames: Optional[List[str]] = None,
 ) -> str:
-    store = _pgvector_store(index_name, "cosine")
-    filter_ = {"filename": {"$in": filenames}} if filenames else None
-    sim_docs = await store.asimilarity_search(query=query, k=top_k, filter=filter_)
-    kw_docs = await store.asearch(
-        query=query,
-        search_type="similarity",
-        k=top_k,
-        filter=filter_,
-    )
-    docs = sim_docs + [d for d in kw_docs if d not in sim_docs]
-    return _format_docs(docs[:top_k])
+    docs = await _retrieve(query, top_k, index_name, filenames)
+    return _format_docs(docs)
