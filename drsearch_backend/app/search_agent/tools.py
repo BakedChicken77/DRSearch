@@ -8,6 +8,7 @@ from app.core.chain_config import _DEFAULT_INDEX, _VECTOR_BACKEND
 from app.vectorstores.factory import VectorStoreFactory
 
 
+
 async def _retrieve(
     query: str,
     top_k: int,
@@ -56,11 +57,21 @@ def _format_docs(docs: List) -> str:
 @function_tool
 async def similarity_search(
     query: str,
-    top_k: int = 3,
-    index_name: str = _DEFAULT_INDEX,
-    distance_metric: Literal["cosine", "euclidean"] = "cosine",
-    filenames: Optional[List[str]] = None,
+    # top_k: int = 3,
+    # index_name: str = _DEFAULT_INDEX,
+    # distance_metric: Literal["cosine", "euclidean"] = "cosine",
+    # filenames: Optional[List[str]] = None,
 ) -> str:
+    """
+    Tool to perform a similarity search.
+    Returns matching content and relevance scores.
+    """
+
+    top_k = 2
+    index_name = "JACSKE_Program"
+    distance_metric = "cosine"
+    filenames = None
+
     docs = await _retrieve(query, top_k, index_name, filenames)
     return _format_docs(docs)
 
