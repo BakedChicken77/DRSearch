@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from typing import Any
+import logging
+
+logger = logging.getLogger(__name__)
 
 import weaviate
 from langchain_community.vectorstores import Weaviate as LangchainWeaviate
@@ -9,6 +12,7 @@ from langchain_core.retrievers import BaseRetriever
 from app.chain.embeddings import EmbeddingFactory
 from app.core import chain_config
 from app.index_config import INDEX_CONFIG
+from app.vectorstores.retriever_wrappers import LoggedRetriever
 
 from . import VectorStore
 
@@ -33,5 +37,7 @@ class WeaviateVectorStore(VectorStore):
             attributes=cfg["attributes"],
         )
 
+
     def as_retriever(self, search_kwargs: dict[str, Any]) -> BaseRetriever:
-        return self._store.as_retriever(search_kwargs=search_kwargs)
+        base = self._store.as_retriever(search_kwargs=search_kwargs)
+        return LoggedRetriever(base)

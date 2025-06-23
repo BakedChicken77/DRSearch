@@ -4,12 +4,16 @@ from __future__ import annotations
 
 from collections import OrderedDict
 from typing import Sequence
+import logging
 
 from langchain_community.document_transformers import LongContextReorder
 from langchain_core.documents import Document
 
 from app.chain.mapping import PartNumberMapping
 from app.core import chain_config
+
+
+logger = logging.getLogger(__name__)
 
 
 class DocumentFormatter:
@@ -30,6 +34,14 @@ class DocumentFormatter:
             self._reorder.transform_documents(unique_docs)
             if self._reorder
             else unique_docs
+        )
+
+        logger.info(
+            "Formatting documents",
+            extra={
+                "doc_count": len(docs_reordered),
+                "filenames": [d.metadata.get("filename") for d in docs_reordered],
+            },
         )
 
         formatted: list[str] = []

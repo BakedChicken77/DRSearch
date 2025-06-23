@@ -2,6 +2,8 @@
 
 This document describes in detail how the `app/chain` package orchestrates the Retrieval Augmented Generation (RAG) pipeline within the DRSearch backend. It summarises the components, data flow and execution sequence observed in the source code.
 
+**Update:** the legacy LangChain graph has been replaced by an OpenAI based RAG Search Agent defined in `app/search_agent`. The agent relies on tools for similarity, keyword and hybrid search against the pgvector database and handles document filtering and `top_k` parameters itself. The `/chat` route still uses LangServe but now delegates to this agent.
+
 ## Key Components
 
 - **ChatEngine (`engine.py`)** – Builds and configures LangChain runnable chains for answering user questions. It initialises the language model, optional retriever and formatting logic.

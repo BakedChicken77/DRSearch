@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from typing import Any
+import logging
+from app.vectorstores.retriever_wrappers import LoggedRetriever
+
+logger = logging.getLogger(__name__)
 
 from langchain_community.vectorstores.azuresearch import (
     AzureSearch as LangchainAzureSearch,
@@ -25,4 +29,5 @@ class AzureVectorStore(VectorStore):
         )
 
     def as_retriever(self, search_kwargs: dict[str, Any]) -> BaseRetriever:
-        return self._store.as_retriever(search_kwargs=search_kwargs)
+        base = self._store.as_retriever(search_kwargs=search_kwargs)
+        return LoggedRetriever(base)

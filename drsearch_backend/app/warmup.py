@@ -4,7 +4,20 @@ from typing import Dict
 import logging
 
 from app.index_options import INDEX_OPTIONS
-from app.chain.api import get_answer_chain
+from app.search_agent.agent import run_agent
+
+
+class _AgentWrapper:
+    async def ainvoke(self, data: dict) -> str:
+        history = []
+        for item in data.get("chat_history", []):
+            history.append(f"User: {item.get('human', '')}")
+            history.append(f"Assistant: {item.get('ai', '')}")
+        return await run_agent(data["question"], history)
+
+
+def get_answer_chain(_: str) -> _AgentWrapper:  # pragma: no cover - shim for tests
+    return _AgentWrapper()
 
 logger = logging.getLogger(__name__)
 
