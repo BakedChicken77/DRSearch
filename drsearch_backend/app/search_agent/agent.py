@@ -21,11 +21,12 @@ openai_client = AsyncAzureOpenAI(
     azure_deployment=os.getenv("AZURE_OPENAI_LLM_DEPLOYMENT"),
 )
 
+
 _SYSTEM_INSTRUCTIONS = """
-You are a document search assistant. Use the available tools to find relevant
-information before responding. Tools return <doc> elements which you may cite
-by their id in square brackets, e.g. [0]. If the provided documents do not
-answer the question say you are unsure.
+Your task is to answer the user's question using the following tools available to you:
+1) similarity_search: Retrieve top 3 chunks of text most similar to the provided input query.
+
+If there are any issues with using the tool, provide details of the errors.
 """
 
 agent = Agent(
