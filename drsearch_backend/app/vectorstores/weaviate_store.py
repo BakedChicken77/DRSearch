@@ -12,6 +12,7 @@ from langchain_core.retrievers import BaseRetriever
 from app.chain.embeddings import EmbeddingFactory
 from app.core import chain_config
 from app.index_config import INDEX_CONFIG
+from app.vectorstores.retriever_wrappers import LoggedRetriever
 
 from . import VectorStore
 
@@ -39,24 +40,4 @@ class WeaviateVectorStore(VectorStore):
 
     def as_retriever(self, search_kwargs: dict[str, Any]) -> BaseRetriever:
         base = self._store.as_retriever(search_kwargs=search_kwargs)
-
-        class _LoggedRetriever(BaseRetriever):
-            def _get_relevant_documents(self, query: str, *, run_manager=None):
-                docs = base.get_relevant_documents(query)
-                logger.info(
-                    "retriever returned %d documents",
-                    len(docs),
-                    extra={"query": query, "doc_count": len(docs)},
-                )
-                return docs
-
-            async def _aget_relevant_documents(self, query: str, *, run_manager=None):
-                docs = await base.ainvoke(query)
-                logger.info(
-                    "retriever returned %d documents",
-                    len(docs),
-                    extra={"query": query, "doc_count": len(docs)},
-                )
-                return docs
-
-        return _LoggedRetriever()
+        return LoggedRetriever(base)
