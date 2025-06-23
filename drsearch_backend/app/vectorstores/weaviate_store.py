@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 from typing import Any
+import logging
+
+logger = logging.getLogger(__name__)
 
 import weaviate
 from langchain_community.vectorstores import Weaviate as LangchainWeaviate
@@ -33,5 +36,27 @@ class WeaviateVectorStore(VectorStore):
             attributes=cfg["attributes"],
         )
 
+
     def as_retriever(self, search_kwargs: dict[str, Any]) -> BaseRetriever:
-        return self._store.as_retriever(search_kwargs=search_kwargs)
+        base = self._store.as_retriever(search_kwargs=search_kwargs)
+
+        class _LoggedRetriever(BaseRetriever):
+            def _get_relevant_documents(self, query: str, *, run_manager=None):
+                docs = base.get_relevant_documents(query)
+                logger.info(
+                    "retriever returned %d documents",
+                    len(docs),
+                    extra={"query": query, "doc_count": len(docs)},
+                )
+                return docs
+
+            async def _aget_relevant_documents(self, query: str, *, run_manager=None):
+                docs = await base.ainvoke(query)
+                logger.info(
+                    "retriever returned %d documents",
+                    len(docs),
+                    extra={"query": query, "doc_count": len(docs)},
+                )
+                return docs
+
+        return _LoggedRetriever()

@@ -4,6 +4,9 @@ from typing import Any, Iterable
 
 from langchain_community.vectorstores.pgvector import PGVector
 from langchain_core.retrievers import BaseRetriever
+import logging
+
+logger = logging.getLogger(__name__)
 
 from app.chain.embeddings import EmbeddingFactory
 from app.core import chain_config
@@ -69,6 +72,11 @@ class PgVectorStore(VectorStore):
                     else None
                 )
                 docs = base.get_relevant_documents(query, callbacks=callbacks)
+                logger.info(
+                    "retriever returned %d documents",
+                    len(docs),
+                    extra={"query": query, "doc_count": len(docs)},
+                )
                 return _strip(docs)
 
             async def _aget_relevant_documents(self, query: str, *, run_manager=None):  # type: ignore[override]
@@ -78,6 +86,11 @@ class PgVectorStore(VectorStore):
                     else None
                 )
                 docs = await base.ainvoke(query, config={"callbacks": callbacks})
+                logger.info(
+                    "retriever returned %d documents",
+                    len(docs),
+                    extra={"query": query, "doc_count": len(docs)},
+                )
                 return _strip(docs)
 
         return _FilteredRetriever()
