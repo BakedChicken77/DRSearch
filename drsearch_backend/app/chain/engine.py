@@ -138,6 +138,14 @@ class ChatEngine:
             ]
         )
 
+        logger.info(
+            "Initialising chat engine",
+            extra={
+                "index": self._index_name,
+                "retrieval_enabled": enable_retrieval,
+            },
+        )
+
         if enable_retrieval and raw_retriever is not None:
             # decomposer_prompt = PromptTemplate.from_template(System_Prompts.REPHRASE_TEMPLATE)
             retriever = MultiQueryRetriever.from_llm(
@@ -195,24 +203,57 @@ class ChatEngine:
         condense_prompt = PromptTemplate.from_template(System_Prompts.REPHRASE_TEMPLATE)
         condense = condense_prompt | self._llm | StrOutputParser()
 
+        def _log_query(query: str) -> str:
+            logger.info(
+                "Retrieval query",
+                extra={"index": self._index_name, "query": query},
+            )
+            return query
+
         def _modify_docs(docs: List[Document]) -> List[Document]:
             # Enrich docs with UNC path when mapping present
             mapping = self._mapping.data
             if mapping is None:
+                logger.info(
+                    "Retrieved %d documents", len(docs),
+                    extra={"index": self._index_name, "doc_count": len(docs)},
+                )
+                if not docs:
+                    logger.warning(
+                        "No documents retrieved", extra={"index": self._index_name}
+                    )
                 return docs
             for doc in docs:
                 filename = doc.metadata.get("filename", "")
                 if filename in mapping:
                     doc.metadata["file_path"] = mapping[filename]
+            logger.info(
+                "Retrieved %d documents", len(docs),
+                extra={
+                    "index": self._index_name,
+                    "doc_count": len(docs),
+                    "filenames": [d.metadata.get("filename") for d in docs],
+                },
+            )
+            if not docs:
+                logger.warning(
+                    "No documents retrieved", extra={"index": self._index_name}
+                )
             return docs
 
-        base_chain = condense | retriever | RunnableLambda(_modify_docs)
+        base_chain = (
+            condense
+            | RunnableLambda(_log_query)
+            | retriever
+            | RunnableLambda(_modify_docs)
+        )
         history_branch = (
             RunnableLambda(lambda d: bool(d.get("chat_history"))),
             base_chain,
         )
         no_history_branch = (
             RunnableLambda(itemgetter("question"))
+            | RunnableLambda(_log_query)
             | retriever
             | RunnableLambda(_modify_docs)
         )
