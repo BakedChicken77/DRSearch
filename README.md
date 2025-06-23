@@ -61,3 +61,20 @@ to
 ```Dockerfile
 CMD ["yarn", "dev"]
 ```
+
+## Streaming Chat API
+
+The `/chat` endpoint streams `StreamEvent` objects using Server-Sent Events. Each
+event has an SSE `event` field equal to `StreamEvent.type` and the JSON body is
+the serialized dataclass:
+
+```
+event: raw_response_event
+data: {"type":"raw_response_event","data":{"delta":"hi"}}
+
+event: run_item_stream_event
+data: {"type":"run_item_stream_event","name":"tool_output","item":{...}}
+```
+
+Clients should listen for these events and end the stream when an `end` event is
+received.

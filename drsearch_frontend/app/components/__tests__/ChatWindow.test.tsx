@@ -133,8 +133,11 @@ test("sends message and processes stream", async () => {
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
-      event: "data",
-      data: JSON.stringify({ streamed_output: ["hi"], id: "1", ops: [] }),
+      event: "raw_response_event",
+      data: JSON.stringify({
+        data: { delta: "hi" },
+        type: "raw_response_event",
+      }),
     });
     opts.onmessage?.({ event: "end" });
   });
@@ -169,8 +172,11 @@ test("changing index resets chat", async () => {
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
-      event: "data",
-      data: JSON.stringify({ streamed_output: ["hi"], id: "1", ops: [] }),
+      event: "raw_response_event",
+      data: JSON.stringify({
+        data: { delta: "hi" },
+        type: "raw_response_event",
+      }),
     });
     opts.onmessage?.({ event: "end" });
   });
@@ -197,9 +203,10 @@ test("index change clears messages", async () => {
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
-      event: "data",
+      event: "raw_response_event",
       data: JSON.stringify({
-        ops: [{ op: "add", path: "/streamed_output", value: ["answer"] }],
+        data: { delta: "answer" },
+        type: "raw_response_event",
       }),
     });
     opts.onmessage?.({ event: "end" });
@@ -237,8 +244,11 @@ test("new chat button clears messages but keeps index", async () => {
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
-      event: "data",
-      data: JSON.stringify({ streamed_output: ["hi"], id: "1", ops: [] }),
+      event: "raw_response_event",
+      data: JSON.stringify({
+        data: { delta: "hi" },
+        type: "raw_response_event",
+      }),
     });
     opts.onmessage?.({ event: "end" });
   });
@@ -251,7 +261,8 @@ test("new chat button clears messages but keeps index", async () => {
   fireEvent.change(select, { target: { value: "idx" } });
   fireEvent.change(screen.getByRole("textbox"), { target: { value: "hi" } });
   fireEvent.click(screen.getByLabelText("Send"));
-  await screen.findByText("hi");
+  await act(async () => {});
+  await screen.findAllByText(/hi/);
 
   fireEvent.click(screen.getByLabelText("start new chat"));
   await screen.findByText("q1");
@@ -287,26 +298,20 @@ test("renders highlighted markdown and updates message", async () => {
 
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
-      event: "data",
+      event: "raw_response_event",
       data: JSON.stringify({
-        ops: [
-          {
-            op: "add",
-            path: "/streamed_output",
-            value: ["response"],
-          },
-          {
-            op: "add",
-            path: "/logs",
-            value: {
-              FindDocs: {
-                final_output: {
-                  output: [{ metadata: { file_path: "p", filename: "f" } }],
-                },
-              },
-            },
-          },
-        ],
+        data: { delta: "response" },
+        type: "raw_response_event",
+      }),
+    });
+    opts.onmessage?.({
+      event: "run_item_stream_event",
+      data: JSON.stringify({
+        type: "run_item_stream_event",
+        name: "tool_output",
+        item: {
+          output: [{ metadata: { file_path: "p", filename: "f" } }],
+        },
       }),
     });
     opts.onmessage?.({ event: "end" });

@@ -8,9 +8,10 @@ import logging
 import os
 import urllib.parse
 from pathlib import Path
+from typing import AsyncIterator
 
 from fastapi import APIRouter, HTTPException, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from langserve import add_routes
 
 from ...core.config import Settings, get_settings
@@ -18,7 +19,7 @@ from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for sid
 from app.auth import jwt  # triggers cache warming on app-start
 from app.chain.api import answer_chain
 from langchain_core.runnables import RunnableLambda
-from app.search_agent.agent import run_agent
+from app.search_agent.agent import run_agent, run_agent_streamed
 from app.models import (
     ChatRequest,
     Feedback,
@@ -60,14 +61,14 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     router = APIRouter()
 
     # ---- /chat  (langserve wires up streaming handlers etc.)
-    async def _call_agent(inputs: dict) -> str:
+    async def _invoke_agent(inputs: dict) -> str:
         history = []
         for item in inputs.get("chat_history", []):
             history.append(f"User: {item.get('human', '')}")
             history.append(f"Assistant: {item.get('ai', '')}")
         return await run_agent(inputs["question"], history)
 
-    agent_chain = RunnableLambda(_call_agent)
+    agent_chain = RunnableLambda(_invoke_agent)
 
     add_routes(
         router,
@@ -77,6 +78,21 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
         config_keys=["metadata"],
         playground_type="chat",
     )
+
+    @router.post("/chat", response_model=None)
+    async def _call_agent(body: ChatRequest) -> StreamingResponse:
+        history = []
+        for item in body.chat_history or []:
+            history.append(f"User: {item.get('human', '')}")
+            history.append(f"Assistant: {item.get('ai', '')}")
+
+        async def event_stream() -> AsyncIterator[str]:
+            async for event in run_agent_streamed(body.question, history):
+                data = json.dumps(event.__dict__)
+                yield f"event: {event.type}\n" f"data: {data}\n\n"
+            yield "event: end\n\n"
+
+        return StreamingResponse(event_stream(), media_type="text/event-stream")
 
     # ---- /index-options
     @router.get("/index-options", response_model=IndexOptionsResponse)

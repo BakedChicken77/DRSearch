@@ -5,10 +5,12 @@ from agents import (
     ModelSettings,
     Runner,
     OpenAIChatCompletionsModel,
+    StreamEvent,
     set_tracing_disabled,
 )
 from openai import AsyncAzureOpenAI
 import os
+from typing import AsyncIterator
 
 from .tools import similarity_search, keyword_search, hybrid_search
 
@@ -43,3 +45,13 @@ agent = Agent(
 async def run_agent(question: str, history: list[str] | None = None) -> str:
     result = await Runner.run(agent, question, context={"history": history or []})
     return result.final_output
+
+
+async def run_agent_streamed(
+    question: str, history: list[str] | None = None
+) -> AsyncIterator[StreamEvent]:
+    """Run the agent and stream back events."""
+    result = await Runner.run_streamed(
+        agent, question, context={"history": history or []}
+    )
+    return result.stream_events()

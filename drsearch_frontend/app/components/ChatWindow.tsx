@@ -12,7 +12,6 @@ import { marked, Renderer } from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/gradient-dark.css";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { applyPatch } from "fast-json-patch";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import {
@@ -156,18 +155,12 @@ export function ChatWindow(props: {
     if (AUTH_ENABLED) headers.Authorization = `Bearer ${accessToken}`;
 
     try {
-      await fetchEventSource(`${apiBaseUrl}/chat/stream_log`, {
+      await fetchEventSource(`${apiBaseUrl}/chat`, {
         method: "POST",
         headers,
         body: JSON.stringify({
-          input: {
-            question: messageValue,
-            chat_history: chatHistory,
-            index_name: selectedIndexName,
-            num_docs_retrieved: numDocs,
-          },
-          config: { metadata: { conversation_id: conversationId } },
-          include_names: ["FindDocs"],
+          question: messageValue,
+          chat_history: chatHistory,
         }),
         openWhenHidden: true,
         onerror(err) {
@@ -186,36 +179,26 @@ export function ChatWindow(props: {
             return;
           }
 
-          if (msg.event === "data" && msg.data) {
-            const chunk = JSON.parse(msg.data);
-
-            // ═ Apply patches to our persistent object ═
-            streamedResponse = applyPatch(
-              streamedResponse,
-              chunk.ops,
-            ).newDocument;
-
-            const doc = streamedResponse;
-
-            // extract sources if present
-            if (Array.isArray(doc.logs?.FindDocs?.final_output?.output)) {
-              sources = doc.logs.FindDocs.final_output.output.map((d: any) => ({
+          if (msg.data) {
+            const event = JSON.parse(msg.data);
+            if (msg.event === "raw_response_event") {
+              const inner = event.data;
+              if (inner?.delta) {
+                accumulated += inner.delta;
+              }
+            } else if (
+              msg.event === "run_item_stream_event" &&
+              event.name === "tool_output" &&
+              Array.isArray(event.item?.output)
+            ) {
+              sources = event.item.output.map((d: any) => ({
                 url: d.metadata.file_path,
                 title: d.metadata.filename,
               }));
             }
 
-            // track run ID
-            if (doc.id) runId = doc.id;
-
-            // accumulate streamed text
-            if (Array.isArray(doc.streamed_output)) {
-              accumulated = doc.streamed_output.join("");
-            }
-
             const rendered = marked.parse(accumulated);
 
-            // update assistant bubble
             setMessages((prev) => {
               const copy = [...prev];
               if (msgIdx === null || !copy[msgIdx]) {

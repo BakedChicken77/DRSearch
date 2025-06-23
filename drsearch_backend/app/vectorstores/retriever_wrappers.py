@@ -3,16 +3,21 @@ from typing import Any, Callable, Iterable
 import logging
 
 from langchain_core.retrievers import BaseRetriever
+from pydantic import PrivateAttr
 
 logger = logging.getLogger(__name__)
 
 
 class LoggedRetriever(BaseRetriever):
+    model_config = {"arbitrary_types_allowed": True}
+    _base: BaseRetriever = PrivateAttr()
+
     def __init__(self, base: BaseRetriever):
-        self.base = base
+        super().__init__()
+        self._base = base
 
     def _get_relevant_documents(self, query: str, *, run_manager=None):
-        docs = self.base.get_relevant_documents(query)
+        docs = self._base.get_relevant_documents(query)
         logger.info(
             "retriever returned %d documents",
             len(docs),
@@ -21,7 +26,7 @@ class LoggedRetriever(BaseRetriever):
         return docs
 
     async def _aget_relevant_documents(self, query: str, *, run_manager=None):
-        docs = await self.base.ainvoke(query)
+        docs = await self._base.ainvoke(query)
         logger.info(
             "retriever returned %d documents",
             len(docs),

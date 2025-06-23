@@ -58,7 +58,7 @@ export function SettingsDrawer({ numDocs, setNumDocs }: { numDocs: number; setNu
 * **Request Payload:** When sending a chat request, `ChatWindow` includes `num_docs_retrieved` in the JSON body:
 
 ```tsx
-await fetchEventSource(`${apiBaseUrl}/chat/stream_log`, {
+await fetchEventSource(`${apiBaseUrl}/chat`, {
   method: "POST",
   headers,
   body: JSON.stringify({
