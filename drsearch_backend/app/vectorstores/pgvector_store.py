@@ -12,6 +12,7 @@ from app.chain.embeddings import EmbeddingFactory
 from app.core import chain_config
 from app.index_config import INDEX_CONFIG
 
+
 from . import VectorStore
 
 
@@ -94,3 +95,13 @@ class PgVectorStore(VectorStore):
                 return _strip(docs)
 
         return _FilteredRetriever()
+    
+
+
+    # def as_retriever(self, search_kwargs: dict[str, Any]) -> BaseRetriever:
+    #     kw = dict(search_kwargs)
+    #     if "where_filter" in kw:
+    #         kw["filter"] = self._convert_filter(kw.pop("where_filter"))
+    #     base = self._store.as_retriever(search_kwargs=kw)
+    #     return FilteredLoggedRetriever(base, allowed_metadata_keys=self._attributes)
+
