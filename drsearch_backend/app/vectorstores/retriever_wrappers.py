@@ -1,3 +1,4 @@
+
 from typing import Any, Callable, Iterable
 import logging
 
@@ -29,8 +30,6 @@ class LoggedRetriever(BaseRetriever):
         return docs
 
 
-# This class was created to use in app\vectorstores\pgvector_store.py class '_FilteredRetriever' for modularity.
-# However, this has no been integrated into app\vectorstores\pgvector_store.py PgVectorStore.as_retriever() 
 class FilteredLoggedRetriever(LoggedRetriever):
     def __init__(self, base: BaseRetriever, allowed_metadata_keys: Iterable[str]):
         super().__init__(base)
