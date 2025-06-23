@@ -87,8 +87,9 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
             history.append(f"Assistant: {item.get('ai', '')}")
 
         async def event_stream() -> AsyncIterator[str]:
-            async for event in run_agent_streamed(body.question, history):
-                data = json.dumps(event.__dict__)
+            stream = await run_agent_streamed(body.question, history)
+            async for event in stream:
+                data = json.dumps(event, default=str)
                 yield f"event: {event.type}\n" f"data: {data}\n\n"
             yield "event: end\n\n"
 
