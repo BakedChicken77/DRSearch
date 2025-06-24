@@ -1,0 +1,9 @@
+{
+  "input": {
+    "question": "How do I test a next.js frontend?",
+    "chat_history": [{"human": "Hi", "ai": "Hello!"}],
+    "index_name": "TEST_INDEX",
+    "num_docs_retrieved": 2
+  },
+  "include_names": ["FindDocs"]
+}
