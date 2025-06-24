@@ -86,5 +86,12 @@ INDEX_CONFIG = {
         "response_template": System_Prompts.RESPONSE_TEMPLATE_ADACS_TECH,
         "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER_ADACS_TECH,
         "PN_TO_FILE_MAPPING": "ADACS_TECH.csv"
+    },
+    "TEST_INDEX": {
+        "attributes": ["file_path", "filename", "url", "text_as_html"],
+        "index_key": "page_content",
+        "response_template": System_Prompts.RESPONSE_TEMPLATE_DRS_SHORT,
+        "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER_AND_VARIATIONS,
+        "PN_TO_FILE_MAPPING": None
     }
 }
