@@ -90,7 +90,7 @@ INDEX_CONFIG = {
     "TEST_INDEX": {
         "attributes": ["file_path", "filename", "url", "text_as_html"],
         "index_key": "page_content",
-        "response_template": System_Prompts.RESPONSE_TEMPLATE_DRS_SHORT,
+        "response_template": System_Prompts.RESPONSE_TEMPLATE_TEST_INDEX,
         "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER_AND_VARIATIONS,
         "PN_TO_FILE_MAPPING": None
     }
