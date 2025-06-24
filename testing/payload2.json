@@ -1,0 +1,10 @@
+{
+  "input": {
+    "question": "How do I test a FastAPI server?",
+    "chat_history": [
+      {"human": "Hi", "ai": "Hello!"}
+    ],
+    "index_name": "TEST_INDEX",
+    "num_docs_retrieved": 1
+  }
+}
