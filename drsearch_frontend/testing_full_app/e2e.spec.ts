@@ -43,19 +43,39 @@ test.describe('trace replay', () => {
       });
 
       await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
+      await page.waitForLoadState('networkidle');  // ensures all fetches/requests settle
 
+      // Select index first to enable the textarea
+      const select = page.locator('select');
+      await select.waitFor({ state: 'visible' });
+      await select.selectOption(payload.input.index_name);
+
+      // Configure num_docs_retrieved if needed
       if (payload.input.num_docs_retrieved !== 3) {
-        await page.click('button[aria-label="Open settings"]');
+        const settingsBtn = page.locator('button[aria-label="Open settings"]');
+        await settingsBtn.waitFor({ state: 'visible', timeout: 5000 });
+        await expect(settingsBtn).toBeEnabled();
+        await settingsBtn.click();
+
         const numInput = page.locator('input[type="number"]');
+        await numInput.waitFor({ state: 'visible' });
+        await expect(numInput).toBeEnabled();
         await numInput.fill(String(payload.input.num_docs_retrieved));
         await page.click('button[aria-label="Close"]');
       }
 
-      await page.fill('textarea', payload.input.question);
-      await page.selectOption('select', payload.input.index_name);
+
+      // Now that the index is selected, textarea should be active
+      const input = page.locator('textarea[placeholder]:not([aria-hidden])');
+      await input.waitFor({ state: 'visible' });
+      await expect(input).toBeEnabled();
+      await input.fill(payload.input.question);
+
       await page.click('button[aria-label="Send"]');
 
-      await expect(page.locator('div.whitespace-pre-wrap').last()).toContainText(expectedTails[idx], { timeout: 15000 });
+      await expect(page.locator('div.whitespace-pre-wrap').last())
+        .toContainText(expectedTails[idx], { timeout: 15000 });
+
       expect(consoleErrors).toEqual([]);
     });
   });
