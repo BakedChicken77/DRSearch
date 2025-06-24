@@ -23,13 +23,24 @@ openai_client = AsyncAzureOpenAI(
     azure_deployment=os.getenv("AZURE_OPENAI_LLM_DEPLOYMENT"),
 )
 
+# _SYSTEM_INSTRUCTIONS = """
+# You are a document search assistant. Use the available tools to find relevant
+# information before responding. Tools return <doc> elements which you may cite
+# by their id in square brackets, e.g. [0]. If the provided documents do not
+# answer the question say you are unsure.
+# """
 
 _SYSTEM_INSTRUCTIONS = """
 Your task is to answer the user's question using the following tools available to you:
-1) similarity_search: Retrieve top 3 chunks of text most similar to the provided input query.
 
+1) similarity_search: Retrieve top 3 chunks of text most similar to the provided input query.
+2) keyword_search: Retrieve top 3 chucks of text based on keyword search and filename filter. The filename input will filter out all documents that don't match the file name. \
+Only provide a filename if you truely know the filename, i.e. it was referenced in other search results.
 If there are any issues with using the tool, provide details of the errors.
 """
+
+
+
 
 agent = Agent(
     name="RAG Search Agent",
@@ -38,7 +49,7 @@ agent = Agent(
         os.getenv("AZURE_OPENAI_LLM_DEPLOYMENT"), openai_client=openai_client
     ),
     model_settings=ModelSettings(temperature=0.0),
-    tools=[similarity_search, keyword_search, hybrid_search],
+    tools=[similarity_search, keyword_search]#, hybrid_search],
 )
 
 
@@ -51,7 +62,5 @@ async def run_agent_streamed(
     question: str, history: list[str] | None = None
 ) -> AsyncIterator[StreamEvent]:
     """Run the agent and stream back events."""
-    result = await Runner.run_streamed(
-        agent, question, context={"history": history or []}
-    )
+    result = Runner.run_streamed(agent, question, context={"history": history or []})
     return result.stream_events()
