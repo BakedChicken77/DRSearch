@@ -41,8 +41,6 @@ done
 
 cd drsearch_frontend
 
-npx -y playwright install --with-deps
-
 npx -y playwright test testing_full_app/e2e.spec.ts
 STATUS=$?
 

@@ -20,8 +20,18 @@ TRACES_DIR = Path(__file__).resolve().parent / "traces"
 last_request: dict | None = None
 
 INDEX_OPTIONS = [
-    {"name": "TEST_INDEX", "display_name": "TEST_INDEX", "initialized": True},
-    {"name": "OTHER_INDEX", "display_name": "OTHER_INDEX", "initialized": True},
+    {
+        "name": "TEST_INDEX",
+        "display_name": "TEST_INDEX",
+        "initialized": True,
+        "example_questions": ["Example question 1", "Example question 2"],
+    },
+    {
+        "name": "OTHER_INDEX",
+        "display_name": "OTHER_INDEX",
+        "initialized": True,
+        "example_questions": ["Other question 1", "Other question 2"],
+    },
 ]
 
 
