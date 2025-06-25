@@ -1,0 +1,1109 @@
+event: data
+data: {"ops":[{"op":"replace","path":"","value":{"id":"c34dc77f-3e01-4df1-bc9f-ae2a6ae151bc","streamed_output":[],"final_output":null,"logs":{},"name":"/chat","type":"chain"}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence","value":{"id":"91174e3b-3c11-476a-ab7a-7c10638427ca","name":"RunnableSequence","type":"chain","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.631+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<question,chat_history>","value":{"id":"774313ac-274a-45dc-a048-be40291793d4","name":"RunnableParallel<question,chat_history>","type":"chain","tags":["seq:step:1"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.631+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda","value":{"id":"e50ef6ef-f807-456a-b53f-ab06f4bad6d1","name":"RunnableLambda","type":"chain","tags":["map:key:question"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.631+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:2","value":{"id":"f53fbcac-db5c-4b9e-a2c8-443fab0c244f","name":"RunnableLambda","type":"chain","tags":["map:key:chat_history"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.631+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda/streamed_output/-","value":"How do I test a next.js frontend?"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<question,chat_history>/streamed_output/-","value":{"question":"How do I test a next.js frontend?"}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:2/streamed_output/-","value":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}]}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<context,question,chat_history>","value":{"id":"e4747bfd-5646-4c8c-b965-f8808ac25503","name":"RunnableParallel<context,question,chat_history>","type":"chain","tags":["seq:step:2"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.648+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:2","value":{"id":"2974dc06-cac1-4f33-9d95-37af70ec38b6","name":"RunnableSequence","type":"chain","tags":["map:key:context"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.662+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:3","value":{"id":"7a5c048f-c1b9-4cd9-89e7-c3c2e0dc4d6a","name":"RunnableLambda","type":"chain","tags":["map:key:question"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.663+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:4","value":{"id":"7a8e5340-3ecb-4dd6-a8cc-bc27798da9e1","name":"RunnableLambda","type":"chain","tags":["map:key:chat_history"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.663+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<question,chat_history>/streamed_output/-","value":{"chat_history":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda/final_output","value":{"output":"How do I test a next.js frontend?"}},{"op":"add","path":"/logs/RunnableLambda/end_time","value":"2025-06-24T15:09:24.663+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:2/final_output","value":{"output":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}]}},{"op":"add","path":"/logs/RunnableLambda:2/end_time","value":"2025-06-24T15:09:24.663+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<question,chat_history>/final_output","value":{"question":"How do I test a next.js frontend?","chat_history":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}]}},{"op":"add","path":"/logs/RunnableParallel<question,chat_history>/end_time","value":"2025-06-24T15:09:24.663+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/FindDocs","value":{"id":"c89e1851-6305-4dde-b66f-a0f45d8ac35a","name":"FindDocs","type":"chain","tags":["seq:step:1"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.663+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:4/streamed_output/-","value":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}]}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:3/streamed_output/-","value":"How do I test a next.js frontend?"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<context,question,chat_history>/streamed_output/-","value":{"question":"How do I test a next.js frontend?"}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:5","value":{"id":"85788d1d-99a8-4600-ae9f-f7fab54caac7","name":"RunnableLambda","type":"chain","tags":["condition:1"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.663+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3","value":{"id":"247f0b0e-02cf-4235-8e9f-f6cc89231b8c","name":"RunnableSequence","type":"chain","tags":["seq:step:3"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.663+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<context,question,chat_history>/streamed_output/-","value":{"chat_history":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:5/final_output","value":{"output":true}},{"op":"add","path":"/logs/RunnableLambda:5/end_time","value":"2025-06-24T15:09:24.679+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:3/final_output","value":{"output":"How do I test a next.js frontend?"}},{"op":"add","path":"/logs/RunnableLambda:3/end_time","value":"2025-06-24T15:09:24.679+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:4/final_output","value":{"output":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}]}},{"op":"add","path":"/logs/RunnableLambda:4/end_time","value":"2025-06-24T15:09:24.679+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:4","value":{"id":"fef1471e-cbf0-487f-9498-c8f7ee898520","name":"RunnableSequence","type":"chain","tags":["branch:1"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.679+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/PromptTemplate","value":{"id":"8cd506ff-ee8e-4bd6-ab34-3f7aa38586e7","name":"PromptTemplate","type":"prompt","tags":["seq:step:1"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.679+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/PromptTemplate/final_output","value":{"text":"Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.\n\nChat History:\n[HumanMessage(content='Hi'), AIMessage(content='Hello!')]\nFollow Up Input: How do I test a next.js frontend?\nStandalone Question:","type":"StringPromptValue"}},{"op":"add","path":"/logs/PromptTemplate/end_time","value":"2025-06-24T15:09:24.679+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI","value":{"id":"bbf57232-f571-47bb-b9d8-cb58b2f243d1","name":"AzureChatOpenAI","type":"llm","tags":["seq:step:2"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:24.679+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":""},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":"","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser","value":{"id":"48196b19-86c9-40ab-b436-7b0baaf11835","name":"StrOutputParser","type":"parser","tags":["seq:step:3"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:25.262+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":"How"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":"How","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":"How"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":" can"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":" can","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":" can"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":" I"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":" I","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":" I"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":" test"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":" test","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":" test"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":" a"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":" Next"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":".js"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":" frontend"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":"?"},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":"?","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":"?"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output_str/-","value":""},{"op":"add","path":"/logs/AzureChatOpenAI/streamed_output/-","value":{"content":"","additional_kwargs":{},"response_metadata":{"finish_reason":"stop"},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI/final_output","value":{"generations":[[{"text":"How can I test a Next.js frontend?","generation_info":{"finish_reason":"stop"},"type":"ChatGenerationChunk","message":{"content":"How can I test a Next.js frontend?","additional_kwargs":{},"response_metadata":{"finish_reason":"stop"},"type":"AIMessageChunk","name":null,"id":"run-bbf57232-f571-47bb-b9d8-cb58b2f243d1","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]],"llm_output":null,"run":null}},{"op":"add","path":"/logs/AzureChatOpenAI/end_time","value":"2025-06-24T15:09:25.278+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser/final_output","value":{"output":"How can I test a Next.js frontend?"}},{"op":"add","path":"/logs/StrOutputParser/end_time","value":"2025-06-24T15:09:25.278+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever","value":{"id":"5b74fcc8-cd4b-40ea-9038-979b58a602b0","name":"Retriever","type":"retriever","tags":["seq:step:4"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:25.294+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/LLMChain","value":{"id":"5f0d6c25-a67f-46b2-bfe7-84065b1f8b6a","name":"LLMChain","type":"chain","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:25.294+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2","value":{"id":"aa7d06d8-2e13-451b-b96c-12654c21b37d","name":"AzureChatOpenAI","type":"llm","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:25.294+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":""},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"Component"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"Component","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" questions"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" questions","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":":\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":":\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"1"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"1","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" What"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" What","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" are"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" are","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" the"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" the","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" best"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" best","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" practices"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" practices","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" testing"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" testing","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"2"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"2","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" What"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" What","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" tools"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" tools","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" can"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" can","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" be"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" be","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" used"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" used","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" to"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" to","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" test"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" test","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"3"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"3","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" How"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" How","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" do"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" do","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" I"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" I","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" set"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" set","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" up"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" up","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" testing"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" testing","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" environment"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" environment","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"4"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"4","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" What"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" What","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" types"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" types","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" of"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" of","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" tests"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" tests","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" should"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" should","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" be"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" be","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" written"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" written","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"5"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"5","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Are"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Are","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" there"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" there","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" any"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" any","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" specific"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" specific","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" libraries"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" libraries","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" recommended"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" recommended","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" testing"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" testing","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" applications"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" applications","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"Alternative"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"Alternative","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" questions"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" questions","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":":\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":":\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"1"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"1","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" What"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" What","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" are"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" are","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" the"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" the","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" recommended"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" recommended","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" methods"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" methods","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" testing"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" testing","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"2"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"2","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Which"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Which","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" testing"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" testing","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" tools"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" tools","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" are"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" are","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" suitable"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" suitable","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"3"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"3","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" How"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" How","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" do"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" do","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" I"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" I","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" configure"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" configure","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" testing"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" testing","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" environment"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" environment","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"4"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"4","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" What"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" What","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" kinds"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" kinds","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" of"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" of","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" tests"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" tests","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" are"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" are","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" important"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" important","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?\n"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?\n","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"5"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"5","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Can"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Can","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" you"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" you","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" suggest"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" suggest","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" any"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" any","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" libraries"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" libraries","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" for"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" for","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" testing"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" testing","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" a"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" a","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" Next"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" Next","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":".js"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":".js","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":" frontend"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":" frontend","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":"?"},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"?","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output_str/-","value":""},{"op":"add","path":"/logs/AzureChatOpenAI:2/streamed_output/-","value":{"content":"","additional_kwargs":{},"response_metadata":{"finish_reason":"stop"},"type":"AIMessageChunk","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:2/final_output","value":{"generations":[[{"text":"Component questions:\n1. What are the best practices for testing a Next.js frontend?\n2. What tools can be used to test a Next.js frontend?\n3. How do I set up a testing environment for a Next.js frontend?\n4. What types of tests should be written for a Next.js frontend?\n5. Are there any specific libraries recommended for testing Next.js applications?\n\nAlternative questions:\n1. What are the recommended methods for testing a Next.js frontend?\n2. Which testing tools are suitable for a Next.js frontend?\n3. How do I configure a testing environment for a Next.js frontend?\n4. What kinds of tests are important for a Next.js frontend?\n5. Can you suggest any libraries for testing a Next.js frontend?","generation_info":{"finish_reason":"stop"},"type":"ChatGeneration","message":{"content":"Component questions:\n1. What are the best practices for testing a Next.js frontend?\n2. What tools can be used to test a Next.js frontend?\n3. How do I set up a testing environment for a Next.js frontend?\n4. What types of tests should be written for a Next.js frontend?\n5. Are there any specific libraries recommended for testing Next.js applications?\n\nAlternative questions:\n1. What are the recommended methods for testing a Next.js frontend?\n2. Which testing tools are suitable for a Next.js frontend?\n3. How do I configure a testing environment for a Next.js frontend?\n4. What kinds of tests are important for a Next.js frontend?\n5. Can you suggest any libraries for testing a Next.js frontend?","additional_kwargs":{},"response_metadata":{"finish_reason":"stop"},"type":"ai","name":null,"id":"run-aa7d06d8-2e13-451b-b96c-12654c21b37d","example":false,"tool_calls":[],"invalid_tool_calls":[]}}]],"llm_output":null,"run":null}},{"op":"add","path":"/logs/AzureChatOpenAI:2/end_time","value":"2025-06-24T15:09:27.229+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/LLMChain/final_output","value":{"text":["Component questions:","1. What are the best practices for testing a Next.js frontend?","2. What tools can be used to test a Next.js frontend?","3. How do I set up a testing environment for a Next.js frontend?","4. What types of tests should be written for a Next.js frontend?","5. Are there any specific libraries recommended for testing Next.js applications?","","Alternative questions:","1. What are the recommended methods for testing a Next.js frontend?","2. Which testing tools are suitable for a Next.js frontend?","3. How do I configure a testing environment for a Next.js frontend?","4. What kinds of tests are important for a Next.js frontend?","5. Can you suggest any libraries for testing a Next.js frontend?"]}},{"op":"add","path":"/logs/LLMChain/end_time","value":"2025-06-24T15:09:27.229+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:2","value":{"id":"78b01eb0-ee7e-428e-8301-df761e0bbec9","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.236+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:3","value":{"id":"0cc46504-7a62-4447-b181-b3e4bc37a713","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.236+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:4","value":{"id":"3fce040e-950a-407d-80ae-f822dbf34d91","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.236+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:5","value":{"id":"3744a19c-c42a-45ce-a4b5-0895c4212200","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.237+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:6","value":{"id":"8ce8c5f6-6107-4890-b9bf-97ae581d86dd","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.238+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:7","value":{"id":"9862f545-2488-44b6-8ad2-89855178b14e","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.238+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:8","value":{"id":"3861148f-f2dd-41e0-ac0b-5bf4ac8ebbdf","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.238+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:9","value":{"id":"6df3d23c-54ea-4c9e-aee4-8d7cc9a59467","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.238+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:10","value":{"id":"87b61795-75ce-437f-8a26-765bb1bf8f97","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.239+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:11","value":{"id":"5e460be6-eb1a-4ac4-8cfd-242bde0aab83","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.239+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:12","value":{"id":"bf299de0-b117-4b54-9569-c520e7b15a1a","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.239+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:13","value":{"id":"3b3704e1-7084-49c3-87da-5c75b2a317e8","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.240+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:14","value":{"id":"bce578df-b66c-4f28-bbc9-4a5f24335944","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.240+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:15","value":{"id":"b47b4fef-e797-4755-a012-30bc43598748","name":"Retriever","type":"retriever","tags":[],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.240+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:16","value":{"id":"7db2ca66-812d-49d9-b7c5-10e88ecaf64f","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.243+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:17","value":{"id":"55eb2f54-788a-4e4e-9586-16bde9b2b7fa","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.243+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:18","value":{"id":"b670a8b3-e894-4884-9830-128724c3f16e","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.243+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:19","value":{"id":"0b5f9f07-e711-48d9-9aa6-5ba21d194d64","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.244+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:20","value":{"id":"3e910547-727d-46ab-9709-6355ad49601b","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.245+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:21","value":{"id":"01cf60d2-e011-4a80-a383-7cd1962979b0","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.245+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:22","value":{"id":"f89270b9-9578-4e26-b948-487715204fd8","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:23","value":{"id":"0d774b8d-5062-4f50-a55c-3c7daa845e90","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:24","value":{"id":"6ff845de-0a04-4b13-b5ad-fe783b96fd16","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:25","value":{"id":"73532df1-d39f-428e-8ea7-7b9259c8ddf3","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:26","value":{"id":"72e6b5c1-238a-4249-9d79-36855d6320db","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:27","value":{"id":"737267e1-adbb-4e39-a8f3-af7e3c743de2","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:28","value":{"id":"2d2a732b-1ef6-4bce-a373-69975ab4d542","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:29","value":{"id":"7bfdeaae-7ebe-4bca-a21d-5dbd8ca6ea88","name":"Retriever","type":"retriever","tags":["PGVector","AzureOpenAIEmbeddings"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:27.247+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:22/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:22/end_time","value":"2025-06-24T15:09:27.720+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:6/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:6/end_time","value":"2025-06-24T15:09:27.721+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:23/final_output","value":{"documents":[{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:23/end_time","value":"2025-06-24T15:09:27.915+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:9/final_output","value":{"documents":[{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:9/end_time","value":"2025-06-24T15:09:27.916+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:28/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:28/end_time","value":"2025-06-24T15:09:28.070+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:14/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:14/end_time","value":"2025-06-24T15:09:28.071+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:27/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:27/end_time","value":"2025-06-24T15:09:28.087+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:13/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:13/end_time","value":"2025-06-24T15:09:28.087+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:21/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:21/end_time","value":"2025-06-24T15:09:28.091+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:7/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:7/end_time","value":"2025-06-24T15:09:28.092+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:25/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:25/end_time","value":"2025-06-24T15:09:28.095+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:11/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:11/end_time","value":"2025-06-24T15:09:28.095+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:19/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:19/end_time","value":"2025-06-24T15:09:28.179+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:5/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:5/end_time","value":"2025-06-24T15:09:28.179+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:26/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:26/end_time","value":"2025-06-24T15:09:28.191+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:12/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:12/end_time","value":"2025-06-24T15:09:28.191+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:17/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:17/end_time","value":"2025-06-24T15:09:28.195+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:3/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:3/end_time","value":"2025-06-24T15:09:28.196+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:29/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:29/end_time","value":"2025-06-24T15:09:28.207+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:15/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:15/end_time","value":"2025-06-24T15:09:28.209+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:18/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:18/end_time","value":"2025-06-24T15:09:28.285+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:4/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:4/end_time","value":"2025-06-24T15:09:28.287+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:20/final_output","value":{"documents":[{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:20/end_time","value":"2025-06-24T15:09:28.287+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:8/final_output","value":{"documents":[{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:8/end_time","value":"2025-06-24T15:09:28.287+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:24/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:24/end_time","value":"2025-06-24T15:09:28.313+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:10/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:10/end_time","value":"2025-06-24T15:09:28.314+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:16/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:16/end_time","value":"2025-06-24T15:09:28.323+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever:2/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever:2/end_time","value":"2025-06-24T15:09:28.324+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/Retriever/final_output","value":{"documents":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/Retriever/end_time","value":"2025-06-24T15:09:28.325+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/_modify_docs","value":{"id":"f2520b3f-a91b-4351-923a-9614e558ccd4","name":"_modify_docs","type":"chain","tags":["seq:step:5"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:28.325+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/_modify_docs/streamed_output/-","value":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"}]}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:4/streamed_output/-","value":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"}]}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:6","value":{"id":"1b2c20f3-a52b-4e82-be31-9aae4084595f","name":"RunnableLambda","type":"chain","tags":["seq:step:2"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:28.325+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/_modify_docs/final_output","value":{"output":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/_modify_docs/end_time","value":"2025-06-24T15:09:28.325+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:4/final_output","value":{"output":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/RunnableSequence:4/end_time","value":"2025-06-24T15:09:28.325+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/FindDocs/final_output","value":{"output":[{"page_content":"This is a test chunk number 6 with filler data.","metadata":{"url":"https://example.com/doc6","filename":"doc6.txt","file_path":"/docs/doc6.txt","text_as_html":"<p>This is a test chunk number 6 with filler data.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 5 about search engines.","metadata":{"url":"https://example.com/doc5","filename":"doc5.txt","file_path":"/docs/doc5.txt","text_as_html":"<p>This is a test chunk number 5 about search engines.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 10 final entry.","metadata":{"url":"https://example.com/doc10","filename":"doc10.txt","file_path":"/docs/doc10.txt","text_as_html":"<p>This is a test chunk number 10 final entry.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 7 exploring DRSearch capabilities.","metadata":{"url":"https://example.com/doc7","filename":"doc7.txt","file_path":"/docs/doc7.txt","text_as_html":"<p>This is a test chunk number 7 exploring DRSearch capabilities.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 8 providing sample metadata.","metadata":{"url":"https://example.com/doc8","filename":"doc8.txt","file_path":"/docs/doc8.txt","text_as_html":"<p>This is a test chunk number 8 providing sample metadata.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 2 discussing vector search.","metadata":{"url":"https://example.com/doc2","filename":"doc2.txt","file_path":"/docs/doc2.txt","text_as_html":"<p>This is a test chunk number 2 discussing vector search.</p>"},"type":"Document"},{"page_content":"This is a test chunk number 9 referencing pgvector usage.","metadata":{"url":"https://example.com/doc9","filename":"doc9.txt","file_path":"/docs/doc9.txt","text_as_html":"<p>This is a test chunk number 9 referencing pgvector usage.</p>"},"type":"Document"}]}},{"op":"add","path":"/logs/FindDocs/end_time","value":"2025-06-24T15:09:28.333+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:6/streamed_output/-","value":"<doc id='0' source='doc6.txt'><p>This is a test chunk number 6 with filler data.</p></doc>\n<doc id='1' source='doc10.txt'><p>This is a test chunk number 10 final entry.</p></doc>\n<doc id='2' source='doc8.txt'><p>This is a test chunk number 8 providing sample metadata.</p></doc>\n<doc id='3' source='doc9.txt'><p>This is a test chunk number 9 referencing pgvector usage.</p></doc>\n<doc id='4' source='doc2.txt'><p>This is a test chunk number 2 discussing vector search.</p></doc>\n<doc id='5' source='doc7.txt'><p>This is a test chunk number 7 exploring DRSearch capabilities.</p></doc>\n<doc id='6' source='doc5.txt'><p>This is a test chunk number 5 about search engines.</p></doc>"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:2/streamed_output/-","value":"<doc id='0' source='doc6.txt'><p>This is a test chunk number 6 with filler data.</p></doc>\n<doc id='1' source='doc10.txt'><p>This is a test chunk number 10 final entry.</p></doc>\n<doc id='2' source='doc8.txt'><p>This is a test chunk number 8 providing sample metadata.</p></doc>\n<doc id='3' source='doc9.txt'><p>This is a test chunk number 9 referencing pgvector usage.</p></doc>\n<doc id='4' source='doc2.txt'><p>This is a test chunk number 2 discussing vector search.</p></doc>\n<doc id='5' source='doc7.txt'><p>This is a test chunk number 7 exploring DRSearch capabilities.</p></doc>\n<doc id='6' source='doc5.txt'><p>This is a test chunk number 5 about search engines.</p></doc>"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<context,question,chat_history>/streamed_output/-","value":{"context":"<doc id='0' source='doc6.txt'><p>This is a test chunk number 6 with filler data.</p></doc>\n<doc id='1' source='doc10.txt'><p>This is a test chunk number 10 final entry.</p></doc>\n<doc id='2' source='doc8.txt'><p>This is a test chunk number 8 providing sample metadata.</p></doc>\n<doc id='3' source='doc9.txt'><p>This is a test chunk number 9 referencing pgvector usage.</p></doc>\n<doc id='4' source='doc2.txt'><p>This is a test chunk number 2 discussing vector search.</p></doc>\n<doc id='5' source='doc7.txt'><p>This is a test chunk number 7 exploring DRSearch capabilities.</p></doc>\n<doc id='6' source='doc5.txt'><p>This is a test chunk number 5 about search engines.</p></doc>"}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableLambda:6/final_output","value":{"output":"<doc id='0' source='doc6.txt'><p>This is a test chunk number 6 with filler data.</p></doc>\n<doc id='1' source='doc10.txt'><p>This is a test chunk number 10 final entry.</p></doc>\n<doc id='2' source='doc8.txt'><p>This is a test chunk number 8 providing sample metadata.</p></doc>\n<doc id='3' source='doc9.txt'><p>This is a test chunk number 9 referencing pgvector usage.</p></doc>\n<doc id='4' source='doc2.txt'><p>This is a test chunk number 2 discussing vector search.</p></doc>\n<doc id='5' source='doc7.txt'><p>This is a test chunk number 7 exploring DRSearch capabilities.</p></doc>\n<doc id='6' source='doc5.txt'><p>This is a test chunk number 5 about search engines.</p></doc>"}},{"op":"add","path":"/logs/RunnableLambda:6/end_time","value":"2025-06-24T15:09:28.333+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:2/final_output","value":{"output":"<doc id='0' source='doc6.txt'><p>This is a test chunk number 6 with filler data.</p></doc>\n<doc id='1' source='doc10.txt'><p>This is a test chunk number 10 final entry.</p></doc>\n<doc id='2' source='doc8.txt'><p>This is a test chunk number 8 providing sample metadata.</p></doc>\n<doc id='3' source='doc9.txt'><p>This is a test chunk number 9 referencing pgvector usage.</p></doc>\n<doc id='4' source='doc2.txt'><p>This is a test chunk number 2 discussing vector search.</p></doc>\n<doc id='5' source='doc7.txt'><p>This is a test chunk number 7 exploring DRSearch capabilities.</p></doc>\n<doc id='6' source='doc5.txt'><p>This is a test chunk number 5 about search engines.</p></doc>"}},{"op":"add","path":"/logs/RunnableSequence:2/end_time","value":"2025-06-24T15:09:28.333+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableParallel<context,question,chat_history>/final_output","value":{"question":"How do I test a next.js frontend?","chat_history":[{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]}],"context":"<doc id='0' source='doc6.txt'><p>This is a test chunk number 6 with filler data.</p></doc>\n<doc id='1' source='doc10.txt'><p>This is a test chunk number 10 final entry.</p></doc>\n<doc id='2' source='doc8.txt'><p>This is a test chunk number 8 providing sample metadata.</p></doc>\n<doc id='3' source='doc9.txt'><p>This is a test chunk number 9 referencing pgvector usage.</p></doc>\n<doc id='4' source='doc2.txt'><p>This is a test chunk number 2 discussing vector search.</p></doc>\n<doc id='5' source='doc7.txt'><p>This is a test chunk number 7 exploring DRSearch capabilities.</p></doc>\n<doc id='6' source='doc5.txt'><p>This is a test chunk number 5 about search engines.</p></doc>"}},{"op":"add","path":"/logs/RunnableParallel<context,question,chat_history>/end_time","value":"2025-06-24T15:09:28.333+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/ChatPromptTemplate","value":{"id":"f6a03b18-3499-4300-98e0-84d9ed4b1165","name":"ChatPromptTemplate","type":"prompt","tags":["seq:step:1"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:28.333+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/ChatPromptTemplate/final_output","value":{"messages":[{"content":"You are a seasoned veteran at Leonardo DRS, Inc. in Fort Walton Beach, Florida, known for its advanced defense technology solutions. With extensive experience across Quality Management, Process Engineering, Compliance, and Engineering Management, you are tasked with answering any question about Leonardo DRS' documentation.\n\nGenerate a comprehensive and informative answer of 80 words or less for the given question based solely on the provided search results. You must only use information from the provided context.\nIf there is nothing in the context relevant to the question at hand, just say so. Don't try to make up an answer.\n\nAnything between the following `context` html blocks is retrieved from a knowledge bank, not part of the conversation with the user. \n\n<context>\n    <doc id='0' source='doc6.txt'><p>This is a test chunk number 6 with filler data.</p></doc>\n<doc id='1' source='doc10.txt'><p>This is a test chunk number 10 final entry.</p></doc>\n<doc id='2' source='doc8.txt'><p>This is a test chunk number 8 providing sample metadata.</p></doc>\n<doc id='3' source='doc9.txt'><p>This is a test chunk number 9 referencing pgvector usage.</p></doc>\n<doc id='4' source='doc2.txt'><p>This is a test chunk number 2 discussing vector search.</p></doc>\n<doc id='5' source='doc7.txt'><p>This is a test chunk number 7 exploring DRSearch capabilities.</p></doc>\n<doc id='6' source='doc5.txt'><p>This is a test chunk number 5 about search engines.</p></doc> \n<context/>\n\nREMEMBER: Cite search results using [${number}] notation. If there is no relevant information within the context, just say so. Don't try to make up an answer.","additional_kwargs":{},"response_metadata":{},"type":"system","name":null,"id":null},{"content":"Hi","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false},{"content":"Hello!","additional_kwargs":{},"response_metadata":{},"type":"ai","name":null,"id":null,"example":false,"tool_calls":[],"invalid_tool_calls":[]},{"content":"How do I test a next.js frontend?","additional_kwargs":{},"response_metadata":{},"type":"human","name":null,"id":null,"example":false}]}},{"op":"add","path":"/logs/ChatPromptTemplate/end_time","value":"2025-06-24T15:09:28.333+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3","value":{"id":"0373e5af-e652-4326-9686-e5d9339fd9b4","name":"AzureChatOpenAI","type":"llm","tags":["seq:step:2"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:28.333+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":""},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":"","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2","value":{"id":"0b2a943d-099c-41ae-8fbd-c57e5b025deb","name":"StrOutputParser","type":"parser","tags":["seq:step:3"],"metadata":{"__useragent":"curl/8.13.0","__langserve_version":"0.2.3","__langserve_endpoint":"stream_log"},"start_time":"2025-06-24T15:09:29.402+00:00","streamed_output":[],"streamed_output_str":[],"final_output":null,"end_time":null}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":""},{"op":"replace","path":"/final_output","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":"There"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":"There","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":"There"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":"There"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":"There"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":"There"},{"op":"replace","path":"/final_output","value":"There"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" is"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" is","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" is"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" is"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" is"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" is"},{"op":"replace","path":"/final_output","value":"There is"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" no"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" no","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" no"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" no"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" no"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" no"},{"op":"replace","path":"/final_output","value":"There is no"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" relevant"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" relevant","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" relevant"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" relevant"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" relevant"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" relevant"},{"op":"replace","path":"/final_output","value":"There is no relevant"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" information"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" information","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" information"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" information"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" information"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" information"},{"op":"replace","path":"/final_output","value":"There is no relevant information"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" within"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" within","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" within"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" within"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" within"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" within"},{"op":"replace","path":"/final_output","value":"There is no relevant information within"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" the"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" the","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" the"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" the"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" the"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" the"},{"op":"replace","path":"/final_output","value":"There is no relevant information within the"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" provided"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" provided","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" provided"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" provided"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" provided"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" provided"},{"op":"replace","path":"/final_output","value":"There is no relevant information within the provided"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" context"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" context","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" context"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" context"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" context"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" context"},{"op":"replace","path":"/final_output","value":"There is no relevant information within the provided context"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" to"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" to","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" to"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" to"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" to"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" to"},{"op":"replace","path":"/final_output","value":"There is no relevant information within the provided context to"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" answer"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" answer","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" answer"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" answer"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" answer"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" answer"},{"op":"replace","path":"/final_output","value":"There is no relevant information within the provided context to answer"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" your"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" your","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" your"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" your"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" your"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" your"},{"op":"replace","path":"/final_output","value":"There is no relevant information within the provided context to answer your"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":" question"},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":" question","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":" question"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":" question"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":" question"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":" question"},{"op":"replace","path":"/final_output","value":"There is no relevant information within the provided context to answer your question"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":"."},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":".","additional_kwargs":{},"response_metadata":{},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":"."}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":"."}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":"."}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":"."},{"op":"replace","path":"/final_output","value":"There is no relevant information within the provided context to answer your question."}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output_str/-","value":""},{"op":"add","path":"/logs/AzureChatOpenAI:3/streamed_output/-","value":{"content":"","additional_kwargs":{},"response_metadata":{"finish_reason":"stop"},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/streamed_output/-","value":""}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/AzureChatOpenAI:3/final_output","value":{"generations":[[{"text":"There is no relevant information within the provided context to answer your question.","generation_info":{"finish_reason":"stop"},"type":"ChatGenerationChunk","message":{"content":"There is no relevant information within the provided context to answer your question.","additional_kwargs":{},"response_metadata":{"finish_reason":"stop"},"type":"AIMessageChunk","name":null,"id":"run-0373e5af-e652-4326-9686-e5d9339fd9b4","example":false,"tool_calls":[],"invalid_tool_calls":[],"tool_call_chunks":[]}}]],"llm_output":null,"run":null}},{"op":"add","path":"/logs/AzureChatOpenAI:3/end_time","value":"2025-06-24T15:09:29.433+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/StrOutputParser:2/final_output","value":{"output":"There is no relevant information within the provided context to answer your question."}},{"op":"add","path":"/logs/StrOutputParser:2/end_time","value":"2025-06-24T15:09:29.434+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence:3/final_output","value":{"output":"There is no relevant information within the provided context to answer your question."}},{"op":"add","path":"/logs/RunnableSequence:3/end_time","value":"2025-06-24T15:09:29.434+00:00"}]}
+
+event: data
+data: {"ops":[{"op":"add","path":"/logs/RunnableSequence/final_output","value":{"output":"There is no relevant information within the provided context to answer your question."}},{"op":"add","path":"/logs/RunnableSequence/end_time","value":"2025-06-24T15:09:29.435+00:00"}]}
+
+event: end
+
