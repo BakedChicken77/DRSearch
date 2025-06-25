@@ -114,10 +114,11 @@ process.on("exit", cleanup);
     {
       cwd: frontendDir,
       env: {
-        ...commonEnv,
-        API_BASE_URL: `http://localhost:${backendPort}`,
-        PORT: String(frontendPort),
-      },
+      ...commonEnv,
+      API_BASE_URL: `http://localhost:${backendPort}`,
+      NEXT_PUBLIC_API_BASE_URL: `http://localhost:${backendPort}`,
+      PORT: String(frontendPort)
+    },
       shell: process.platform === "win32",
     },
     resolve(logDir, "frontend1.out.log"),
