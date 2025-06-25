@@ -288,6 +288,7 @@ export function ChatWindow(props: {
 
           {/* dropdown from backend */}
           <Select
+            data-testid="index-select"
             value={selectedIndexName}
             onChange={(e) => setSelectedIndexName(e.target.value)}
             placeholder="Select Document Index"
@@ -321,6 +322,7 @@ export function ChatWindow(props: {
       <div
         className="flex flex-col-reverse w-full mb-2 overflow-auto"
         ref={messageContainerRef}
+        data-testid="chat-stream"
       >
         {messages.length > 0 &&
           [...messages]
@@ -340,6 +342,7 @@ export function ChatWindow(props: {
       {/* input + send */}
       <InputGroup size="md" alignItems="center">
         <AutoResizeTextarea
+          data-testid="chat-input"
           value={input}
           maxRows={20}
           mr="56px"
@@ -364,6 +367,7 @@ export function ChatWindow(props: {
         />
         <InputRightElement h="full">
           <IconButton
+            data-testid="chat-send-btn"
             colorScheme="blue"
             rounded="full"
             aria-label="Send"
