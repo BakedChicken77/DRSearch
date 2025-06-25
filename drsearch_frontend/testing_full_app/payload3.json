@@ -1,9 +1,7 @@
 {
   "input": {
     "question": "How do I complete an audit?",
-    "chat_history": [
-      {"human": "Hi", "ai": "Hello!"}
-    ],
+    "chat_history": [],
     "index_name": "OTHER_INDEX",
     "num_docs_retrieved": 3
   }
