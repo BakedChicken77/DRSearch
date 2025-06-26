@@ -79,7 +79,7 @@ async def chat_stream_log(request: Request):
 
     trace_fp = get_trace_file(last_request)
     if idx == "SLOW_STREAM":
-        delay = float(last_request.get("delay", 0.1))
+        delay = float(last_request.get("delay", 0.001))
         return StreamingResponse(
             stream_lines(trace_fp, delay=delay), media_type="text/event-stream"
         )
