@@ -1,0 +1,64 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# DRSearch Architecture and Global Guidelines
+
+## Overall Architecture
+
+DRSearch is a RAG (Retrieval Augmented Generation) application with the following components:
+
+- **Frontend**: Next.js 13.5 React application with TypeScript and Chakra UI
+- **Backend**: FastAPI Python application with LangChain integration
+- **Vector Database**: PostgreSQL w/ PGvector extension or semantic/keyword search capabilities
+- **Structured Database**: PostgreSQL for record management
+- **Deployment**: Docker-based containerization
+
+## Technology Stack
+
+| Component | Technology |
+|-----------|------------|
+| Frontend | Next.js, React, TypeScript, Chakra UI |
+| Backend | Python, FastAPI, LangChain, Poetry |
+| Vector Search | Weaviate |
+| Structured Data | PostgreSQL with pgvector |
+| Testing | Jest, React Testing Library, Pytest, Playwright |
+| Build/Deploy | Docker, docker-compose |
+| Authentication | Azure AD JWT Bearer |
+
+## Global Coding Conventions
+
+### Type Safety
+
+- All TypeScript code must use explicit types for function parameters, return values, and component props
+- Python code must include type annotations (using standard library `typing` module)
+- Avoid `any` type in TypeScript and `Optional[Any]` in Python wherever possible
+
+### Testing Standards
+
+- Backend coverage target: >80% for core application logic
+- Frontend coverage target: >70% for component and utility code
+- End-to-end tests must cover all critical user flows
+- Tests should use data-testid attributes for frontend element selection
+- Mock external dependencies to ensure test isolation
+
+### Code Formatting
+
+- JavaScript/TypeScript: Prettier with default configuration
+- Python: Black formatter with default 88-character line length
+- All code must pass linting before merge (ESLint for JS/TS, flake8 for Python)
+
+### Documentation
+
+- All public APIs must include docstrings
+- React components should include JSDoc comments for props
+- Complex algorithms and business logic need explanatory comments
+- README files must be kept up-to-date in all main directories
+
+### CI/CD Expectations
+
+- All tests must pass before merge to main branch
+- Coverage reports are generated for each PR
+- Docker builds are tested in CI to ensure containerization works
+- E2E tests run against the fully composed application

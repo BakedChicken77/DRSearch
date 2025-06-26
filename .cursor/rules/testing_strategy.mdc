@@ -1,0 +1,119 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Testing Strategy
+
+## End-to-End Testing Architecture
+
+The DRSearch E2E test suite follows a consolidated architecture:
+
+```
+test_full_app/
+├── backend/                 # Backend simulator
+│   ├── __init__.py          # Python package init
+│   ├── simulator.py         # FastAPI simulator
+│   └── create_test_traces.ps1 # Script to create test traces
+├── frontend/                # Frontend test files
+│   ├── e2e.spec.ts          # Happy path tests
+│   ├── e2e_negative.spec.ts # Error scenario tests
+│   ├── trace_utils.ts       # Trace parsing utilities
+│   ├── payload1.json        # Test payload 1
+│   ├── payload2.json        # Test payload 2
+│   ├── payload3.json        # Test payload 3
+│   └── debug_trace.js       # Trace debugging utility
+├── traces/                  # Test data
+│   ├── trace1.sse           # Server-sent event trace 1
+│   ├── trace2.sse           # Server-sent event trace 2
+│   └── trace3.sse           # Server-sent event trace 3
+├── logs/                    # Test execution logs
+├── run-e2e.mjs              # Main test runner (Node.js)
+├── run_e2e.ps1              # PowerShell test runner
+└── run_e2e.sh               # Bash test runner
+``` 
+
+## Test Runner Configuration
+
+The test harness (`run-e2e.mjs`) handles:
+
+- Dynamic port allocation for the backend simulator and frontend
+- Starting both services in development mode
+- Running Playwright tests against the running services
+- Collecting coverage data when `COLLECT_COVERAGE=1` is set
+
+## Playwright Tests
+
+### Writing Test Specifications
+
+- Place test files in `test_full_app/frontend/`
+- Use TypeScript for all tests
+- Organize tests in describe blocks by feature or scenario
+- Tests should be independent and able to run in isolation
+
+Example:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Chat functionality', () => {
+  test('sends a message and receives a response', async ({ page }) => {
+    await page.goto('/');
+    await page.getByTestId('index-select').selectOption('TEST_INDEX');
+    await page.getByTestId('chat-input').fill('test question');
+    await page.getByTestId('send-button').click();
+    
+    // Wait for response
+    await expect(page.getByTestId('chat-response')).toContainText('expected response');
+  });
+});
+```
+
+### Test Data Management
+
+- Store test fixtures in `test_full_app/frontend/payload*.json`
+- SSE trace files should be in `test_full_app/traces/`
+- Use the `extractFinalOutput()` utility to parse trace files
+
+### Testing Best Practices
+
+- Test both happy and error paths
+- Verify UI state during streaming responses
+- Check error messages are displayed correctly
+- Ensure no console errors appear during tests
+
+## Coverage Reporting
+
+To run tests with coverage:
+
+```bash
+COLLECT_COVERAGE=1 node test_full_app/run-e2e.mjs
+```
+
+The coverage report includes:
+- Frontend code coverage via Istanbul/nyc
+- Reports stored in `test_full_app/output/<timestamp>/`
+
+## Unit Testing
+
+### Backend Unit Tests
+
+- Use Pytest for backend testing
+- Focus on API endpoints, LangChain components, and authentication
+- Store tests in `drsearch_backend/tests/`
+- Run with `poetry run pytest --cov=app`
+
+### Frontend Unit Tests
+
+- Use Jest and React Testing Library
+- Focus on component rendering and interactions
+- Store tests in `__tests__` directories next to components
+- Run with `yarn test`
+
+## Continuous Integration
+
+The E2E tests should run in CI with:
+
+- Fresh environment for each test run
+- Coverage reporting enabled
+- Artifacts (logs, screenshots) preserved
+- Playwright trace files saved for debugging failed tests
