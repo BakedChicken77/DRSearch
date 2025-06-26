@@ -100,11 +100,18 @@ process.on("exit", cleanup);
     [
       "run",
       "uvicorn",
-      "testing_full_app.simulator:app",
+      "test_full_app.backend.simulator:app",
       "--port",
       String(backendPort),
     ],
-    { cwd: backendDir, env: commonEnv, shell: process.platform === "win32" },
+    { 
+      cwd: backendDir, 
+      env: {
+        ...commonEnv,
+        PYTHONPATH: resolve(rootDir)
+      }, 
+      shell: process.platform === "win32" 
+    },
     resolve(logDir, "simulator1.out.log"),
     resolve(logDir, "simulator1.err.log"),
   );
@@ -152,6 +159,43 @@ process.on("exit", cleanup);
   await waitFor(`http://localhost:${frontendPort}`);
   log("Frontend is ready");
 
+  // Copy traces to frontend directory for test access
+  const frontendTracesDir = resolve(frontendDir, "traces");
+  const testTracesDir = resolve(__dirname, "traces");
+  log(`Copying traces from ${testTracesDir} to ${frontendTracesDir}`);
+  
+  // Create traces directory if it doesn't exist
+  if (!existsSync(frontendTracesDir)) {
+    mkdirSync(frontendTracesDir, { recursive: true });
+  }
+  
+  // Copy trace files
+  const { copyFileSync, readdirSync } = await import("fs");
+  const traceFiles = readdirSync(testTracesDir).filter(f => f.endsWith('.sse'));
+  for (const file of traceFiles) {
+    copyFileSync(resolve(testTracesDir, file), resolve(frontendTracesDir, file));
+  }
+  log(`Copied ${traceFiles.length} trace files`);
+
+  // Copy test files to frontend directory for Playwright access
+  const frontendTestDir = resolve(frontendDir, "testing_full_app");
+  const testFilesDir = resolve(__dirname, "frontend");
+  log(`Copying test files from ${testFilesDir} to ${frontendTestDir}`);
+  
+  // Create test directory if it doesn't exist
+  if (!existsSync(frontendTestDir)) {
+    mkdirSync(frontendTestDir, { recursive: true });
+  }
+  
+  // Copy test files
+  const testFiles = readdirSync(testFilesDir).filter(f => 
+    f.endsWith('.spec.ts') || f.endsWith('.ts') || f.endsWith('.json')
+  );
+  for (const file of testFiles) {
+    copyFileSync(resolve(testFilesDir, file), resolve(frontendTestDir, file));
+  }
+  log(`Copied ${testFiles.length} test files`);
+
   const env = {
     ...commonEnv,
     API_BASE_URL: `http://localhost:${backendPort}`,
@@ -165,10 +209,15 @@ process.on("exit", cleanup);
   log("Starting Playwright tests...");
   const testResultsDir = resolve(outputDir, "playwright-results");
   mkdirSync(testResultsDir, { recursive: true });
-  log(`Test command: ${NPX} playwright test testing_full_app --output ${testResultsDir}`);
+  log(`Test command: ${NPX} playwright test testing_full_app --reporter=list --output ${testResultsDir}`);
   log(`Test environment: ${JSON.stringify(env, null, 2)}`);
 
-  const testProc = spawn(NPX, ["playwright", "test", "testing_full_app", "--reporter=list", "--output", testResultsDir], {
+  const testProc = spawn(NPX, [
+    "playwright", "test", 
+    "testing_full_app",
+    "--reporter=list",
+    "--output", testResultsDir
+  ], {
     cwd: frontendDir,
     env,
     stdio: "inherit",

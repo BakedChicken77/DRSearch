@@ -17,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-TRACES_DIR = Path(__file__).resolve().parent / "traces"
+TRACES_DIR = Path(__file__).resolve().parent.parent / "traces"
 last_request: dict | None = None
 
 INDEX_OPTIONS = [

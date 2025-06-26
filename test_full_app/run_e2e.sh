@@ -26,7 +26,7 @@ export NEXT_PUBLIC_AUTH_ENABLED="False"
 cd "$SCRIPT_DIR/.."
 
 # Start backend simulator
-(cd drsearch_backend && poetry run uvicorn testing_full_app.simulator:app --port 8011 >"$SIM_OUT_LOG" 2>"$SIM_ERR_LOG" & echo $! > "$LOG_DIR/sim.pid")
+(cd drsearch_backend && poetry run uvicorn test_full_app.backend.simulator:app --port 8011 >"$SIM_OUT_LOG" 2>"$SIM_ERR_LOG" & echo $! > "$LOG_DIR/sim.pid")
 SIM_PID=$(cat "$LOG_DIR/sim.pid")
 
 # Start frontend
@@ -43,7 +43,7 @@ done
 
 cd drsearch_frontend
 mkdir -p "$OUTPUT_DIR/playwright-results"
-npx -y playwright test testing_full_app/e2e.spec.ts --output "$OUTPUT_DIR/playwright-results"
+npx -y playwright test test_full_app/frontend/e2e.spec.ts --output "$OUTPUT_DIR/playwright-results"
 STATUS=$?
 
 # Cleanup processes

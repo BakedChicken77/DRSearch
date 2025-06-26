@@ -1,46 +1,31 @@
 # End-to-End Testing
 
-This document explains how the `test_full_app/run_e2e.sh` script executes the end-to-end tests for the DRSearch application.
+DRSearch uses end-to-end (E2E) tests to validate the complete user experience from frontend to backend. The test suite is located in `test_full_app/` and includes:
 
-## Overview
+- **Backend simulator**: `test_full_app/backend/simulator.py` exposes minimal endpoints used during testing. It streams predefined Server‑Sent Events (SSE) traces and serves available index options.
+- **Playwright tests**: `test_full_app/frontend/e2e.spec.ts` drives the browser to exercise the UI and verify the requests sent to the simulator.
+- **Payload files**: `test_full_app/frontend/payload1.json`, `payload2.json`, and `payload3.json` contain the expected request bodies used by the tests.
+- **Trace files**: located in `test_full_app/traces/` and loaded by the simulator to emulate backend responses.
 
-The end-to-end test suite verifies request and response handling between the frontend and a simulated backend. It uses Playwright to automate the browser and a small FastAPI app to replay recorded traces.
+## Test Execution
 
-## Components
-
-- **Backend simulator**: `drsearch_backend/testing_full_app/simulator.py` exposes minimal endpoints used during testing. It streams predefined Server‑Sent Events (SSE) traces and serves available index options.
-- **Playwright tests**: `drsearch_frontend/testing_full_app/e2e.spec.ts` drives the browser to exercise the UI and verify the requests sent to the simulator.
-- **Payload files**: `drsearch_frontend/testing_full_app/payload1.json`, `payload2.json`, and `payload3.json` contain the expected request bodies used by the tests.
-- **Trace files**: located in `drsearch_backend/testing_full_app/traces/` and loaded by the simulator to emulate backend responses.
-- **Runner script**: `test_full_app/run_e2e.sh` starts both the simulator and the Next.js frontend, then launches the Playwright tests.
-
-## Running the Tests
+The E2E tests are executed using the Node.js harness:
 
 ```bash
-bash test_full_app/run_e2e.sh
+COLLECT_COVERAGE=1 node test_full_app/run-e2e.mjs
 ```
 
-The script performs the following steps:
+This command:
 
-1. Starts the FastAPI simulator on port 8011.
-2. Launches the frontend on port 3000 with authentication disabled.
-3. Waits for both services to become available.
-4. Executes the Playwright test `testing_full_app/e2e.spec.ts`.
-5. Shuts down all processes and cleans up open ports.
+1. Starts the FastAPI simulator on a dynamic port.
+2. Launches the Next.js development server pointing to the simulator.
+3. Waits for both services to be ready.
+4. Executes the Playwright test `test_full_app/frontend/e2e.spec.ts`.
 
-Logs from both services are written to `test_full_app/logs/` during the run.
+## Test Coverage
 
-## What the Tests Cover
+When `COLLECT_COVERAGE=1` is set, the test harness enables Playwright's coverage reporting. Coverage data is collected and stored in `test_full_app/output/<timestamp>/` for later analysis.
 
-For each payload file, the Playwright test:
+## Troubleshooting
 
-1. Intercepts the request to `/chat/stream_log` and checks that the request `input` matches the payload.
-2. Selects the appropriate index option in the UI.
-3. Opens the settings drawer when necessary and updates the number of documents to retrieve.
-4. Sends the question and waits briefly for a response.
-
-Any console errors captured during the run cause the test to fail.
-
-## Dependencies
-
-The tests rely on Node.js dependencies from `drsearch_frontend` and Python dependencies installed via Poetry for `drsearch_backend`.
+For detailed troubleshooting information, see `test_full_app/TROUBLESHOOTING.md`.

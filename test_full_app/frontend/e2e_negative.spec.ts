@@ -5,7 +5,7 @@ import path from "path";
 
 const tracesDir = path.resolve(
   __dirname,
-  "../../drsearch_backend/testing_full_app/traces",
+  "../traces",
 );
 const slowExpected = extractFinalOutput(path.join(tracesDir, "trace3.sse"));
 

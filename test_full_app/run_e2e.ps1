@@ -29,7 +29,7 @@ try {
     cd ..
     Push-Location drsearch_backend
     $simProc = Start-Process -FilePath "poetry" `
-        -ArgumentList 'run', 'uvicorn', 'testing_full_app.simulator:app', '--port', '8011' `
+        -ArgumentList 'run', 'uvicorn', 'test_full_app.backend.simulator:app', '--port', '8011' `
         -RedirectStandardOutput $simOutLog `
         -RedirectStandardError  $simErrLog `
         -WindowStyle Hidden -PassThru
@@ -62,7 +62,7 @@ try {
     if (-not (Test-Path (Join-Path $OutputDir 'playwright-results'))) {
         New-Item -Path (Join-Path $OutputDir 'playwright-results') -ItemType Directory | Out-Null
     }
-    & yarn playwright test testing_full_app/e2e.spec.ts --output (Join-Path $OutputDir 'playwright-results')
+    & yarn playwright test test_full_app/frontend/e2e.spec.ts --output (Join-Path $OutputDir 'playwright-results')
     $STATUS = $LASTEXITCODE
 }
 finally {

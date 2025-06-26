@@ -9,7 +9,7 @@ const payloads = [1, 2, 3].map((i) =>
 );
 const tracesDir = path.resolve(
   __dirname,
-  "../../drsearch_backend/testing_full_app/traces",
+  "../traces",
 );
 const expectedOutputs = [1, 2, 3].map((i) =>
   extractFinalOutput(path.join(tracesDir, `trace${i}.sse`)),
