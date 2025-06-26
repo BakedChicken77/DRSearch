@@ -1,0 +1,188 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Frontend Component Standards
+
+## Directory Structure
+
+The Next.js frontend follows this structure:
+
+```
+drsearch_frontend/
+├── .next/                   # Next.js build output
+├── app/                     # Next.js App Router structure
+│   ├── api/                 # API routes
+│   │   ├── auth/            # Authentication routes
+│   │   │   └── [...nextauth]/ # NextAuth configuration
+│   │   ├── chat/            # Chat API routes
+│   │   │   └── stream_log/  # Streaming endpoint
+│   │   ├── feedback/        # Feedback API routes
+│   │   └── get_trace/       # Trace API routes
+│   ├── components/          # React components
+│   │   └── __tests__/       # Component tests
+│   ├── utils/               # Utility functions
+│   │   └── __tests__/       # Utility tests
+│   ├── layout.tsx           # Root layout
+│   └── page.tsx             # Root page component
+├── CA_certificates/         # SSL certificates
+├── lib/                     # Shared libraries
+├── public/                  # Static assets
+├── src/                     # Additional source code
+│   └── components/          # Legacy components
+├── .eslintrc.json           # ESLint configuration
+├── .example.env             # Example environment variables
+├── .gitignore               # Git ignore file
+├── .prettierignore          # Prettier ignore file
+├── .prettierrc              # Prettier configuration
+├── docker-compose.frontend.yml # Docker compose for frontend
+├── Dockerfile.frontend      # Docker configuration
+├── jest.config.js           # Jest configuration
+├── jest.setup.js            # Jest setup file
+├── next.config.js           # Next.js configuration
+├── package.json             # NPM package configuration
+├── postcss.config.js        # PostCSS configuration
+├── README.md                # Frontend documentation
+├── tailwind.config.ts       # Tailwind CSS configuration
+├── tsconfig.json            # TypeScript configuration
+└── yarn.lock                # Yarn lock file
+```
+
+## Component Organization
+
+### Component Files
+
+- Each component should be in its own file
+- Use PascalCase for component names and files
+- Co-locate tests in `__tests__` directory next to components
+- Keep components focused on a single responsibility
+
+### Component Structure
+
+- Use TypeScript for all components
+- Define prop interfaces with explicit types
+- Export components as named exports
+- Use functional components with hooks
+
+Example:
+```tsx
+import { FC } from 'react';
+import { Box, Text, Button } from '@chakra-ui/react';
+
+interface SearchBarProps {
+  query: string;
+  onQueryChange: (query: string) => void;
+  onSubmit: () => void;
+  isLoading: boolean;
+}
+
+export const SearchBar: FC<SearchBarProps> = ({
+  query,
+  onQueryChange,
+  onSubmit,
+  isLoading
+}) => {
+  return (
+    <Box data-testid="search-container">
+      {/* Component JSX */}
+    </Box>
+  );
+};
+```
+
+## Styling
+
+### Chakra UI Usage
+
+- Use Chakra UI components for consistent styling
+- Follow the design system tokens for spacing, colors, and typography
+- Use responsive array syntax for breakpoints
+- Style with Chakra's prop-based API rather than CSS files
+
+Example:
+```tsx
+<Box 
+  p={[2, 4, 6]} 
+  bg="blue.50" 
+  borderRadius="md"
+  boxShadow="sm"
+>
+  <Text fontSize="lg" fontWeight="bold">Content</Text>
+</Box>
+```
+
+### Theming
+
+- Use the theme defined in `app/theme.ts`
+- Extend Chakra's theme rather than overriding it
+- Customize components using Chakra's component style API
+
+## Testing
+
+### Test File Location
+
+- Place tests in `__tests__` directory adjacent to the components
+- Name test files with `.test.tsx` suffix
+- Group related tests in describes blocks
+
+### Data Attributes
+
+- Add data-testid attributes to testable elements
+- Follow the format: `{component}-{element}-{qualifier}`
+- Use consistent IDs across the application
+
+Example:
+```tsx
+<Button 
+  data-testid="search-submit-button"
+  onClick={onSubmit}
+  isLoading={isLoading}
+>
+  Search
+</Button>
+```
+
+### Testing Standards
+
+- Use React Testing Library for component tests
+- Test user interactions rather than implementation details
+- Write assertions that verify visible outcomes
+- Mock API calls using MSW or Jest mocks
+
+Example:
+```tsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { SearchBar } from '../SearchBar';
+
+describe('SearchBar', () => {
+  it('calls onSubmit when the search button is clicked', () => {
+    const mockOnSubmit = jest.fn();
+    render(
+      <SearchBar 
+        query="test query" 
+        onQueryChange={jest.fn()} 
+        onSubmit={mockOnSubmit}
+        isLoading={false}
+      />
+    );
+    
+    fireEvent.click(screen.getByTestId('search-submit-button'));
+    expect(mockOnSubmit).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+## State Management
+
+- Use React hooks for local component state
+- Keep state as close as possible to where it's used
+- Use context for global state that many components need
+- Consider using SWR for data fetching and caching
+
+## API Communication
+
+- Use the API client in `lib/api-client.ts` for backend requests
+- Handle loading and error states in components
+- Use TypeScript interfaces for request/response types
+- Implement proper error handling for failed requests
