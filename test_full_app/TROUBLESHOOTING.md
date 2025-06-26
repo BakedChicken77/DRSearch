@@ -104,10 +104,10 @@ The enhanced logging will show:
    ```
 
 4. **Check logs**:
-   - `test_full_app/logs/simulator1.out.log` - Backend simulator output
-   - `test_full_app/logs/simulator1.err.log` - Backend simulator errors
-   - `test_full_app/logs/frontend1.out.log` - Frontend server output
-   - `test_full_app/logs/frontend1.err.log` - Frontend server errors
+   - `test_full_app/output/<timestamp>/logs/simulator1.out.log` - Backend simulator output
+   - `test_full_app/output/<timestamp>/logs/simulator1.err.log` - Backend simulator errors
+   - `test_full_app/output/<timestamp>/logs/frontend1.out.log` - Frontend server output
+   - `test_full_app/output/<timestamp>/logs/frontend1.err.log` - Frontend server errors
 
 5. **Restore original state**:
    ```bash

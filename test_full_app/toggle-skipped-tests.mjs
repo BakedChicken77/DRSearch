@@ -4,8 +4,8 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const frontendDir = path.resolve(__dirname, "../drsearch_frontend");
-const e2eSpecPath = path.resolve(frontendDir, "testing_full_app/e2e.spec.ts");
-const e2eNegativeSpecPath = path.resolve(frontendDir, "testing_full_app/e2e_negative.spec.ts");
+const e2eSpecPath = path.resolve(frontendDir, "test_full_app/frontend/e2e.spec.ts");
+const e2eNegativeSpecPath = path.resolve(frontendDir, "test_full_app/frontend/e2e_negative.spec.ts");
 
 function log(message, level = "INFO") {
   const timestamp = new Date().toISOString();

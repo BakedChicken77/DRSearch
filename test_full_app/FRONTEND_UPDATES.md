@@ -47,7 +47,7 @@ return result.map(option => ({
 {(current.example_questions || []).map((q, idx) => (
 ```
 
-### 3. Updated Backend Simulator (`drsearch_backend/testing_full_app/simulator.py`)
+### 3. Updated Backend Simulator (`test_full_app/backend/simulator.py`)
 - Added `example_questions: []` to all negative scenario indexes to ensure consistent structure
 
 ```python

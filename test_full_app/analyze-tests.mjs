@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const frontendDir = path.resolve(__dirname, "../drsearch_frontend");
-const testDir = path.resolve(frontendDir, "testing_full_app");
+const testDir = path.resolve(frontendDir, "test_full_app/frontend");
 
 function log(message, level = "INFO") {
   const timestamp = new Date().toISOString();
