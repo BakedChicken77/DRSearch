@@ -237,17 +237,12 @@ export function ChatWindow(props: {
           }
         },
       });
-    } catch (e) {
-      /* istanbul ignore next */
+    } catch (e: any) {
       console.error("Send message error:", e);
-      /* istanbul ignore next */
       setMessages((prev) => prev.slice(0, -1));
-      /* istanbul ignore next */
       setIsLoading(false);
-      /* istanbul ignore next */
       setInput(messageValue);
-      /* istanbul ignore next */
-      throw e;
+      toast.error(e.message || "backend failure");
     }
   };
 
