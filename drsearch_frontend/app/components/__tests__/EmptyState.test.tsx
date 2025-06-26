@@ -84,3 +84,28 @@ test("uninitialized options are disabled", () => {
   );
   expect(screen.getByRole("option", { name: "I" })).toBeDisabled();
 });
+
+test("handles indexes without example_questions gracefully", () => {
+  render(
+    <EmptyState
+      onChoice={() => {}}
+      selectedIndexName="index1"
+      setSelectedIndexName={() => {}}
+      indexOptions={[
+        {
+          name: "index1",
+          display_name: "Index 1",
+          // example_questions is intentionally omitted
+          initialized: true,
+        },
+      ]}
+      loadingOptions={false}
+    />,
+  );
+  
+  // Should render without crashing and not show any example question cards
+  expect(screen.getByText("DRS ASSISTANT")).toBeInTheDocument();
+  expect(screen.getByText("Index 1")).toBeInTheDocument();
+  // No example question cards should be rendered
+  expect(screen.queryByText("q1")).not.toBeInTheDocument();
+});

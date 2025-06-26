@@ -19,7 +19,8 @@ const baseURL = process.env.FRONTEND_BASE_URL || "http://localhost:3000";
 
 test.describe("trace replay happy path", () => {
   payloads.forEach((payload, idx) => {
-    const t = idx === 2 ? test.skip : test;
+    // Payload 3 is now enabled and working correctly
+    const t = test; // Temporarily enabled for debugging
     t(`payload ${idx + 1}`, async ({ page }) => {
       const consoleErrors: string[] = [];
       page.on("pageerror", (e) => consoleErrors.push(e.message));
@@ -42,8 +43,8 @@ test.describe("trace replay happy path", () => {
       await page.waitForFunction((val) => {
         const sel = document.querySelector(
           'select[data-testid="index-select"]',
-        );
-        return Array.from(sel?.options || []).some((o) => o.value === val);
+        ) as HTMLSelectElement;
+        return Array.from(sel?.options || []).some((o: HTMLOptionElement) => o.value === val);
       }, payload.input.index_name);
       await select.selectOption(payload.input.index_name);
 

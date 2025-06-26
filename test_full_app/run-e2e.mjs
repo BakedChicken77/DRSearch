@@ -15,6 +15,12 @@ mkdirSync(logDir, { recursive: true });
 const YARN = process.platform === "win32" ? "yarn.cmd" : "yarn";
 const NPX = process.platform === "win32" ? "npx.cmd" : "npx";
 
+// Add verbose logging function
+function log(message, level = "INFO") {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] [${level}] ${message}`);
+}
+
 function getPort() {
   return new Promise((resolve) => {
     const srv = net.createServer();
@@ -42,6 +48,7 @@ function waitFor(url, timeout = 60000) {
 }
 
 function spawnLogged(cmd, args, options, outPath, errPath) {
+  log(`Spawning process: ${cmd} ${args.join(" ")}`);
   const proc = spawn(cmd, args, {
     ...options,
     stdio: ["ignore", "pipe", "pipe"],
@@ -70,8 +77,13 @@ process.on("SIGTERM", () => {
 process.on("exit", cleanup);
 
 (async () => {
+  log("Starting end-to-end test execution");
+  log(`Environment: COLLECT_COVERAGE=${process.env.COLLECT_COVERAGE}`);
+  log(`Working directory: ${process.cwd()}`);
+  
   const backendPort = await getPort();
   const frontendPort = await getPort();
+  log(`Allocated ports - Backend: ${backendPort}, Frontend: ${frontendPort}`);
 
   const commonEnv = {
     ...process.env,
@@ -79,6 +91,7 @@ process.on("exit", cleanup);
     NEXT_PUBLIC_AUTH_ENABLED: "False",
   };
 
+  log("Starting backend simulator...");
   simProc = spawnLogged(
     "poetry",
     [
@@ -93,9 +106,12 @@ process.on("exit", cleanup);
     resolve(logDir, "simulator1.err.log"),
   );
 
+  log(`Waiting for backend to be ready at http://localhost:${backendPort}/index-options`);
   await waitFor(`http://localhost:${backendPort}/index-options`);
+  log("Backend simulator is ready");
 
   if (!existsSync(resolve(frontendDir, "node_modules"))) {
+    log("Node modules not found, installing dependencies...");
     await new Promise((res, rej) => {
       const inst = spawn(YARN, ["install", "--silent"], {
         cwd: frontendDir,
@@ -106,8 +122,12 @@ process.on("exit", cleanup);
         c === 0 ? res() : rej(new Error("yarn install failed")),
       );
     });
+    log("Dependencies installed successfully");
+  } else {
+    log("Node modules already exist, skipping installation");
   }
 
+  log("Starting frontend development server...");
   frontProc = spawnLogged(
     YARN,
     ["dev", "--port", String(frontendPort)],
@@ -125,7 +145,9 @@ process.on("exit", cleanup);
     resolve(logDir, "frontend1.err.log"),
   );
 
+  log(`Waiting for frontend to be ready at http://localhost:${frontendPort}`);
   await waitFor(`http://localhost:${frontendPort}`);
+  log("Frontend is ready");
 
   const env = {
     ...commonEnv,
@@ -134,9 +156,14 @@ process.on("exit", cleanup);
   };
   if (process.env.COLLECT_COVERAGE === "1") {
     env.PW_TEST_COVERAGE = "1";
+    log("Coverage collection enabled");
   }
 
-  const testProc = spawn(NPX, ["playwright", "test", "testing_full_app"], {
+  log("Starting Playwright tests...");
+  log(`Test command: ${NPX} playwright test testing_full_app`);
+  log(`Test environment: ${JSON.stringify(env, null, 2)}`);
+  
+  const testProc = spawn(NPX, ["playwright", "test", "testing_full_app", "--reporter=list"], {
     cwd: frontendDir,
     env,
     stdio: "inherit",
@@ -144,6 +171,7 @@ process.on("exit", cleanup);
   });
 
   const code = await new Promise((resolve) => testProc.on("exit", resolve));
+  log(`Test execution completed with exit code: ${code}`);
   cleanup();
   process.exitCode = code;
 })();

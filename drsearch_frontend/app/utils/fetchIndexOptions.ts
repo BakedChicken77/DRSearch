@@ -5,7 +5,7 @@ import { apiBaseUrl } from "./constants";
 export interface IndexOption {
   name: string;
   display_name: string;
-  example_questions: string[];
+  example_questions?: string[];
   initialized: boolean;
 }
 
@@ -29,5 +29,11 @@ export async function fetchIndexOptions(
   const data = await r.json();
   if (data.code !== 200 || !Array.isArray(data.result))
     throw new Error("Backend returned malformed data");
-  return data.result as IndexOption[];
+  
+  // Ensure all index options have example_questions, defaulting to empty array if missing
+  const result = data.result as IndexOption[];
+  return result.map(option => ({
+    ...option,
+    example_questions: option.example_questions || []
+  }));
 }

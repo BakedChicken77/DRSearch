@@ -95,7 +95,7 @@ export function EmptyState(props: {
             width={"100%"}
             justifyContent="space-between"
           >
-            {current.example_questions.map((q, idx) => (
+            {(current.example_questions || []).map((q, idx) => (
               <Card
                 key={idx}
                 onMouseUp={selectedIndexName ? () => onChoice(q) : undefined}

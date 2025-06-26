@@ -33,12 +33,13 @@ INDEX_OPTIONS = [
         "initialized": True,
         "example_questions": ["Other question 1", "Other question 2"],
     },
-    {"name": "ERROR_500", "display_name": "ERROR_500", "initialized": True},
-    {"name": "SLOW_STREAM", "display_name": "SLOW_STREAM", "initialized": True},
+    {"name": "ERROR_500", "display_name": "ERROR_500", "initialized": True, "example_questions": []},
+    {"name": "SLOW_STREAM", "display_name": "SLOW_STREAM", "initialized": True, "example_questions": []},
     {
         "name": "MALFORMED_SSE",
         "display_name": "MALFORMED_SSE",
         "initialized": True,
+        "example_questions": [],
     },
 ]
 
