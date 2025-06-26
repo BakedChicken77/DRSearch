@@ -23,7 +23,9 @@ test("fetches index options with token", async () => {
   expect(fetch).toHaveBeenCalledWith(apiUrl, {
     headers: { Authorization: "Bearer tok" },
   });
-  expect(res).toEqual([{ name: "a", initialized: true }]);
+  expect(res).toEqual([
+    { name: "a", initialized: true, example_questions: [] },
+  ]);
 });
 
 test("throws error on http failure", async () => {
