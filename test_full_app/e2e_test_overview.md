@@ -98,7 +98,7 @@ A helper function within the spec handles the common setup of navigating to the 
 
 ## Coverage
 
-Setting the environment variable `COLLECT_COVERAGE=1` when invoking the harness enables Playwright’s coverage reporting. The resulting coverage files are emitted in the default Playwright output directory inside `drsearch_frontend`.
+Setting the environment variable `COLLECT_COVERAGE=1` when invoking the harness enables Playwright’s coverage reporting. All artifacts including coverage JSON files and Playwright reports are stored under `test_full_app/output/<timestamp>` within the repository. Each run gets its own timestamped folder so reports can be inspected later.
 
 Example:
 

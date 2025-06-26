@@ -8,8 +8,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "..");
 const backendDir = resolve(rootDir, "drsearch_backend");
 const frontendDir = resolve(rootDir, "drsearch_frontend");
-const logDir = resolve(__dirname, "logs");
+const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+const outputDir = resolve(__dirname, "output", timestamp);
+const logDir = resolve(outputDir, "logs");
 import { mkdirSync } from "fs";
+mkdirSync(outputDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
 
 const YARN = process.platform === "win32" ? "yarn.cmd" : "yarn";
@@ -160,10 +163,12 @@ process.on("exit", cleanup);
   }
 
   log("Starting Playwright tests...");
-  log(`Test command: ${NPX} playwright test testing_full_app`);
+  const testResultsDir = resolve(outputDir, "playwright-results");
+  mkdirSync(testResultsDir, { recursive: true });
+  log(`Test command: ${NPX} playwright test testing_full_app --output ${testResultsDir}`);
   log(`Test environment: ${JSON.stringify(env, null, 2)}`);
-  
-  const testProc = spawn(NPX, ["playwright", "test", "testing_full_app", "--reporter=list"], {
+
+  const testProc = spawn(NPX, ["playwright", "test", "testing_full_app", "--reporter=list", "--output", testResultsDir], {
     cwd: frontendDir,
     env,
     stdio: "inherit",

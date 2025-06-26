@@ -10,7 +10,9 @@ cleanup() {
 trap cleanup EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LOG_DIR="$SCRIPT_DIR/logs"
+TIMESTAMP="$(date +%Y-%m-%dT%H-%M-%S)"
+OUTPUT_DIR="$SCRIPT_DIR/output/$TIMESTAMP"
+LOG_DIR="$OUTPUT_DIR/logs"
 mkdir -p "$LOG_DIR"
 
 SIM_OUT_LOG="$LOG_DIR/simulator1.out.log"
@@ -40,8 +42,8 @@ for i in {1..60}; do
 done
 
 cd drsearch_frontend
-
-npx -y playwright test testing_full_app/e2e.spec.ts
+mkdir -p "$OUTPUT_DIR/playwright-results"
+npx -y playwright test testing_full_app/e2e.spec.ts --output "$OUTPUT_DIR/playwright-results"
 STATUS=$?
 
 # Cleanup processes

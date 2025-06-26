@@ -3,8 +3,13 @@ $ErrorActionPreference = 'Stop'
 
 # Get script directory and logs folder
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$LogDir = Join-Path $ScriptDir "logs"
+$timestamp = Get-Date -Format 'yyyy-MM-ddTHH-mm-ss'
+$OutputDir = Join-Path $ScriptDir "output\$timestamp"
+$LogDir = Join-Path $OutputDir 'logs'
 
+if (-not (Test-Path $OutputDir)) {
+    New-Item -Path $OutputDir -ItemType Directory | Out-Null
+}
 if (-not (Test-Path $LogDir)) {
     New-Item -Path $LogDir -ItemType Directory | Out-Null
 }
@@ -54,7 +59,10 @@ try {
 
     # Run Playwright tests
     & yarn playwright install --with-deps
-    & yarn playwright test testing_full_app/e2e.spec.ts
+    if (-not (Test-Path (Join-Path $OutputDir 'playwright-results'))) {
+        New-Item -Path (Join-Path $OutputDir 'playwright-results') -ItemType Directory | Out-Null
+    }
+    & yarn playwright test testing_full_app/e2e.spec.ts --output (Join-Path $OutputDir 'playwright-results')
     $STATUS = $LASTEXITCODE
 }
 finally {
