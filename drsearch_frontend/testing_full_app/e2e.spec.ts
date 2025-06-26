@@ -17,6 +17,26 @@ const expectedOutputs = [1, 2, 3].map((i) =>
 
 const baseURL = process.env.FRONTEND_BASE_URL || "http://localhost:3000";
 
+test.beforeEach(async ({ page }, testInfo) => {
+  if (process.env.PW_TEST_COVERAGE) {
+    await page.coverage.startJSCoverage();
+    await page.coverage.startCSSCoverage();
+  }
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  if (process.env.PW_TEST_COVERAGE) {
+    const coverage = {
+      js: await page.coverage.stopJSCoverage(),
+      css: await page.coverage.stopCSSCoverage(),
+    };
+    const file = testInfo.outputPath(
+      `coverage-${testInfo.title.replace(/\W+/g, "_")}.json`,
+    );
+    fs.writeFileSync(file, JSON.stringify(coverage, null, 2));
+  }
+});
+
 test.describe("trace replay happy path", () => {
   payloads.forEach((payload, idx) => {
     // Payload 3 is now enabled and working correctly
@@ -25,7 +45,10 @@ test.describe("trace replay happy path", () => {
       const consoleErrors: string[] = [];
       page.on("pageerror", (e) => consoleErrors.push(e.message));
       page.on("console", (msg) => {
-        if (msg.type() === "error" && !msg.text().includes("Failed to load resource")) {
+        if (
+          msg.type() === "error" &&
+          !msg.text().includes("Failed to load resource")
+        ) {
           consoleErrors.push(msg.text());
         }
       });
@@ -44,7 +67,9 @@ test.describe("trace replay happy path", () => {
         const sel = document.querySelector(
           'select[data-testid="index-select"]',
         ) as HTMLSelectElement;
-        return Array.from(sel?.options || []).some((o: HTMLOptionElement) => o.value === val);
+        return Array.from(sel?.options || []).some(
+          (o: HTMLOptionElement) => o.value === val,
+        );
       }, payload.input.index_name);
       await select.selectOption(payload.input.index_name);
 
