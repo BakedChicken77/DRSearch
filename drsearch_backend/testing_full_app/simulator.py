@@ -57,7 +57,7 @@ def get_trace_file(body: dict) -> Path:
     return TRACES_DIR / name
 
 
-async def stream_lines(fp: Path, delay: float = 0.01, malformed: bool = False):
+async def stream_lines(fp: Path, delay: float = 0.001, malformed: bool = False):
     with fp.open() as f:
         for line in f:
             yield line
