@@ -34,7 +34,7 @@ def setup_environment():
         "AZURE_SEARCH_ENDPOINT": "https://test.search.windows.net",
         "AZURE_SEARCH_KEY": "test-key",
         "PGVECTOR_URL": "postgresql://test:test@localhost/test",
-        "CORS_ORIGINS": "http://localhost:3000",
+        "CORS_ORIGINS": '["http://localhost:3000"]',
     }
     
     for key, value in test_env.items():
