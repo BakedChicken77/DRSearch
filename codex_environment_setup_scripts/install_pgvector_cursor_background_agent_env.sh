@@ -1,35 +1,46 @@
 #!/bin/bash
-set -e
+set -e  # exit on first error
 
+# Configuration
 DB_USER="username"
 DB_PASS="password"
 DB_HOST="localhost"
 DB_NAME="pgvector_db"
 
-# Add PostgreSQL Global Development Group (PGDG) APT repository
-echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-
-# Update and install PG15 + build tools
+# 1. Install utilities for codename detection and key management
 sudo apt-get update
-sudo apt-get install -y postgresql-15 postgresql-contrib-15 postgresql-server-dev-15 git build-essential
+sudo apt-get install -y lsb-release gnupg curl software-properties-common
 
-# Build pgvector from source
+# 2. Add PostgreSQL Global Development Group (PGDG) APT repository
+CODENAME=$(. /etc/os-release && echo "$UBUNTU_CODENAME")
+echo "deb http://apt.postgresql.org/pub/repos/apt ${CODENAME}-pgdg main" \
+  | sudo tee /etc/apt/sources.list.d/pgdg.list
+
+# 3. Import the PGDG signing key securely
+curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+  | gpg --dearmor \
+  | sudo tee /etc/apt/trusted.gpg.d/pgdg.gpg > /dev/null
+
+# 4. Update and install PostgreSQL 15 and build dependencies
+sudo apt-get update
+sudo apt-get install -y postgresql-15 postgresql-contrib-15 postgresql-server-dev-15 \
+                        git build-essential
+
+# 5. Build and install pgvector extension
 git clone https://github.com/pgvector/pgvector.git
 cd pgvector
 make
 sudo make install
 cd ..
 
-# Start PG (non-systemd fallback)
+# 6. Start PostgreSQL (with fallback if systemd isn’t available)
 sudo service postgresql start || {
-  echo "Trying fallback PostgreSQL startup..."
   PGDATA=$(sudo -u postgres psql -tAc "SHOW data_directory;")
   sudo -u postgres postgres -D "$PGDATA" > /tmp/postgres.log 2>&1 &
   sleep 5
 }
 
-# Set up DB, user, extension, and schema
+# 7. Create user, database, enable vector extension, and schema
 sudo -u postgres psql <<EOF
 DO \$\$
 BEGIN
@@ -47,21 +58,22 @@ CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};
 CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE public.langchain_pg_collection (
-    name character varying,
-    cmetadata json,
-    uuid uuid PRIMARY KEY
+    name VARCHAR,
+    cmetadata JSON,
+    uuid UUID PRIMARY KEY
 );
 
 CREATE TABLE public.langchain_pg_embedding (
-    collection_id uuid REFERENCES public.langchain_pg_collection(uuid) ON DELETE CASCADE,
+    collection_id UUID REFERENCES public.langchain_pg_collection(uuid) ON DELETE CASCADE,
     embedding vector(1536),
-    document character varying,
-    cmetadata jsonb,
-    custom_id character varying,
-    uuid uuid PRIMARY KEY
+    document VARCHAR,
+    cmetadata JSONB,
+    custom_id VARCHAR,
+    uuid UUID PRIMARY KEY
 );
 
 CREATE INDEX ix_cmetadata_gin ON public.langchain_pg_embedding USING gin (cmetadata jsonb_path_ops);
+
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${DB_USER};
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${DB_USER};
 EOF
