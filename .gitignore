@@ -1,0 +1,42 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Log files
+*.log
+*.jsonl
+app_logs/
+
+# Environment files (sensitive)
+.env
+.env.local
+.env.*.local
+
+# IDE files that might contain sensitive info
+.cursor/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage and output
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Node modules (for frontend)
+node_modules/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/ 

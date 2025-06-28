@@ -1,6 +1,6 @@
 {
   "name": "drsearch-dev",
-  "install": "chmod +x setup.sh && ./setup.sh",
+  "install": "chmod +x setup_cursor_background_agent_env.sh && ./setup_cursor_background_agent_env.sh",
   "ports": [
     {
       "name": "API (FastAPI Backend)",
