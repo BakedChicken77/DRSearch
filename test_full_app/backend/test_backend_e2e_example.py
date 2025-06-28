@@ -56,15 +56,49 @@ class TestBackendE2EExample:
 
         # Patch the backend components with our fake implementations
         try:
-            with patch("app.chain.engine.AzureChatOpenAI", create_test_llm), patch(
+            with patch("app.chain.engine.FakeStreamingListLLM", create_test_llm), patch(
                 "app.chain.embeddings.AzureOpenAIEmbeddings", create_test_embeddings
             ), patch(
                 "app.chain.retriever.RetrieverFactory.build", create_test_retriever
             ):
+                # Import and create app with fresh settings
+                from app.core.config import Settings
+                from app import create_app as _create_app
+                from app.core.logging import configure_logging
+                from app.core.logging_middleware import LoggingMiddleware
+                from app.auth.middleware import AuthMiddleware
+                from app.api.v1.routes import build_router
+                from fastapi.middleware.cors import CORSMiddleware
+                from fastapi import FastAPI
 
-                from app import create_app
+                # Create fresh settings with auth disabled
+                test_settings = Settings(
+                    auth_enabled=False,
+                    debug=True,
+                    cors_origins=["http://localhost:3000"]
+                )
+                
+                configure_logging()
+                app = FastAPI(debug=test_settings.debug)
 
-                yield create_app()
+                # Add CORS
+                app.add_middleware(
+                    CORSMiddleware,
+                    allow_origins=test_settings.cors_origins,
+                    allow_credentials=True,
+                    allow_methods=["*"],
+                    allow_headers=["*"],
+                )
+
+                # Add middleware with test settings
+                app.add_middleware(AuthMiddleware, settings=test_settings)
+                app.add_middleware(LoggingMiddleware)
+
+                # Add routers
+                app.include_router(build_router(settings=test_settings))
+
+                yield app
+                
         except ImportError as e:
             # Fallback if imports fail
             print(f"Import error: {e}")

@@ -1,4 +1,5 @@
-from pydantic import BaseSettings, Field
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class LoggingSettings(BaseSettings):
@@ -9,7 +10,9 @@ class LoggingSettings(BaseSettings):
     log_to_blob_container: str = Field("drsearch-logs", env="LOG_TO_BLOB_CONTAINER")
     blob_upload_interval_sec: int = Field(300, env="BLOB_UPLOAD_INTERVAL_SEC")
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = True
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "case_sensitive": True,
+        "extra": "allow"
+    }

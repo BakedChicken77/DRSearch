@@ -1,24 +1,34 @@
 {
-  "install": [
-    "cd drsearch_backend && poetry install --all-extras",
-    "cd drsearch_frontend && yarn install",
-    "cd drsearch_frontend && yarn playwright install --with-deps"
+  "name": "drsearch-dev",
+  "install": "chmod +x setup.sh && ./setup.sh",
+  "ports": [
+    {
+      "name": "API (FastAPI Backend)",
+      "port": 8011
+    },
+    {
+      "name": "Web Frontend (Next.js)",
+      "port": 3000
+    }
   ],
   "terminals": [
     {
-      "name": "Backend",
-      "command": "cd drsearch_backend && poetry run uvicorn app.main:app --reload",
+      "name": "Start Backend",
+      "command": "cd drsearch_backend && poetry run uvicorn app:app --reload --port 8011",
+      "description": "Launches the FastAPI backend application using Uvicorn on port 8011.",
       "autostart": false
     },
     {
-      "name": "Frontend",
-      "command": "cd drsearch_frontend && yarn dev",
+      "name": "Start Frontend",
+      "command": "cd drsearch_frontend && yarn dev --port 3000",
+      "description": "Starts the Next.js frontend development server on port 3000.",
       "autostart": false
     },
     {
-      "name": "E2E Tests",
+      "name": "Run E2E Tests",
       "command": "COLLECT_COVERAGE=1 node test_full_app/run-e2e.mjs",
+      "description": "Runs the Playwright end-to-end test suite with coverage collection enabled.",
       "autostart": false
     }
   ]
-} 
+}

@@ -5,7 +5,7 @@ from typing import Dict
 _TEST_ENV: Dict[str, str] = {
     "AUTH_ENABLED": "False",
     "RAG_ON": "True",
-    "LLM_SERVICE": "azure",
+    "LLM_SERVICE": "fake",
     "VECTOR_BACKEND": "test",
     "LOG_LEVEL": "INFO",
     "WEAVIATE_URL": "http://test:8080",
@@ -33,4 +33,12 @@ def setup_test_environment(extra: Dict[str, str] | None = None) -> Dict[str, str
         env.update(extra)
     for key, value in env.items():
         os.environ[key] = value
+    
+    # Clear the settings cache so new environment variables are picked up
+    try:
+        from app.core.config import get_settings
+        get_settings.cache_clear()
+    except ImportError:
+        pass  # App not available in test context
+    
     return env
