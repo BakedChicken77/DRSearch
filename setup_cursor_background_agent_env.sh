@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e  # Exit on first error
+set -e  # Exit on any error
 
 ### 0. Install base build tools & utilities ###
 sudo apt-get update
@@ -33,8 +33,10 @@ if ! command -v python3.12 >/dev/null 2>&1; then
   ./configure --enable-optimizations --with-ensurepip=install
   make -j"$(nproc)"
   sudo make altinstall
+
+  # Clean up source with proper permissions
   cd /tmp
-  rm -rf "Python-${PYTHON_VERSION}"*
+  sudo rm -rf "Python-${PYTHON_VERSION}" "Python-${PYTHON_VERSION}.tgz"
 fi
 
 ### 2. Install Poetry and set its Python ###
@@ -44,7 +46,7 @@ if ! command -v poetry >/dev/null 2>&1; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
-# Tell Poetry to use Python 3.12 by default in this project
+# Ensure Poetry uses Python 3.12
 poetry env use python3.12
 
 ### 3. Install PostgreSQL 15 + pgvector ###
