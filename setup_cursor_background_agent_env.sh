@@ -45,26 +45,26 @@ if ! command -v poetry >/dev/null 2>&1; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
-### 3. Install PostgreSQL + pgvector ###
-chmod +x codex_environment_setup_scripts/install_pgvector_cursor_background_agent_env.sh
-./codex_environment_setup_scripts/install_pgvector_cursor_background_agent_env.sh
+# ### 3. Install PostgreSQL + pgvector ###
+# chmod +x codex_environment_setup_scripts/install_pgvector_cursor_background_agent_env.sh
+# ./codex_environment_setup_scripts/install_pgvector_cursor_background_agent_env.sh
 
-### 4. Backend setup (ensure Poetry runs in the right folder) ###
-cd drsearch_backend
-cp .example.env .env
-# Tell Poetry to use Python 3.12 for this project
-poetry env use python3.12
-poetry lock
-poetry install --all-extras
+# ### 4. Backend setup (ensure Poetry runs in the right folder) ###
+# cd drsearch_backend
+# cp .example.env .env
+# # Tell Poetry to use Python 3.12 for this project
+# poetry env use python3.12
+# poetry lock
+# poetry install --all-extras
 
-### 5. Frontend setup ###
-cd ../drsearch_frontend
-cp .example.env .env
-yarn install
-yarn playwright install
+# ### 5. Frontend setup ###
+# cd ../drsearch_frontend
+# cp .example.env .env
+# yarn install
+# yarn playwright install
 
-echo "✅ Setup complete!  
-   • Python 3.12.4 installed  
-   • Poetry configured and using Python 3.12  
-   • PostgreSQL+pgvector ready  
-   • Backend & frontend dependencies installed."
+# echo "✅ Setup complete!  
+#    • Python 3.12.4 installed  
+#    • Poetry configured and using Python 3.12  
+#    • PostgreSQL+pgvector ready  
+#    • Backend & frontend dependencies installed."
