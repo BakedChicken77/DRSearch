@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Dict, Tuple
 from langchain.schema.runnable import Runnable, RunnableLambda
+import os
 
 from app.chain.engine import ChatEngine
 from app.core.chain_config import _DEFAULT_INDEX, _NUMBER_OF_DOCS_RETRIEVED
@@ -14,6 +15,24 @@ _engine_cache: Dict[Tuple[str, int], ChatEngine] = {}
 def _engine_for(index_name: str, num_docs: int) -> ChatEngine:
     """Retrieve or create a cached ChatEngine for the given index and k."""
     key = (index_name, num_docs)
+
+    # Always create a fresh ChatEngine instance when running with the in-memory
+    # ``FakeStreamingListLLM``. This avoids returning a cached engine that was
+    # initialised in a previous test (or request) and therefore ensures that
+    # patches/mocks applied to ``ChatEngine._init_llm`` take effect.
+
+    llm_service = os.getenv("LLM_SERVICE", "azure").lower()
+
+    # When using the fake LLM (e.g. in unit/integration tests) we skip the
+    # cache altogether so that each request gets a brand-new engine.  This
+    # behaviour keeps production performance (where caching still applies)
+    # while making the system easier to test.
+    if llm_service == "fake":
+        from app.core import chain_config
+
+        chain_config._NUMBER_OF_DOCS_RETRIEVED = num_docs
+        return ChatEngine(index_name)
+
     if key not in _engine_cache:
         # Update global setting before engine creation
         from app.core import chain_config
