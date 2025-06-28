@@ -13,8 +13,8 @@ if ! command -v poetry &> /dev/null; then
 fi
 
 # 2. Install PostgreSQL + pgvector
-chmod +x codex_environment_setup_scripts/install_pgvector.sh
-./codex_environment_setup_scripts/install_pgvector.sh
+chmod +x codex_environment_setup_scripts/install_pgvector_cursor_background_agent_env.sh
+./codex_environment_setup_scripts/install_pgvector_cursor_background_agent_env.sh
 
 # 3. Backend setup
 cd drsearch_backend
