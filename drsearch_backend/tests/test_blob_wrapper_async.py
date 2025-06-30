@@ -149,8 +149,11 @@ class _FakeBlobService:
         return None
 
 
-@pytest.mark.asyncio
-async def test_blob_wrapper_happy_and_error_paths(monkeypatch, tmp_path):
+# Note: we execute the coroutine test body via ``asyncio.run`` to avoid
+# requiring the *pytest-asyncio* plugin (keeping dependencies minimal).
+
+
+def test_blob_wrapper_happy_and_error_paths(monkeypatch, tmp_path):
     """Exercise *most* lines in AzureBlobStorageAsync including error branches."""
 
     # Patch the SDK client inside the wrapper module **before** instantiation.
@@ -159,81 +162,88 @@ async def test_blob_wrapper_happy_and_error_paths(monkeypatch, tmp_path):
         _FakeBlobService,
     )
 
-    wrapper = AzureBlobStorageAsync("AccountName=dummy;EndpointSuffix=core.windows.net")
+    async def _test():
+        wrapper = AzureBlobStorageAsync("AccountName=dummy;EndpointSuffix=core.windows.net")
 
-    # ---- simple helpers ---------------------------------------------------
-    assert wrapper.get_value_from_connection_string("AccountName") == "dummy"
-    assert wrapper.get_value_from_connection_string("EndpointSuffix") == "core.windows.net"
+        # ---- simple helpers ---------------------------------------------------
+        assert wrapper.get_value_from_connection_string("AccountName") == "dummy"
+        assert wrapper.get_value_from_connection_string("EndpointSuffix") == "core.windows.net"
 
-    # ---- blob upload from base64 (success) --------------------------------
-    content_b64 = base64.b64encode(b"hello world").decode()
-    await wrapper.upload_blob_from_base64("c1", "blob-ok", content_b64)
+        # ---- blob upload from base64 (success) --------------------------------
+        content_b64 = base64.b64encode(b"hello world").decode()
+        await wrapper.upload_blob_from_base64("c1", "blob-ok", content_b64)
 
-    # The fake client captured the raw bytes.
-    assert wrapper.blob_service_client._client_success.uploaded == b"hello world"
+        # The fake client captured the raw bytes.
+        assert wrapper.blob_service_client._client_success.uploaded == b"hello world"
 
-    # ---- blob upload that triggers *except* branch ------------------------
-    await wrapper.upload_blob_from_base64("c1", "blob-fail", content_b64)
+        # ---- blob upload that triggers *except* branch ------------------------
+        await wrapper.upload_blob_from_base64("c1", "blob-fail", content_b64)
 
-    # ---- bytes upload convenience helper ----------------------------------
-    await wrapper.upload_blob_bytes("c1", "blob-bytes", b"DATA")
+        # ---- bytes upload convenience helper ----------------------------------
+        await wrapper.upload_blob_bytes("c1", "blob-bytes", b"DATA")
 
-    # ---- round-trip base64 download (uses *download_blob*) -----------------
-    downloaded_b64 = await wrapper.download_blob_as_base64("c1", "blob-ok")
-    assert base64.b64decode(downloaded_b64) == b"dummy-data"
+        # ---- round-trip base64 download (uses *download_blob*) -----------------
+        downloaded_b64 = await wrapper.download_blob_as_base64("c1", "blob-ok")
+        assert base64.b64decode(downloaded_b64) == b"dummy-data"
 
-    # ---- text download helper ---------------------------------------------
-    text = await wrapper.download_blob_text("c1", "blob-ok")
-    assert text == "dummy-data"
+        # ---- text download helper ---------------------------------------------
+        text = await wrapper.download_blob_text("c1", "blob-ok")
+        assert text == "dummy-data"
 
-    # ---- container metadata helpers ---------------------------------------
-    await wrapper.set_container_metadata("c1", {"k": "v"})
-    md = await wrapper.get_container_metadata("c1")
-    assert md == {"foo": "bar"}
+        # ---- container metadata helpers ---------------------------------------
+        await wrapper.set_container_metadata("c1", {"k": "v"})
+        md = await wrapper.get_container_metadata("c1")
+        assert md == {"foo": "bar"}
 
-    # ---- call remaining branchy helpers (errors swallowed) ----------------
-    await wrapper.create_container("c1")
-    await wrapper.delete_container("c1")
+        # ---- call remaining branchy helpers (errors swallowed) ----------------
+        await wrapper.create_container("c1")
+        await wrapper.delete_container("c1")
 
-    await wrapper.create_blob_snapshot("c1", "blob-ok")
-    await wrapper.create_blob_snapshot("c1", "blob-fail")
+        await wrapper.create_blob_snapshot("c1", "blob-ok")
+        await wrapper.create_blob_snapshot("c1", "blob-fail")
 
-    await wrapper.soft_delete_and_undelete_blob("c1", "blob-ok")
+        await wrapper.soft_delete_and_undelete_blob("c1", "blob-ok")
 
-    await wrapper.start_and_abort_blob_copy("https://example.com/src", "c1", "blob-ok")
+        await wrapper.start_and_abort_blob_copy("https://example.com/src", "c1", "blob-ok")
 
-    await wrapper.acquire_and_manage_leases("c1")  # container lease
-    await wrapper.acquire_and_manage_leases("c1", "blob-ok")  # blob lease
+        await wrapper.acquire_and_manage_leases("c1")  # container lease
+        await wrapper.acquire_and_manage_leases("c1", "blob-ok")  # blob lease
 
-    await wrapper.get_blob_service_properties_and_stats()
+        await wrapper.get_blob_service_properties_and_stats()
 
-    # list & delete containers (verification skipped)
-    await wrapper.list_all_containers()
-    await wrapper.delete_all_containers(skip_verification=True)
+        # list & delete containers (verification skipped)
+        await wrapper.list_all_containers()
+        await wrapper.delete_all_containers(skip_verification=True)
 
-    await wrapper.delete_containers_with_prefix("testprefix")
+        await wrapper.delete_containers_with_prefix("testprefix")
 
-    # ---- export images to HTML --------------------------------------------
-    img_elements = [
-        Element(metadata=ElementMetadata(images=["i1.png", "i2.png", "i1.png"]))
-    ]
+        # ---- export images to HTML --------------------------------------------
+        img_elements = [
+            Element(metadata=ElementMetadata(images=["i1.png", "i2.png", "i1.png"]))
+        ]
 
-    # Patch *download_blob* so we avoid nested SDK calls and actually create the file.
-    async def _fake_download_blob(container, blob_name, download_path):  # noqa: D401
-        Path(download_path).write_bytes(b"bin")
+        # Patch *download_blob* so we avoid nested SDK calls and actually create the file.
+        async def _fake_download_blob(container, blob_name, download_path):  # noqa: D401
+            Path(download_path).write_bytes(b"bin")
 
-    monkeypatch.setattr(wrapper, "download_blob", _fake_download_blob)
+        monkeypatch.setattr(wrapper, "download_blob", _fake_download_blob)
 
-    html_path = await wrapper.export_elements_images_to_html(
-        img_elements,
-        container_name="c1",
-        output_dir=tmp_path,
-        html_filename="gallery.html",
-        max_images=0,
-    )
-    assert html_path.exists()
-    contents = html_path.read_text()
-    # Two unique images => two <img> tags expected.
-    assert contents.count("<img") == 2
+        html_path = await wrapper.export_elements_images_to_html(
+            img_elements,
+            container_name="c1",
+            output_dir=tmp_path,
+            html_filename="gallery.html",
+            max_images=0,
+        )
+        assert html_path.exists()
+        contents = html_path.read_text()
+        # Two unique images => two <img> tags expected.
+        assert contents.count("<img") == 2
 
-    await wrapper.close()
+        await wrapper.close()
+
+    # Run the coroutine test body
+    asyncio.run(_test())
+
+    # Restore a fresh event loop for subsequent tests that require it.
+    asyncio.set_event_loop(asyncio.new_event_loop())
