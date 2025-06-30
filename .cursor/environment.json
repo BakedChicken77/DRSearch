@@ -1,23 +1,17 @@
 {
   "install": [
-    "cd drsearch_backend && poetry install --all-extras",
-    "cd drsearch_frontend && yarn install",
-    "cd drsearch_frontend && yarn playwright install --with-deps"
+    "chmod +x setup_cursor_background_agent_env.sh",
+    "./setup_cursor_background_agent_env.sh"
   ],
   "terminals": [
     {
-      "name": "Backend",
+      "name": "drsearch_backend",
       "command": "cd drsearch_backend && poetry run uvicorn app.main:app --reload",
       "autostart": false
     },
     {
-      "name": "Frontend",
+      "name": "drsearch_frontend",
       "command": "cd drsearch_frontend && yarn dev",
-      "autostart": false
-    },
-    {
-      "name": "E2E Tests",
-      "command": "COLLECT_COVERAGE=1 node test_full_app/run-e2e.mjs",
       "autostart": false
     }
   ]
