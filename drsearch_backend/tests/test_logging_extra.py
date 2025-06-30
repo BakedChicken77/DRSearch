@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from queue import Queue
 
 import logging
-import pytest
+import pytest  # type: ignore
 
 from app.core import logging as core_logging
 
@@ -98,20 +98,3 @@ def test_start_blob_uploader(monkeypatch):
     assert isinstance(task_no_conn, asyncio.Task)
 
     loop.close()
-
-
-# ---------------------------------------------------------------------------
-# Global fixture: ensure the *main thread* always has an event loop so that
-# any code calling ``asyncio.get_event_loop()`` outside of an async context
-# (e.g. ``core.logging.configure_logging``) does not raise RuntimeError during
-# the test session.
-# ---------------------------------------------------------------------------
-
-
-@pytest.fixture(autouse=True, scope="session")
-def _main_event_loop():  # pragma: no cover
-    try:
-        asyncio.get_event_loop()
-    except RuntimeError:
-        asyncio.set_event_loop(asyncio.new_event_loop())
-    yield

@@ -7,6 +7,7 @@ from typing import Any, Dict
 import pytest
 from fastapi.testclient import TestClient
 from langchain.schema import BaseRetriever
+import asyncio
 
 # --------------------------------------------------------------------------- #
 #  Global environment & dummy values
@@ -182,3 +183,17 @@ def fastapi_client():
     from app import create_app
 
     return TestClient(create_app())
+
+
+# --------------------------------------------------------------------------- #
+#  Ensure a default asyncio event loop exists so modules that call
+#  ``asyncio.get_event_loop`` at import-time (e.g. configure_logging) do not
+#  raise RuntimeError when executed in the main thread.
+# --------------------------------------------------------------------------- #
+@pytest.fixture(scope="session", autouse=True)
+def _ensure_event_loop():  # pragma: no cover
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+    yield

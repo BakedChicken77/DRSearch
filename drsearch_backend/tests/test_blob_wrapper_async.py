@@ -311,3 +311,39 @@ def test_export_images_error_branches(monkeypatch, tmp_path):
     body = html.read_text()
     # Only images that downloaded successfully ('ok.png') are embedded
     assert body.count("<img") == 1
+
+
+def test_upload_download_error_paths(monkeypatch, tmp_path):
+    """Trigger ResourceNotFoundError/HttpResponseError branches in upload/download."""
+    monkeypatch.setattr(
+        "app.azure_search_blob_manager.AzureBlobStorageWrapperAsync.BlobServiceClient",
+        _FakeBlobService,
+    )
+    wrapper = AzureBlobStorageAsync("AccountName=dummy;EndpointSuffix=x")
+
+    # Prepare a file path
+    fp = tmp_path / "doesnotmatter.txt"
+    fp.write_text("data")
+
+    # 'fail' in blob name -> FakeBlobClient raises
+    asyncio.run(wrapper.upload_blob("c1", "fail_upload", str(fp)))
+
+    # download error branch
+    asyncio.run(wrapper.download_blob("c1", "fail_download", str(tmp_path / "out")))
+
+    # list_blobs_in_container success & error
+    blobs = asyncio.run(wrapper.list_blobs_in_container("c1"))
+    assert blobs == [types.SimpleNamespace(name="blobA")]
+
+    # Patch container to raise error
+    class _ErrContainer(_FakeContainerClient):
+        def list_blobs(self):
+            raise HttpResponseError("boom")  # type: ignore
+    fs = _FakeBlobService()
+    fs.get_container_client = lambda *_: _ErrContainer()  # type: ignore
+    monkeypatch.setattr(
+        "app.azure_search_blob_manager.AzureBlobStorageWrapperAsync.BlobServiceClient",
+        lambda *_: fs,
+    )
+    wrapper2 = AzureBlobStorageAsync("AccountName=dummy;EndpointSuffix=x")
+    assert asyncio.run(wrapper2.list_blobs_in_container("c1")) == []
