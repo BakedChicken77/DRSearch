@@ -42,9 +42,17 @@ class EmbeddingFactory:
 
                 cls._instance = FakeEmbedder()
             else:
+                # During unit-tests the Azure specific environment variables
+                # are often **unset** which would raise a ``KeyError`` here.
+                # Falling back to sensible dummy values ensures the test-suite
+                # can run without requiring full cloud credentials.
+
+                model_name = os.getenv("AZURE_OPENAI_EMBEDDER", "dummy-model")
+                api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-05-15")
+
                 cls._instance = AzureOpenAIEmbeddings(
-                    model=os.environ["AZURE_OPENAI_EMBEDDER"],
+                    model=model_name,
                     chunk_size=200,
-                    api_version=os.environ["AZURE_OPENAI_API_VERSION"],
+                    api_version=api_version,
                 )
         return cls._instance

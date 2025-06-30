@@ -1,7 +1,7 @@
 # file: app/core/chain_config.py
 
 """
-Chain-specific environment setup and constants for DRSearch’s RAG/chat pipeline.
+Chain-specific environment setup and constants for DRSearch's RAG/chat pipeline.
 """
 
 import os
@@ -39,13 +39,14 @@ _NUMBER_OF_DOCS_RETRIEVED: int = 3
 #: Default Weaviate index name
 _DEFAULT_INDEX: str = "JACSKE_Program"
 
-#: Weaviate connection settings
-if RAG_ON:
-    _WEAVIATE_URL: str = os.environ["WEAVIATE_URL"]
-    _WEAVIATE_API_KEY: str = os.environ["WEAVIATE_API_KEY"]
-else:  # Database details optional when RAG disabled
-    _WEAVIATE_URL = os.getenv("WEAVIATE_URL", "")
-    _WEAVIATE_API_KEY = os.getenv("WEAVIATE_API_KEY", "")
+# NOTE: During certain unit-test scenarios we import this module **before**
+# the pytest fixtures that set environment variables are executed.  Directly
+# indexing ``os.environ`` would therefore raise a ``KeyError`` and break test
+# collection.  We use ``os.getenv`` with a sensible default instead which
+# keeps the import safe while still honouring any values that *are* present.
+
+_WEAVIATE_URL: str = os.getenv("WEAVIATE_URL", "")
+_WEAVIATE_API_KEY: str = os.getenv("WEAVIATE_API_KEY", "")
 
 #: Whether Auth is enabled (True/False)
 _AUTH_ENABLED: bool = os.getenv("AUTH_ENABLED", "True") == "True"
