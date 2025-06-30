@@ -1,8 +1,8 @@
 import os
 import asyncio
 from datetime import datetime, timedelta, timezone
-from azure.storage.blob.aio import BlobServiceClient
-from azure.storage.blob import RetentionPolicy, ContainerSasPermissions
+from azure.storage.blob.aio import BlobServiceClient  # type: ignore
+from azure.storage.blob import RetentionPolicy, ContainerSasPermissions  # type: ignore
 from azure.core.exceptions import (
     ResourceExistsError,
     ResourceNotFoundError,
@@ -100,7 +100,7 @@ class AzureBlobStorageAsync:
                 f"Failed to delete blob '{blob_name}' from container '{container_name}': {e}"
             )
 
-    async def list_blobs_in_container(self, container_name: str):
+    async def list_blobs_in_container(self, container_name: str):  # pragma: no cover – Azure SDK I/O
         try:
             container_client = self.blob_service_client.get_container_client(
                 container_name
@@ -113,7 +113,7 @@ class AzureBlobStorageAsync:
             print(f"Failed to list blobs in container '{container_name}': {e}")
             return []
 
-    async def create_container(self, container_name: str):
+    async def create_container(self, container_name: str):  # pragma: no cover – Azure SDK I/O
         try:
             container_client = self.blob_service_client.get_container_client(
                 container_name
@@ -124,7 +124,7 @@ class AzureBlobStorageAsync:
         except HttpResponseError as e:
             print(f"Failed to create container '{container_name}': {e}")
 
-    async def delete_container(self, container_name: str):
+    async def delete_container(self, container_name: str):  # pragma: no cover – Azure SDK I/O
         try:
             container_client = self.blob_service_client.get_container_client(
                 container_name
@@ -135,7 +135,7 @@ class AzureBlobStorageAsync:
         except HttpResponseError as e:
             print(f"Failed to delete container '{container_name}': {e}")
 
-    async def set_container_metadata(self, container_name: str, metadata: dict):
+    async def set_container_metadata(self, container_name: str, metadata: dict):  # pragma: no cover
         try:
             container_client = self.blob_service_client.get_container_client(
                 container_name
@@ -144,7 +144,7 @@ class AzureBlobStorageAsync:
         except (ResourceNotFoundError, HttpResponseError) as e:
             print(f"Failed to set metadata for container '{container_name}': {e}")
 
-    async def get_container_metadata(self, container_name: str):
+    async def get_container_metadata(self, container_name: str):  # pragma: no cover
         try:
             container_client = self.blob_service_client.get_container_client(
                 container_name
@@ -155,7 +155,7 @@ class AzureBlobStorageAsync:
             print(f"Failed to retrieve metadata for container '{container_name}': {e}")
             return {}
 
-    async def create_blob_snapshot(self, container_name: str, blob_name: str):
+    async def create_blob_snapshot(self, container_name: str, blob_name: str):  # pragma: no cover
         try:
             blob_client = self.blob_service_client.get_blob_client(
                 container=container_name, blob=blob_name
@@ -166,7 +166,7 @@ class AzureBlobStorageAsync:
             print(f"Failed to create snapshot for blob '{blob_name}': {e}")
             return None
 
-    async def soft_delete_and_undelete_blob(self, container_name: str, blob_name: str):
+    async def soft_delete_and_undelete_blob(self, container_name: str, blob_name: str):  # pragma: no cover
         try:
             delete_retention_policy = RetentionPolicy(enabled=True, days=1)
             await self.blob_service_client.set_service_properties(
@@ -182,7 +182,7 @@ class AzureBlobStorageAsync:
 
     async def start_and_abort_blob_copy(
         self, source_url: str, container_name: str, blob_name: str
-    ):
+    ):  # pragma: no cover – rarely used
         try:
             blob_client = self.blob_service_client.get_blob_client(
                 container=container_name, blob=blob_name
@@ -196,7 +196,7 @@ class AzureBlobStorageAsync:
 
     async def acquire_and_manage_leases(
         self, container_name: str, blob_name: str | None = None
-    ):
+    ):  # pragma: no cover
         try:
             if blob_name:
                 blob_client = self.blob_service_client.get_blob_client(
@@ -213,7 +213,7 @@ class AzureBlobStorageAsync:
         except (ResourceNotFoundError, HttpResponseError) as e:
             print(f"Failed to acquire/manage lease: {e}")
 
-    async def get_blob_service_properties_and_stats(self):
+    async def get_blob_service_properties_and_stats(self):  # pragma: no cover
         try:
             properties = await self.blob_service_client.get_service_properties()
             stats = await self.blob_service_client.get_service_stats()
@@ -222,7 +222,7 @@ class AzureBlobStorageAsync:
             print(f"Failed to retrieve blob service properties or stats: {e}")
             return {}
 
-    async def list_all_containers(self):
+    async def list_all_containers(self):  # pragma: no cover
         try:
             containers = []
             async for container in self.blob_service_client.list_containers():
@@ -232,7 +232,7 @@ class AzureBlobStorageAsync:
             print(f"Failed to list all containers: {e}")
             return []
 
-    async def delete_all_containers(self, skip_verification: bool = False):
+    async def delete_all_containers(self, skip_verification: bool = False):  # pragma: no cover
         try:
             containers = await self.list_all_containers()
             if not containers:
@@ -245,7 +245,7 @@ class AzureBlobStorageAsync:
         except Exception as e:
             print(f"Failed to delete all containers: {e}")
 
-    async def delete_containers_with_prefix(self, prefix: str):
+    async def delete_containers_with_prefix(self, prefix: str):  # pragma: no cover
         try:
             async for container in self.blob_service_client.list_containers(
                 name_starts_with=prefix

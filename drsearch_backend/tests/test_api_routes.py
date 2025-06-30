@@ -2,7 +2,7 @@ import json
 import pathlib
 import os
 import importlib
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # type: ignore
 import types
 
 

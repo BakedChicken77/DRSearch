@@ -6,8 +6,40 @@ from functools import lru_cache
 from typing import List, Optional
 
 
-from pydantic import AnyHttpUrl, Field, field_validator
-from pydantic_settings import BaseSettings
+from pydantic import AnyHttpUrl, Field  # type: ignore
+try:
+    # Pydantic 2 style package (preferred)
+    from pydantic_settings import BaseSettings  # type: ignore
+except ImportError:  # pragma: no cover – fallback for environments without the extra package
+    # Pydantic 1 exposes `BaseSettings` directly.  Importing from ``pydantic``
+    # keeps the public type consistent for the rest of the module.
+    from pydantic import BaseSettings  # type: ignore
+
+
+# ---------------------------------------------------------------------------
+# Optional Pydantic v2 features
+# ---------------------------------------------------------------------------
+# ``field_validator`` was introduced in Pydantic v2.  When running with an
+# older (v1) version we create a **noop shim** so that the rest of the module
+# can be imported without error during unit-tests.  The validation logic that
+# depends on the decorator is *non-critical* for the test-suite so a noop is
+# sufficient and avoids adding a hard dependency on Pydantic v2.
+
+try:
+    # Pydantic ≥ 2
+    from pydantic import field_validator  # type: ignore
+except ImportError:  # pragma: no cover – executed on Pydantic v1 only
+    from pydantic import validator  # type: ignore  # Lazy import; v1 only
+
+    def field_validator(field_name: str, *, mode: str = "before", **_unused):  # type: ignore
+        """Simplified replacement using :func:`pydantic.validator` for v1."""
+
+        pre = mode == "before"
+
+        def _decorator(func):  # noqa: D401 – wraps the original validator
+            return validator(field_name, pre=pre, allow_reuse=True)(func)
+
+        return _decorator
 
 
 class Settings(BaseSettings):
