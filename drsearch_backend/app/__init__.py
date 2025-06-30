@@ -54,7 +54,16 @@ def create_app() -> FastAPI:
     from fastapi.openapi.utils import get_openapi
     from pydantic.errors import PydanticUserError
     from pydantic import BaseModel
-    import langserve.validation as lv
+
+    # LangServe is optional – the backend no longer depends on it, but the
+    # OpenAPI fallback originally relied on `langserve.validation` classes.  We
+    # attempt an import and gracefully continue if LangServe is not present so
+    # the application can run without the package installed.
+
+    try:
+        import langserve.validation as lv  # type: ignore
+    except ModuleNotFoundError:  # pragma: no cover
+        lv = None  # type: ignore
 
     def custom_openapi():
         if app.openapi_schema:
@@ -66,12 +75,15 @@ def create_app() -> FastAPI:
                 routes=app.routes,
             )
         except PydanticUserError:
-            for obj in lv.__dict__.values():
-                if isinstance(obj, type) and issubclass(obj, BaseModel):
-                    try:
-                        obj.model_rebuild(force=True)
-                    except AttributeError:
-                        pass
+            # When LangServe is installed we rebuild its models to satisfy
+            # Pydantic.  If it is not available we can safely skip this step.
+            if lv is not None:
+                for obj in lv.__dict__.values():
+                    if isinstance(obj, type) and issubclass(obj, BaseModel):
+                        try:
+                            obj.model_rebuild(force=True)
+                        except AttributeError:  # pragma: no cover – defensive
+                            pass
             app.openapi_schema = get_openapi(
                 title=app.title,
                 version=app.version,

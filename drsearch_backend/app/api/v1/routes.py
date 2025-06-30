@@ -8,10 +8,11 @@ import logging
 import os
 import urllib.parse
 from pathlib import Path
+import asyncio
+import json
 
-from fastapi import APIRouter, HTTPException, Response
-from fastapi.responses import FileResponse
-from langserve import add_routes
+from fastapi import APIRouter, HTTPException, Response, Request
+from fastapi.responses import FileResponse, StreamingResponse
 
 from ...core.config import Settings, get_settings
 from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for side-effects
@@ -29,7 +30,6 @@ from app.models import (
     TraceRequest,
 )
 from app.warmup import INDEX_STATUS
-import json
 
 feedback_logger = logging.getLogger("feedback")
 
@@ -59,24 +59,92 @@ async def _read_index_options() -> list:  # pragma: no cover – pure I/O
 def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     router = APIRouter()
 
-    # ---- /chat  (langserve wires up streaming handlers etc.)
-    async def _call_agent(inputs: dict) -> str:
-        history = []
-        for item in inputs.get("chat_history", []):
+    # ---- /chat ------------------------------------------------------------
+
+    def _build_history(chat_history: list[dict[str, str]] | None) -> list[str]:
+        """Convert frontend style history records into a simple \n-separated list
+        expected by *run_agent*.
+        """
+
+        if not chat_history:
+            return []
+
+        history: list[str] = []
+        for item in chat_history:
             history.append(f"User: {item.get('human', '')}")
             history.append(f"Assistant: {item.get('ai', '')}")
-        return await run_agent(inputs["question"], history)
+        return history
 
-    agent_chain = RunnableLambda(_call_agent)
+    @router.post("/chat", response_model=StandardResponse)
+    async def chat(body: ChatRequest) -> StandardResponse:  # noqa: D401 – main chat
+        """Synchronous chat endpoint returning a single response string."""
 
-    add_routes(
-        router,
-        agent_chain,
-        path="/chat",
-        input_type=ChatRequest,
-        config_keys=["metadata"],
-        playground_type="chat",
-    )
+        answer = await run_agent(body.question, _build_history(body.chat_history))
+        return StandardResponse(result=answer)
+
+    # ---- /chat/stream_log --------------------------------------------------
+
+    @router.post("/chat/stream_log")
+    async def chat_stream_log(request: Request):  # noqa: D401 – SSE stream
+        """Stream chat response as Server-Sent Events compatible with the
+        existing frontend.  The request payload follows LangServe's schema:
+
+        {
+          "input": { ...ChatRequest fields... },
+          "config": { ... },            # ignored
+          "include_names": [ ... ]      # ignored
+        }
+        """
+
+        try:
+            payload = await request.json()
+        except Exception as exc:  # pragma: no cover – malformed JSON
+            raise HTTPException(status_code=400, detail="Invalid JSON payload") from exc
+
+        try:
+            chat_input = payload.get("input", {})
+            chat_req = ChatRequest(**chat_input)
+        except Exception as exc:  # pragma: no cover – validation errors
+            raise HTTPException(status_code=422, detail="Invalid chat input") from exc
+
+        answer = await run_agent(
+            chat_req.question, _build_history(chat_req.chat_history)
+        )
+
+        async def _event_generator():
+            """Yield SSE formatted patches building the streamed output."""
+
+            # First patch initialises the array so subsequent *-/add* ops succeed
+            if not answer:
+                # No answer – just terminate stream
+                yield "event: end\n\n"
+                return
+
+            # Initialise streamed_output with the first character
+            first_char, rest = answer[0], answer[1:]
+            init_patch = {"ops": [{"op": "add", "path": "/streamed_output", "value": [first_char]}]}
+            yield f"event: data\ndata: {json.dumps(init_patch)}\n\n"
+
+            # subsequent characters are appended one-by-one
+            for ch in rest:
+                patch = {
+                    "ops": [
+                        {
+                            "op": "add",
+                            "path": "/streamed_output/-",
+                            "value": ch,
+                        }
+                    ]
+                }
+                yield f"event: data\ndata: {json.dumps(patch)}\n\n"
+                # Short sleep to ensure cooperative multitasking and allow
+                # the client to process chunks progressively.
+                await asyncio.sleep(0)  # pragma: no cover
+
+            # Signal completion
+            yield "event: end\n\n"
+
+        return StreamingResponse(_event_generator(), media_type="text/event-stream")
 
     # ---- /index-options
     @router.get("/index-options", response_model=IndexOptionsResponse)
