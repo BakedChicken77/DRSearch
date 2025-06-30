@@ -1,0 +1,53 @@
+# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+
+/blob_app/
+/common_lib/
+/docextract/
+/pg_vector_app/
+/instructions/
+/management/
+/drsearch_frontend/CA_certificates/
+drsearch_backend/.devcontainer/
+
+# Dependency directories
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# Build artifacts
+.next/
+out/
+dist/
+build/
+
+# Coverage and logs
+coverage/
+*.log
+test_full_app/logs/
+test_full_app/output/
+
+# E2E test artifacts
+*.sse
+test_full_app/traces/*.sse
+playwright-report/
+test-results/
+
+# Environment and secrets
+#.env.*
+#!.example.env
+.azure/
+
+# Docker volumes and caches
+docker-volumes/
+.docker/
+
+# Misc
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
