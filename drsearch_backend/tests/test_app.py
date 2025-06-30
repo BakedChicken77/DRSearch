@@ -8,7 +8,7 @@ from typing import Any
 import os
 
 import pytest
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # type: ignore
 
 os.environ["AZURE_STORAGE_CONNECTION_STRING"] = ""
 

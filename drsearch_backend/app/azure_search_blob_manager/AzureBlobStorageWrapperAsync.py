@@ -1,8 +1,8 @@
 import os
 import asyncio
 from datetime import datetime, timedelta, timezone
-from azure.storage.blob.aio import BlobServiceClient
-from azure.storage.blob import RetentionPolicy, ContainerSasPermissions
+from azure.storage.blob.aio import BlobServiceClient  # type: ignore
+from azure.storage.blob import RetentionPolicy, ContainerSasPermissions  # type: ignore
 from azure.core.exceptions import (
     ResourceExistsError,
     ResourceNotFoundError,

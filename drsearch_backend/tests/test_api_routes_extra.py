@@ -1,6 +1,6 @@
 import urllib.parse
 
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # type: ignore
 
 
 def test_file_proxy_unauthorized_path(fastapi_client: TestClient):

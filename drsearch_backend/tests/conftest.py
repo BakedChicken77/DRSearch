@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 import pytest
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # type: ignore
 from langchain.schema import BaseRetriever
 import asyncio
 

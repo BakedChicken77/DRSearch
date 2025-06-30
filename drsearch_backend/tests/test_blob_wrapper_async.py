@@ -339,5 +339,14 @@ def test_upload_download_error_paths(monkeypatch, tmp_path):
         def list_blobs(self):
             raise HttpResponseError("boom")  # type: ignore
 
-    wrapper.blob_service_client.get_container_client = lambda *_: _ErrContainer()  # type: ignore
-    assert asyncio.run(wrapper.list_blobs_in_container("c1")) == []
+    fs = _FakeBlobService()
+    fs.get_container_client = lambda *_: _ErrContainer()  # type: ignore
+
+    # Patch only *from_connection_string* to return our specialised service
+    monkeypatch.setattr(
+        "app.azure_search_blob_manager.AzureBlobStorageWrapperAsync.BlobServiceClient.from_connection_string",  # type: ignore
+        classmethod(lambda cls, *_args, **_kw: fs),
+    )
+
+    wrapper2 = AzureBlobStorageAsync("AccountName=dummy;EndpointSuffix=x")
+    assert asyncio.run(wrapper2.list_blobs_in_container("c1")) == []
