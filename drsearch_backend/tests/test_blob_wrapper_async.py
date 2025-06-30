@@ -88,6 +88,10 @@ class _FakeBlobClient:
     async def undelete_blob(self):
         return None
 
+    async def get_blob_properties(self):
+        # Return object with .copy fields to simulate pending copy.
+        return types.SimpleNamespace(copy=types.SimpleNamespace(status="pending", id="copy-id"))
+
 
 class _FakeContainerClient:
     async def create_container(self):
@@ -305,5 +309,5 @@ def test_export_images_error_branches(monkeypatch, tmp_path):
     )
     assert html.exists()
     body = html.read_text()
-    # Only first two unique images should be embedded
-    assert body.count("<img") == 2
+    # Only images that downloaded successfully ('ok.png') are embedded
+    assert body.count("<img") == 1
