@@ -97,4 +97,4 @@ def test_start_blob_uploader(monkeypatch):
     task_no_conn = core_logging._start_blob_uploader(loop, core_logging.LoggingSettings())  # type: ignore
     assert isinstance(task_no_conn, asyncio.Task)
 
-    loop.close()
+    # Do not close the loop to keep it available for subsequent tests
