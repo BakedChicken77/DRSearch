@@ -14,11 +14,9 @@ import json
 from fastapi import APIRouter, HTTPException, Response, Request
 from fastapi.responses import FileResponse, StreamingResponse
 
-from ...core.config import Settings, get_settings
+from ...core.config import Settings
 from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for side-effects
 from app.auth import jwt  # triggers cache warming on app-start
-from app.chain.api import answer_chain
-from langchain_core.runnables import RunnableLambda
 from app.search_agent.agent import run_agent
 from app.models import (
     ChatRequest,
