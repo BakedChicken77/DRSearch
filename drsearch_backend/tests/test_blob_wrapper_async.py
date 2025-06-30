@@ -2,6 +2,8 @@ import asyncio  # noqa: F401 – required for @pytest.mark.asyncio runtime
 import base64
 import types
 from pathlib import Path
+import os
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError  # type: ignore
 
 import pytest  # type: ignore
 
@@ -73,10 +75,6 @@ class _FakeBlobClient:
 
             raise HttpResponseError("snap failed")
         return {"snapshot": "snappy"}
-
-    async def get_blob_properties(self):
-        # Simulate an in-progress copy so that *abort_copy* branch executes.
-        return types.SimpleNamespace(copy=types.SimpleNamespace(status="pending", id="copy-id"))
 
     async def start_copy_from_url(self, *_):
         return None
@@ -247,3 +245,65 @@ def test_blob_wrapper_happy_and_error_paths(monkeypatch, tmp_path):
 
     # Restore a fresh event loop for subsequent tests that require it.
     asyncio.set_event_loop(asyncio.new_event_loop())
+
+
+def test_upload_and_download_blob(monkeypatch, tmp_path):
+    """Cover *upload_blob* and *download_blob* helpers."""
+
+    # Patch BlobServiceClient as earlier
+    monkeypatch.setattr(
+        "app.azure_search_blob_manager.AzureBlobStorageWrapperAsync.BlobServiceClient",
+        _FakeBlobService,
+    )
+    wrapper = AzureBlobStorageAsync("AccountName=dummy;EndpointSuffix=x")
+
+    # ---- upload via file path --------------------------------------------
+    src = tmp_path / "file.txt"
+    src.write_text("content")
+    asyncio.run(wrapper.upload_blob("c1", "blob-file", str(src)))
+    assert wrapper.blob_service_client._client_success.uploaded == b"content"
+
+    # ---- download into path ----------------------------------------------
+    dst = tmp_path / "out.txt"
+    asyncio.run(wrapper.download_blob("c1", "blob-file", str(dst)))
+    assert dst.read_bytes() == b"dummy-data"
+
+
+def test_export_images_error_branches(monkeypatch, tmp_path):
+    """Trigger ResourceNotFound and HttpResponseError branches during export."""
+
+    monkeypatch.setattr(
+        "app.azure_search_blob_manager.AzureBlobStorageWrapperAsync.BlobServiceClient",
+        _FakeBlobService,
+    )
+    wrapper = AzureBlobStorageAsync("AccountName=dummy;EndpointSuffix=x")
+
+    # Prepare elements referencing two images – one OK, one raises errors
+    elements = [
+        Element(metadata=ElementMetadata(images=["ok.png", "missing.png", "error.png"]))
+    ]
+
+    # Custom download_blob that raises for certain names
+    async def _dl(container, name, path):  # noqa: D401
+        if name == "missing.png":
+            raise ResourceNotFoundError("msg")
+        if name == "error.png":
+            raise HttpResponseError("boom")
+        Path(path).write_bytes(b"img")
+
+    monkeypatch.setattr(wrapper, "download_blob", _dl)
+
+    # Use max_images=2 to exercise slice branch
+    html = asyncio.run(
+        wrapper.export_elements_images_to_html(
+            elements,
+            container_name="c1",
+            output_dir=tmp_path,
+            html_filename="gal.html",
+            max_images=2,
+        )
+    )
+    assert html.exists()
+    body = html.read_text()
+    # Only first two unique images should be embedded
+    assert body.count("<img") == 2
