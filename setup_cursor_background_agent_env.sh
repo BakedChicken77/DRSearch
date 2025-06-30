@@ -61,7 +61,7 @@ poetry install --all-extras
 cd ../drsearch_frontend
 cp .example.env .env
 yarn install
-yarn playwright install
+#yarn playwright install
 
 # echo "✅ Setup complete!  
 #    • Python 3.12.4 installed  
