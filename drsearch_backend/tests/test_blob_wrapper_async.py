@@ -1,9 +1,9 @@
-import asyncio
+import asyncio  # noqa: F401 – required for @pytest.mark.asyncio runtime
 import base64
 import types
 from pathlib import Path
 
-import pytest
+import pytest  # type: ignore
 
 from app.azure_search_blob_manager.AzureBlobStorageWrapperAsync import (
     AzureBlobStorageAsync,
@@ -229,7 +229,7 @@ async def test_blob_wrapper_happy_and_error_paths(monkeypatch, tmp_path):
         container_name="c1",
         output_dir=tmp_path,
         html_filename="gallery.html",
-        max_images=None,
+        max_images=0,
     )
     assert html_path.exists()
     contents = html_path.read_text()
