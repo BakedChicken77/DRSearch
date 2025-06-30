@@ -1,0 +1,22 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Testing
+
+## Backend Unit Tests (Component Level)
+
+- **Location**: `drsearch_backend/tests/`
+- **Framework**: Pytest with mocking
+- **Scope**: Individual components, functions, classes
+- **Run**: `poetry run pytest --cov=app`
+- **Coverage**: LangChain components, authentication, utilities
+
+## Frontend Unit Tests (Component Level)
+
+- **Location**: `drsearch_frontend/app/components/__tests__/`
+- **Framework**: Jest and React Testing Library
+- **Scope**: Component rendering and interactions
+- **Run**: `yarn test`
+- **Coverage**: React components, utilities, helpers
