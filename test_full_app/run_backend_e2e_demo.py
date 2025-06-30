@@ -16,6 +16,10 @@ import subprocess
 import argparse
 from pathlib import Path
 
+backend_dir = Path(__file__).parent / "backend"
+sys.path.insert(0, str(backend_dir))
+from test_config import get_test_backend_config
+
 
 # Legacy functions removed - functionality moved to separate scripts
 
@@ -24,12 +28,12 @@ def run_demo_script():
     """Run the standalone demo script."""
     current_dir = Path.cwd()
     demo_script = current_dir.parent / "test_full_app" / "demo_fake_components.py"
-    
+
     print("🎭 Running fake components demo...")
-    result = subprocess.run([
-        "poetry", "run", "python", str(demo_script)
-    ], cwd=current_dir)
-    
+    result = subprocess.run(
+        ["poetry", "run", "python", str(demo_script)], cwd=current_dir
+    )
+
     return result.returncode == 0
 
 
@@ -37,30 +41,41 @@ def run_test_script():
     """Run the standalone test script."""
     current_dir = Path.cwd()
     test_script = current_dir.parent / "test_full_app" / "run_backend_e2e_tests.py"
-    
+
     print("🧪 Running backend E2E tests...")
-    result = subprocess.run([
-        "poetry", "run", "python", str(test_script)
-    ], cwd=current_dir)
-    
+    result = subprocess.run(
+        ["poetry", "run", "python", str(test_script)], cwd=current_dir
+    )
+
+    if result.returncode != 0:
+        print("\n🛠 Environment Variables:")
+        for k, v in get_test_backend_config().items():
+            masked = v if "KEY" not in k else "***"
+            print(f"{k}={masked}")
+        print("🔎 Ensure LLM_SERVICE is set to 'azure' for patched LLM")
+
     return result.returncode == 0
 
 
 def main():
     """Main orchestrator script."""
-    parser = argparse.ArgumentParser(description="DRSearch backend testing orchestrator")
-    parser.add_argument("--with-demo", action="store_true", 
-                       help="Run component demo before tests")
-    parser.add_argument("--demo-only", action="store_true", 
-                       help="Run only the component demo")
-    
+    parser = argparse.ArgumentParser(
+        description="DRSearch backend testing orchestrator"
+    )
+    parser.add_argument(
+        "--with-demo", action="store_true", help="Run component demo before tests"
+    )
+    parser.add_argument(
+        "--demo-only", action="store_true", help="Run only the component demo"
+    )
+
     args = parser.parse_args()
-    
+
     print("🚀 DRSearch Backend Testing Orchestrator")
     print("=" * 50)
-    
+
     success = True
-    
+
     if args.demo_only:
         print("🎯 Running component demo only...")
         success = run_demo_script()
@@ -73,9 +88,11 @@ def main():
             print("\n❌ Tests failed")
             success = False
     else:
-        print("🎯 Running E2E tests only (use --with-demo to include component demo)...")
+        print(
+            "🎯 Running E2E tests only (use --with-demo to include component demo)..."
+        )
         success = run_test_script()
-    
+
     if success:
         print("\n🎉 All operations completed successfully!")
         print("\nAvailable scripts:")
@@ -88,4 +105,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

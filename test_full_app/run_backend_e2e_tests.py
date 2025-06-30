@@ -2,7 +2,7 @@
 """
 Run backend end-to-end tests for DRSearch API with fake components.
 
-This script runs the actual backend API tests using deterministic fake 
+This script runs the actual backend API tests using deterministic fake
 components for reliable, reproducible testing.
 
 Usage:
@@ -16,65 +16,40 @@ import subprocess
 import argparse
 from pathlib import Path
 
+backend_dir = Path(__file__).parent / "backend"
+sys.path.insert(0, str(backend_dir))
 
-def setup_test_environment():
-    """Set up the complete test environment variables."""
-    test_env = {
-        "AUTH_ENABLED": "False",
-        "RAG_ON": "True",
-        "LLM_SERVICE": "fake",
-        "VECTOR_BACKEND": "test",
-        "LOG_LEVEL": "INFO",
-        # Required env vars (dummy values for testing)
-        "WEAVIATE_URL": "http://test:8080",
-        "WEAVIATE_API_KEY": "test-key",
-        "AZURE_OPENAI_API_VERSION": "2024-05-15",
-        "AZURE_OPENAI_DEPLOYMENT_NAME": "test-model",
-        "AZURE_OPENAI_ENDPOINT": "https://test.openai.azure.com/",
-        "AZURE_OPENAI_API_KEY": "test-key",
-        "AZURE_SEARCH_ENDPOINT": "https://test.search.windows.net",
-        "AZURE_SEARCH_KEY": "test-key",
-        "PGVECTOR_URL": "postgresql://test:test@localhost/test",
-        "CORS_ORIGINS": '["http://localhost:3000"]',
-    }
-    
-    for key, value in test_env.items():
-        os.environ[key] = value
-    
-    print("✓ Test environment configured")
+from test_config import setup_test_environment, get_test_backend_config
 
 
 def run_pytest_test(test_file, description, env):
     """Run a specific pytest test file."""
     print(f"\n📋 {description}...")
-    
-    cmd = [
-        "poetry", "run", "pytest", 
-        str(test_file),
-        "-v",
-        "--tb=short",
-        "--no-header"
-    ]
-    
+
+    cmd = ["poetry", "run", "pytest", str(test_file), "-v", "--tb=short", "--no-header"]
+
     print(f"Running: {' '.join(cmd)}")
-    
+
     result = subprocess.run(
-        cmd,
-        cwd=Path.cwd(),
-        env=env,
-        capture_output=True,
-        text=True
+        cmd, cwd=Path.cwd(), env=env, capture_output=True, text=True
     )
-    
+
     # Print output
     if result.stdout:
         print(f"\n📋 {description} Output:")
         print(result.stdout)
-    
+
     if result.stderr:
         print(f"\n⚠️  {description} Errors:")
         print(result.stderr)
-    
+
+    if result.returncode != 0:
+        print("\n🛠 Environment Variables:")
+        for k, v in get_test_backend_config().items():
+            masked = v if "KEY" not in k else "***"
+            print(f"{k}={masked}")
+        print("🔎 Ensure LLM_SERVICE is set to 'azure' for patched LLM")
+
     return result
 
 
@@ -84,13 +59,15 @@ def run_simple_tests():
     if current_dir.name != "drsearch_backend":
         print("✗ This script should be run from the drsearch_backend directory")
         return False
-    
-    simple_test_file = current_dir.parent / "test_full_app" / "backend" / "test_backend_e2e_simple.py"
-    
+
+    simple_test_file = (
+        current_dir.parent / "test_full_app" / "backend" / "test_backend_e2e_simple.py"
+    )
+
     if not simple_test_file.exists():
         print(f"✗ Test file not found: {simple_test_file}")
         return False
-    
+
     # Set PYTHONPATH to include test components directory
     env = os.environ.copy()
     test_components_dir = current_dir.parent / "test_full_app" / "backend"
@@ -98,13 +75,11 @@ def run_simple_tests():
     if "PYTHONPATH" in env:
         python_path.append(env["PYTHONPATH"])
     env["PYTHONPATH"] = os.pathsep.join(python_path)
-    
+
     result = run_pytest_test(
-        simple_test_file, 
-        "Running Simplified Component Tests", 
-        env
+        simple_test_file, "Running Simplified Component Tests", env
     )
-    
+
     if result.returncode == 0:
         print("\n✅ Simplified component tests passed!")
         return True
@@ -116,12 +91,14 @@ def run_simple_tests():
 def run_full_api_tests():
     """Run the full backend API tests."""
     current_dir = Path.cwd()
-    full_test_file = current_dir.parent / "test_full_app" / "backend" / "test_backend_e2e_example.py"
-    
+    full_test_file = (
+        current_dir.parent / "test_full_app" / "backend" / "test_backend_e2e_example.py"
+    )
+
     if not full_test_file.exists():
         print(f"✗ Test file not found: {full_test_file}")
         return False
-    
+
     # Set PYTHONPATH to include test components directory
     env = os.environ.copy()
     test_components_dir = current_dir.parent / "test_full_app" / "backend"
@@ -129,15 +106,13 @@ def run_full_api_tests():
     if "PYTHONPATH" in env:
         python_path.append(env["PYTHONPATH"])
     env["PYTHONPATH"] = os.pathsep.join(python_path)
-    
-    result = run_pytest_test(
-        full_test_file, 
-        "Running Full Backend API Tests", 
-        env
-    )
-    
+
+    result = run_pytest_test(full_test_file, "Running Full Backend API Tests", env)
+
     if "SKIPPED" in result.stdout and "15 skipped" in result.stdout:
-        print("\n⚠️  Full backend API tests were skipped due to Pydantic compatibility issues.")
+        print(
+            "\n⚠️  Full backend API tests were skipped due to Pydantic compatibility issues."
+        )
         print("This is expected - the fake components work correctly.")
         print("To enable these tests, update the backend to use Pydantic v2 settings.")
         return True  # Consider skipped tests as success for now
@@ -152,23 +127,26 @@ def run_full_api_tests():
 def main():
     """Main test runner."""
     parser = argparse.ArgumentParser(description="Run DRSearch backend E2E tests")
-    parser.add_argument("--simple-only", action="store_true", 
-                       help="Run only simplified component tests")
-    parser.add_argument("--full-only", action="store_true", 
-                       help="Run only full backend API tests")
-    parser.add_argument("--verbose", "-v", action="store_true",
-                       help="Enable verbose output")
-    
+    parser.add_argument(
+        "--simple-only", action="store_true", help="Run only simplified component tests"
+    )
+    parser.add_argument(
+        "--full-only", action="store_true", help="Run only full backend API tests"
+    )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose output"
+    )
+
     args = parser.parse_args()
-    
+
     print("🧪 DRSearch Backend E2E Tests")
     print("=" * 40)
-    
+
     # Setup environment
     setup_test_environment()
-    
+
     success = True
-    
+
     # Run tests based on arguments
     if args.simple_only:
         print("\n🎯 Running simplified component tests only...")
@@ -178,15 +156,15 @@ def main():
         success = run_full_api_tests()
     else:
         print("\n🎯 Running all backend E2E tests...")
-        
+
         # Run simplified tests first
         if not run_simple_tests():
             success = False
-        
+
         # Run full API tests
         if not run_full_api_tests():
             success = False
-    
+
     # Final results
     if success:
         print("\n🎉 All tests completed successfully!")
@@ -194,7 +172,7 @@ def main():
         print("• Fake components are working correctly")
         print("• Backend API integration is functional")
         print("• Tests provide deterministic, reliable results")
-        
+
         print("\n💡 Next steps:")
         print("• Integrate these tests into your CI/CD pipeline")
         print("• Extend fake_components.py for additional test scenarios")
@@ -205,9 +183,11 @@ def main():
         print("• Check that you're running from the drsearch_backend directory")
         print("• Verify that Poetry environment has all required dependencies")
         print("• Review test output above for specific error details")
-        print("• Run 'poetry run python ../test_full_app/demo_fake_components.py' to test components")
+        print(
+            "• Run 'poetry run python ../test_full_app/demo_fake_components.py' to test components"
+        )
         sys.exit(1)
 
 
 if __name__ == "__main__":
-    main() 
+    main()
