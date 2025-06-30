@@ -1,0 +1,24 @@
+{
+  "install": [
+    "cd drsearch_backend && poetry install --all-extras",
+    "cd drsearch_frontend && yarn install",
+    "cd drsearch_frontend && yarn playwright install --with-deps"
+  ],
+  "terminals": [
+    {
+      "name": "Backend",
+      "command": "cd drsearch_backend && poetry run uvicorn app.main:app --reload",
+      "autostart": false
+    },
+    {
+      "name": "Frontend",
+      "command": "cd drsearch_frontend && yarn dev",
+      "autostart": false
+    },
+    {
+      "name": "E2E Tests",
+      "command": "COLLECT_COVERAGE=1 node test_full_app/run-e2e.mjs",
+      "autostart": false
+    }
+  ]
+} 
