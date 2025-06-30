@@ -17,7 +17,6 @@ dependencies = [
   "uvicorn>=0.23.2,<1.0.0",
   "tiktoken==0.7.0",
   "lxml>=4.9.4,<5.0.0",
-  "langserve[server]>=0.3.1,<1.0.0",
   "psycopg2-binary>=2.9.9,<3.0.0",
   "python-dotenv>=1.0.0,<2.0.0",
   "langchain-core>=0.2.43",

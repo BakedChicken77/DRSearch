@@ -50,37 +50,6 @@ def create_app() -> FastAPI:
     # -------------------- routers --------------------
     app.include_router(build_router(settings=settings))
 
-    # -------------------- openapi fix --------------------
-    from fastapi.openapi.utils import get_openapi
-    from pydantic.errors import PydanticUserError
-    from pydantic import BaseModel
-    import langserve.validation as lv
-
-    def custom_openapi():
-        if app.openapi_schema:
-            return app.openapi_schema
-        try:
-            app.openapi_schema = get_openapi(
-                title=app.title,
-                version=app.version,
-                routes=app.routes,
-            )
-        except PydanticUserError:
-            for obj in lv.__dict__.values():
-                if isinstance(obj, type) and issubclass(obj, BaseModel):
-                    try:
-                        obj.model_rebuild(force=True)
-                    except AttributeError:
-                        pass
-            app.openapi_schema = get_openapi(
-                title=app.title,
-                version=app.version,
-                routes=app.routes,
-            )
-        return app.openapi_schema
-
-    app.openapi = custom_openapi
-
     return app
 
 
