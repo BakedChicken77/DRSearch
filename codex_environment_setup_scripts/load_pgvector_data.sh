@@ -4,7 +4,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_FILE="$SCRIPT_DIR/fake_pgvector_docs.jsonl"
 # PGVECTOR_URL=${PGVECTOR_URL:-"postgresql://username:password@localhost:5432/pgvector_db"}
-COLLECTION=${PGVECTOR_COLLECTION:-"JACSKE_Program"}
+COLLECTION=${PGVECTOR_COLLECTION:-"TEST_INDEX"}
 
 # export DATA_FILE PGVECTOR_URL COLLECTION
 export DATA_FILE COLLECTION

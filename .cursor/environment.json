@@ -1,28 +1,15 @@
 {
-  "name": "drsearch-dev",
+  "snapshot": "snapshot-20250630-372c8572-e5b7-4ffb-8aea-c25465e952a9",
   "install": "chmod +x setup_cursor_background_agent_env.sh && ./setup_cursor_background_agent_env.sh",
-  "ports": [
-    {
-      "name": "drsearch_backend",
-      "port": 8011
-    },
-    {
-      "name": "drsearch_frontend",
-      "port": 3000
-    }
-  ],
+  "start": "cd drsearch_backend && \\\npoetry install --all-extras && \\\ncd ../drsearch_frontend && \\\nyarn install",
   "terminals": [
     {
       "name": "Start drsearch_backend",
-      "command": "cd drsearch_backend && poetry run uvicorn app:app --reload --port 8011",
-      "description": "Launches the FastAPI backend application using Uvicorn on port 8011.",
-      "autostart": false
+      "command": "cd drsearch_backend && poetry run uvicorn app:app --reload --port 8011"
     },
     {
       "name": "Start drsearch_frontend",
-      "command": "cd drsearch_frontend && yarn dev --port 3000",
-      "description": "Starts the Next.js frontend development server on port 3000.",
-      "autostart": false
+      "command": "cd drsearch_frontend && yarn dev --port 3000"
     }
   ]
 }

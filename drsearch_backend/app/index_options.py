@@ -35,13 +35,13 @@ INDEX_OPTIONS = [
         ],
     },
     {
-        "name": "Local Documents",
-        "display_name": "Local Documents",
+        "name": "TEST_INDEX",
+        "display_name": "TEST_INDEX",
         "example_questions": [
-            "What is Index3 question 1?",
-            "What is Index3 question 2?",
-            "What is Index3 question 3?",
-            "What is Index3 question 4?",
+            "1",
+            "2",
+            "3",
+            "4",
         ],
     },
 ]
