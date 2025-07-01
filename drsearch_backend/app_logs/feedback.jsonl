@@ -1,4 +1,0 @@
-{"message": "feedback", "run_id": "11111111-1111-1111-1111-111111111111", "key": "user_score", "score": 1, "feedback_id": null, "comment": null, "conversation": null, "documents": null, "thumb": "up"}
-{"message": "feedback", "patch": {"feedback_id": "22222222-2222-2222-2222-222222222222", "score": 1, "comment": null}}
-{"message": "feedback", "run_id": "11111111-1111-1111-1111-111111111111", "key": "user_score", "score": 1, "feedback_id": null, "comment": null, "conversation": null, "documents": null, "thumb": "up"}
-{"message": "feedback", "patch": {"feedback_id": "22222222-2222-2222-2222-222222222222", "score": 1, "comment": null}}
