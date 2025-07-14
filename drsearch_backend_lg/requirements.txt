@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+redis
+langgraph
+langchain-openai
+langchain-community
+pydantic-settings
+pgvector
+python-multipart
+streamlit
+pytest

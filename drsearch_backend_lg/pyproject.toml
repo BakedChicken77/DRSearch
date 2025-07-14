@@ -1,0 +1,27 @@
+[project]
+name = "drsearch_backend_lg"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+dependencies = [
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.29.0",
+    "sqlalchemy>=2.0.29",
+    "psycopg2-binary>=2.9.9",
+    "redis>=5.0.4",
+    "langgraph>=0.0.63",
+    "langchain-openai>=0.1.7",
+    "langchain-community>=0.0.38",
+    "pydantic-settings>=2.1.0",
+    "pgvector>=0.2.4",
+    "python-multipart>=0.0.6",
+    "streamlit>=1.32.0",
+    "pytest>=8.1.1",
+]
+
+[tool.poetry]
+packages = [{include = "app"}]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
