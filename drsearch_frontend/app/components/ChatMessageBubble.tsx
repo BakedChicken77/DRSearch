@@ -128,11 +128,15 @@ export const createAnswerElements = (
           }}
         ></span>,
       );
+      
+      // Use filtered source position when mapping exists, otherwise use original source number
+      const displayNumber = sourceIndexMap.has(sourceNum) ? resolvedNum + 1 : sourceNum + 1;
+      
       elements.push(
         <InlineCitation
           key={`citation:${prevIndex}`}
           source={filteredSources[resolvedNum]}
-          sourceNumber={sourceNum + 1} // Keep original source number
+          sourceNumber={displayNumber}
           highlighted={highlighedSourceLinkStates[resolvedNum]}
           onMouseEnter={() => {
             console.log(
