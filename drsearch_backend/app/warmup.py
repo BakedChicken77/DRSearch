@@ -16,7 +16,7 @@ async def warm_up_indexes() -> None:
     """Initialise all indexes so first user request is fast."""
     for index_name in INDEX_STATUS.keys():
         try:
-            engine = get_answer_chain(index_name)
+            engine = get_answer_chain(index_name, trace=False)
             await engine.ainvoke({"question": "warmup", "chat_history": []})
             INDEX_STATUS[index_name] = True
         except Exception as exc:  # noqa: BLE001
