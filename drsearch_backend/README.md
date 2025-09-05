@@ -14,6 +14,17 @@ poetry run pytest --cov=app --cov-report=term-missing -q
 
 ```
 
+## Langfuse Observability
+To enable request tracing with Langfuse, configure the following environment variables:
+
+```
+LANGFUSE_HOST=http://localhost:3000
+LANGFUSE_PUBLIC_KEY=<your-public-key>
+LANGFUSE_SECRET_KEY=<your-secret-key>
+```
+
+The backend automatically attaches a Langfuse callback handler to its answer chain.
+
 
 
 ### Authentication — Detailed Technical Walk-through
