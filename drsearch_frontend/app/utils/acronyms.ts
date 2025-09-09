@@ -1,9 +1,3 @@
-export const ACRONYM_MAP: Record<string, string> = {
-  HR: "Human Resources",
-  IT: "Information Technology",
-  FAQ: "Frequently Asked Questions",
-};
-
 export interface ExpansionResult {
   text: string;
   acronym?: string;
@@ -11,13 +5,16 @@ export interface ExpansionResult {
   start?: number;
 }
 
-export function expandLastAcronym(value: string): ExpansionResult {
+export function expandLastAcronym(
+  value: string,
+  acronymMap: Record<string, string> = {},
+): ExpansionResult {
   const match = value.match(/(\b\w+)\s$/);
   if (!match) {
     return { text: value };
   }
   const acronym = match[1];
-  const expansion = ACRONYM_MAP[acronym.toUpperCase()];
+  const expansion = acronymMap[acronym.toUpperCase()];
   if (!expansion) {
     return { text: value };
   }

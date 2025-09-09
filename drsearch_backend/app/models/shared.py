@@ -21,6 +21,7 @@ class IndexOption(BaseModel):
     display_name: Optional[str] = None
     example_questions: Optional[List[str]] = None
     initialized: bool = False
+    acronyms: Optional[dict[str, str]] = None
 
 
 class IndexOptionsResponse(BaseModel):

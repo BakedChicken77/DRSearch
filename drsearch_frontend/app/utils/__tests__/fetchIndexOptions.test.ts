@@ -16,14 +16,14 @@ test("fetches index options with token", async () => {
     json: () =>
       Promise.resolve({
         code: 200,
-        result: [{ name: "a", initialized: true }],
+        result: [{ name: "a", initialized: true, acronyms: {} }],
       }),
   });
   const res = await fetchIndexOptions("tok");
   expect(fetch).toHaveBeenCalledWith(apiUrl, {
     headers: { Authorization: "Bearer tok" },
   });
-  expect(res).toEqual([{ name: "a", initialized: true }]);
+  expect(res).toEqual([{ name: "a", initialized: true, acronyms: {} }]);
 });
 
 test("throws error on http failure", async () => {
