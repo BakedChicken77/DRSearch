@@ -18,12 +18,15 @@ poetry run pytest --cov=app --cov-report=term-missing -q
 To enable request tracing with Langfuse, configure the following environment variables:
 
 ```
+LANGFUSE_ENABLED=True
 LANGFUSE_HOST=http://localhost:3000
 LANGFUSE_PUBLIC_KEY=<your-public-key>
 LANGFUSE_SECRET_KEY=<your-secret-key>
 ```
 
-The backend automatically attaches a Langfuse callback handler to its answer chain.
+Set `LANGFUSE_ENABLED` to `True` to enable tracing. When omitted or set to any other
+value, Langfuse is not used. The backend automatically attaches a Langfuse callback
+handler to its answer chain when enabled.
 
 
 

@@ -5,12 +5,19 @@ from __future__ import annotations
 
 from typing import Dict, Tuple, Sequence
 import json
+import os
 from langchain.schema import Document
 from langchain.schema.runnable import Runnable, RunnableLambda
-from langfuse.callback import CallbackHandler
-
 from app.chain.engine import ChatEngine
 from app.core.chain_config import _DEFAULT_INDEX, _NUMBER_OF_DOCS_RETRIEVED
+
+LANGFUSE_ENABLED = os.getenv("LANGFUSE_ENABLED", "false").lower() == "true"
+
+if LANGFUSE_ENABLED:
+    from langfuse.callback import CallbackHandler
+else:  # pragma: no cover - executed only when Langfuse disabled
+    class CallbackHandler:  # pylint: disable=too-few-public-methods
+        """Placeholder handler when Langfuse is disabled."""
 
 _engine_cache: Dict[Tuple[str, int], ChatEngine] = {}
 
@@ -52,6 +59,8 @@ class _LangfuseCallbackHandler(CallbackHandler):  # pylint: disable=too-many-anc
 
 def _new_langfuse_handler() -> CallbackHandler | None:
     """Create a new Langfuse handler if environment variables are set."""
+    if not LANGFUSE_ENABLED:
+        return None
     try:
         return _LangfuseCallbackHandler()
     except Exception:  # pragma: no cover - missing env vars  # pylint: disable=broad-except
