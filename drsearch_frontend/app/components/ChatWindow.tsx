@@ -29,6 +29,7 @@ import { Source } from "./SourceBubble";
 import { SettingsDrawer } from "./SettingsDrawer";
 import { apiBaseUrl } from "../utils/constants";
 import { fetchIndexOptions, IndexOption } from "../utils/fetchIndexOptions";
+import { expandLastAcronym } from "../utils/acronyms";
 
 export function ChatWindow(props: {
   placeholder?: string;
@@ -42,6 +43,10 @@ export function ChatWindow(props: {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [lastReplacement, setLastReplacement] = useState<{
+    acronym: string;
+    expansion: string;
+  } | null>(null);
   const [chatHistory, setChatHistory] = useState<
     { human: string; ai: string }[]
   >([]);
@@ -351,8 +356,36 @@ export function ChatWindow(props: {
             backgroundColor: "gray.200",
             cursor: "not-allowed",
           }} /* istanbul ignore next */
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            const isDeleting = val.length < input.length;
+            if (isDeleting) {
+              setInput(val);
+              setLastReplacement(null);
+              return;
+            }
+            const { text, acronym, expansion } = expandLastAcronym(val);
+            setInput(text);
+            if (acronym && expansion) {
+              setLastReplacement({ acronym, expansion });
+            } else if (lastReplacement) {
+              setLastReplacement(null);
+            }
+          }}
           onKeyDown={(e) => {
+            if (
+              e.key === "Backspace" &&
+              lastReplacement &&
+              input.endsWith(`${lastReplacement.expansion} `)
+            ) {
+              e.preventDefault();
+              const end = `${lastReplacement.expansion} `;
+              setInput(
+                input.slice(0, -end.length) + `${lastReplacement.acronym} `,
+              );
+              setLastReplacement(null);
+              return;
+            }
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               sendMessage();

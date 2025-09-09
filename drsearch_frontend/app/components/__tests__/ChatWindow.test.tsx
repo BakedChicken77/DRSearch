@@ -226,6 +226,30 @@ test("index change clears messages", async () => {
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""));
 });
 
+test("expands acronyms and restores on backspace", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: [],
+      initialized: true,
+    },
+  ]);
+  const mockSession = { accessToken: "token" } as any;
+  render(
+    <SessionProvider session={mockSession}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  await screen.findByText("Select Document Index");
+  fireEvent.change(screen.getByRole("combobox"), { target: { value: "idx" } });
+  const box = screen.getByRole("textbox");
+  fireEvent.change(box, { target: { value: "HR " } });
+  expect(box).toHaveValue("Human Resources ");
+  fireEvent.keyDown(box, { key: "Backspace" });
+  expect(box).toHaveValue("HR ");
+});
+
 test("new chat button clears messages but keeps index", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
     {
