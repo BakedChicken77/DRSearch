@@ -8,6 +8,7 @@ export interface ExpansionResult {
   text: string;
   acronym?: string;
   expansion?: string;
+  start?: number;
 }
 
 export function expandLastAcronym(value: string): ExpansionResult {
@@ -20,6 +21,7 @@ export function expandLastAcronym(value: string): ExpansionResult {
   if (!expansion) {
     return { text: value };
   }
-  const replacedText = value.slice(0, -acronym.length - 1) + expansion + " ";
-  return { text: replacedText, acronym, expansion };
+  const start = match.index ?? value.length - acronym.length - 1;
+  const replacedText = value.slice(0, start) + expansion + " ";
+  return { text: replacedText, acronym, expansion, start };
 }

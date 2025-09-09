@@ -47,6 +47,7 @@ export function ChatWindow(props: {
   const [lastReplacement, setLastReplacement] = useState<{
     acronym: string;
     expansion: string;
+    start: number;
   } | null>(null);
   const [chatHistory, setChatHistory] = useState<
     { human: string; ai: string }[]
@@ -56,18 +57,22 @@ export function ChatWindow(props: {
     if (!lastReplacement) return;
     const el = inputRef.current;
     if (!el) return;
-    const { expansion } = lastReplacement;
-    const start = input.length - (expansion.length + 1);
+    const { expansion, start } = lastReplacement;
     const end = start + expansion.length;
-    el.focus();
-    el.setSelectionRange(start, end);
-    const timer = setTimeout(() => {
+    const highlightTimer = setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(start, end);
+    }, 0);
+    const restoreTimer = setTimeout(() => {
       if (el.selectionStart === start && el.selectionEnd === end) {
         el.setSelectionRange(end, end);
       }
     }, 1000);
-    return () => clearTimeout(timer);
-  }, [lastReplacement, input]);
+    return () => {
+      clearTimeout(highlightTimer);
+      clearTimeout(restoreTimer);
+    };
+  }, [lastReplacement]);
 
   const { placeholder, titleText = "DRS ASSISTANT" } = props;
 
@@ -383,10 +388,10 @@ export function ChatWindow(props: {
               setLastReplacement(null);
               return;
             }
-            const { text, acronym, expansion } = expandLastAcronym(val);
+            const { text, acronym, expansion, start } = expandLastAcronym(val);
             setInput(text);
-            if (acronym && expansion) {
-              setLastReplacement({ acronym, expansion });
+            if (acronym && expansion && typeof start === "number") {
+              setLastReplacement({ acronym, expansion, start });
             } else if (lastReplacement) {
               setLastReplacement(null);
             }
