@@ -245,7 +245,11 @@ test("expands acronyms and restores on backspace", async () => {
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "idx" } });
   const box = screen.getByRole("textbox");
   fireEvent.change(box, { target: { value: "HR " } });
+  await new Promise((r) => setTimeout(r, 0));
   expect(box).toHaveValue("Human Resources ");
+  const start = box.value.indexOf("Human Resources");
+  expect(box.selectionStart).toBe(start);
+  expect(box.selectionEnd).toBe(start + "Human Resources".length);
   fireEvent.keyDown(box, { key: "Backspace" });
   expect(box).toHaveValue("HR ");
 });

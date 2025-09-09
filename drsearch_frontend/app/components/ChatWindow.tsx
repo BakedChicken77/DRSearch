@@ -38,6 +38,7 @@ export function ChatWindow(props: {
   // conversation/session identifiers
   const [conversationId, setConversationId] = useState<string>(uuidv4());
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   // chat state
   const [messages, setMessages] = useState<Message[]>([]);
@@ -50,6 +51,23 @@ export function ChatWindow(props: {
   const [chatHistory, setChatHistory] = useState<
     { human: string; ai: string }[]
   >([]);
+
+  useEffect(() => {
+    if (!lastReplacement) return;
+    const el = inputRef.current;
+    if (!el) return;
+    const { expansion } = lastReplacement;
+    const start = input.length - (expansion.length + 1);
+    const end = start + expansion.length;
+    el.focus();
+    el.setSelectionRange(start, end);
+    const timer = setTimeout(() => {
+      if (el.selectionStart === start && el.selectionEnd === end) {
+        el.setSelectionRange(end, end);
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [lastReplacement, input]);
 
   const { placeholder, titleText = "DRS ASSISTANT" } = props;
 
@@ -345,6 +363,7 @@ export function ChatWindow(props: {
       {/* input + send */}
       <InputGroup size="md" alignItems="center">
         <AutoResizeTextarea
+          ref={inputRef}
           value={input}
           maxRows={20}
           mr="56px"
