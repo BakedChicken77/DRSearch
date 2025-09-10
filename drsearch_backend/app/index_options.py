@@ -72,9 +72,9 @@ def _fetch_acronyms(index_name: str) -> Dict[str, str]:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT cmetadata
+                    SELECT e.cmetadata
                     FROM langchain_pg_embedding e
-                    JOIN langchain_pg_collection c ON e.collection_id = c.id
+                    JOIN langchain_pg_collection c ON e.collection_id = c.uuid
                     WHERE c.name = %s
                     """,
                     (index_name,),
