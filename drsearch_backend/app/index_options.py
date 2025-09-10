@@ -6,6 +6,8 @@ Also builds per-index acronym lookup tables from the pgvector store.
 from __future__ import annotations
 
 import logging
+import json
+from pathlib import Path
 from typing import Dict, List
 
 import psycopg2
@@ -14,6 +16,15 @@ from psycopg2.extras import RealDictCursor
 from app.core import chain_config
 
 logger = logging.getLogger(__name__)
+
+# Load a list of acronym keys to ignore (case insensitive)
+_IGNORE_FILE = Path(__file__).with_name("acronyms_keys_to_ignore.json")
+try:
+    _IGNORED_ACRONYM_KEYS = {
+        k.strip().upper() for k in json.loads(_IGNORE_FILE.read_text())
+    }
+except Exception:  # pragma: no cover - missing/invalid file
+    _IGNORED_ACRONYM_KEYS = set()
 
 # Base index option definitions without acronym data
 _BASE_INDEX_OPTIONS = [
@@ -90,6 +101,10 @@ def _fetch_acronyms(index_name: str) -> Dict[str, str]:
         keys = meta.get("acronym_keys") or []
         values = meta.get("acronym_values") or []
         for k, v in zip(keys, values):
+            if not k or not v:
+                continue
+            if k.upper() in _IGNORED_ACRONYM_KEYS:
+                continue
             acronyms[k] = v
     return acronyms
 
