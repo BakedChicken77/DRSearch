@@ -7,6 +7,7 @@ export interface IndexOption {
   display_name: string;
   example_questions: string[];
   initialized: boolean;
+  acronyms?: Record<string, string>;
 }
 
 /**

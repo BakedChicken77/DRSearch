@@ -61,6 +61,7 @@ test("shows options and sends initial question", async () => {
       display_name: "Index",
       example_questions: ["q1"],
       initialized: true,
+      acronyms: {},
     },
   ]);
   const mockSession = { accessToken: "token" } as any;
@@ -96,6 +97,7 @@ test("uninitialized index option disabled", async () => {
       display_name: "Index",
       example_questions: [],
       initialized: false,
+      acronyms: {},
     },
   ]);
   const mockSession = { accessToken: "token" } as any;
@@ -129,6 +131,7 @@ test("sends message and processes stream", async () => {
       display_name: "Index",
       example_questions: ["q"],
       initialized: true,
+      acronyms: {},
     },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
@@ -159,12 +162,14 @@ test("changing index resets chat", async () => {
       display_name: "Index",
       example_questions: ["q"],
       initialized: true,
+      acronyms: {},
     },
     {
       name: "idx2",
       display_name: "Other",
       example_questions: ["q"],
       initialized: true,
+      acronyms: {},
     },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
@@ -192,8 +197,8 @@ test("changing index resets chat", async () => {
 
 test("index change clears messages", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "a", display_name: "A", example_questions: [], initialized: true },
-    { name: "b", display_name: "B", example_questions: [], initialized: true },
+    { name: "a", display_name: "A", example_questions: [], initialized: true, acronyms: {} },
+    { name: "b", display_name: "B", example_questions: [], initialized: true, acronyms: {} },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
@@ -226,6 +231,35 @@ test("index change clears messages", async () => {
   await waitFor(() => expect(screen.getByRole("textbox")).toHaveValue(""));
 });
 
+test("expands acronyms and restores on backspace", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: [],
+      initialized: true,
+      acronyms: { HR: "Human Resources" },
+    },
+  ]);
+  const mockSession = { accessToken: "token" } as any;
+  render(
+    <SessionProvider session={mockSession}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  await screen.findByText("Select Document Index");
+  fireEvent.change(screen.getByRole("combobox"), { target: { value: "idx" } });
+  const box = screen.getByRole("textbox");
+  fireEvent.change(box, { target: { value: "See HR " } });
+  await new Promise((r) => setTimeout(r, 20));
+  expect(box).toHaveValue("See Human Resources ");
+  const start = box.value.indexOf("Human Resources");
+  expect(box.selectionStart).toBe(start);
+  expect(box.selectionEnd).toBe(start + "Human Resources".length);
+  fireEvent.keyDown(box, { key: "Backspace" });
+  expect(box).toHaveValue("See HR ");
+});
+
 test("new chat button clears messages but keeps index", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
     {
@@ -233,6 +267,7 @@ test("new chat button clears messages but keeps index", async () => {
       display_name: "Index",
       example_questions: ["q1"],
       initialized: true,
+      acronyms: {},
     },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
@@ -280,6 +315,7 @@ test("renders highlighted markdown and updates message", async () => {
       display_name: "Index",
       example_questions: [],
       initialized: true,
+      acronyms: {},
     },
   ]);
 
@@ -337,6 +373,7 @@ test("enter vs shift+enter", async () => {
       display_name: "Index",
       example_questions: [],
       initialized: true,
+      acronyms: {},
     },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {

@@ -8,12 +8,14 @@ interface ResizeTextareaProps {
   maxRows?: number;
 }
 
-const ResizableTextarea: React.FC<ResizeTextareaProps> = ({
-  maxRows,
-  ...props
-}) => {
-  return <ResizeTextarea maxRows={maxRows} {...props} />;
-};
+const ResizableTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  ResizeTextareaProps
+>(({ maxRows, ...props }, ref) => (
+  <ResizeTextarea maxRows={maxRows} ref={ref} {...props} />
+));
+
+ResizableTextarea.displayName = "ResizableTextarea";
 
 interface AutoResizeTextareaProps extends TextareaProps {
   maxRows?: number;
