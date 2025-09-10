@@ -78,6 +78,7 @@ export function ChatWindow(props: {
 
   // index selection
   const [selectedIndexName, setSelectedIndexName] = useState("");
+  const [acronymMap, setAcronymMap] = useState<Record<string, string>>({});
 
   // number of docs
   const [numDocs, setNumDocs] = useState(3);
@@ -85,6 +86,12 @@ export function ChatWindow(props: {
   // fetched options
   const [indexOptions, setIndexOptions] = useState<IndexOption[] | null>(null);
   const [loadingOptions, setLoadingOptions] = useState(true);
+
+  const handleIndexChange = (name: string) => {
+    setSelectedIndexName(name);
+    const opt = indexOptions?.find((o) => o.name === name);
+    setAcronymMap(opt?.acronyms || {});
+  };
 
   // reset on index change
   const prevIndexRef = useRef<string>("");
@@ -317,7 +324,7 @@ export function ChatWindow(props: {
           {/* dropdown from backend */}
           <Select
             value={selectedIndexName}
-            onChange={(e) => setSelectedIndexName(e.target.value)}
+            onChange={(e) => handleIndexChange(e.target.value)}
             placeholder="Select Document Index"
             mb="20px"
             width="auto"
@@ -339,7 +346,7 @@ export function ChatWindow(props: {
         <EmptyState
           onChoice={sendInitialQuestion}
           selectedIndexName={selectedIndexName}
-          setSelectedIndexName={setSelectedIndexName}
+          onIndexChange={handleIndexChange}
           indexOptions={indexOptions}
           loadingOptions={loadingOptions}
         />
@@ -388,7 +395,10 @@ export function ChatWindow(props: {
               setLastReplacement(null);
               return;
             }
-            const { text, acronym, expansion, start } = expandLastAcronym(val);
+            const { text, acronym, expansion, start } = expandLastAcronym(
+              val,
+              acronymMap,
+            );
             setInput(text);
             if (acronym && expansion && typeof start === "number") {
               setLastReplacement({ acronym, expansion, start });

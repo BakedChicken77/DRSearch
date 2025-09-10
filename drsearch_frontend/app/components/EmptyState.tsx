@@ -18,14 +18,14 @@ const iconSrc = "llama_cafe.ico";
 export function EmptyState(props: {
   onChoice: (question: string) => any;
   selectedIndexName: string;
-  setSelectedIndexName: React.Dispatch<React.SetStateAction<string>>;
+  onIndexChange: (value: string) => void;
   indexOptions: IndexOption[] | null;
   loadingOptions: boolean;
 }) {
   const {
     onChoice,
     selectedIndexName,
-    setSelectedIndexName,
+    onIndexChange,
     indexOptions,
     loadingOptions,
   } = props;
@@ -66,7 +66,7 @@ export function EmptyState(props: {
           <p style={{ color: "black", textAlign: "center" }}>Here to assist</p>
           <Select
             value={selectedIndexName}
-            onChange={(e) => setSelectedIndexName(e.target.value)}
+            onChange={(e) => onIndexChange(e.target.value)}
             placeholder="Select Document Index"
             marginBottom="20px"
             width="100%"

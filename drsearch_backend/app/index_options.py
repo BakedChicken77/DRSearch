@@ -1,9 +1,33 @@
 """
 Central place for dropdown choices and their example questions.
-Extend or edit here—no frontend changes required.
+Also builds per-index acronym lookup tables from the pgvector store.
 """
 
-INDEX_OPTIONS = [
+from __future__ import annotations
+
+import logging
+import json
+from pathlib import Path
+from typing import Dict, List
+
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
+from app.core import chain_config
+
+logger = logging.getLogger(__name__)
+
+# Load a list of acronym keys to ignore (case insensitive)
+_IGNORE_FILE = Path(__file__).with_name("acronyms_keys_to_ignore.json")
+try:
+    _IGNORED_ACRONYM_KEYS = {
+        k.strip().upper() for k in json.loads(_IGNORE_FILE.read_text())
+    }
+except Exception:  # pragma: no cover - missing/invalid file
+    _IGNORED_ACRONYM_KEYS = set()
+
+# Base index option definitions without acronym data
+_BASE_INDEX_OPTIONS = [
     {
         "name": "JACSKE_Program",
         "display_name": "JACSKE Program",
@@ -45,3 +69,55 @@ INDEX_OPTIONS = [
         ],
     },
 ]
+
+
+def _fetch_acronyms(index_name: str) -> Dict[str, str]:
+    """Retrieve acronym map for a given index from pgvector."""
+
+    if not chain_config._PGVECTOR_URL:
+        return {}
+    try:
+        with psycopg2.connect(
+            chain_config._PGVECTOR_URL, cursor_factory=RealDictCursor
+        ) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT e.cmetadata
+                    FROM langchain_pg_embedding e
+                    JOIN langchain_pg_collection c ON e.collection_id = c.uuid
+                    WHERE c.name = %s
+                    """,
+                    (index_name,),
+                )
+                rows = cur.fetchall()
+    except Exception as exc:  # pragma: no cover - connectivity issues
+        logger.warning("Unable to fetch acronyms for %s", index_name, exc_info=exc)
+        return {}
+
+    acronyms: Dict[str, str] = {}
+    for row in rows:
+        meta = row.get("cmetadata") or {}
+        keys = meta.get("acronym_keys") or []
+        values = meta.get("acronym_values") or []
+        for k, v in zip(keys, values):
+            if not k or not v:
+                continue
+            if k.upper() in _IGNORED_ACRONYM_KEYS:
+                continue
+            acronyms[k] = v
+    return acronyms
+
+
+def _build_index_options() -> List[Dict]:
+    """Combine base options with acronym maps."""
+
+    opts: List[Dict] = []
+    for opt in _BASE_INDEX_OPTIONS:
+        acronyms = _fetch_acronyms(opt["name"])
+        opts.append({**opt, "acronyms": acronyms})
+    return opts
+
+
+# Public constant consumed by the API
+INDEX_OPTIONS = _build_index_options()

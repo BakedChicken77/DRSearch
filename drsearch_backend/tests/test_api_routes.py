@@ -7,7 +7,7 @@ import types
 
 
 async def _ok():
-    return [{"name": "x"}]
+    return [{"name": "x", "acronyms": {"HR": "Human Resources"}}]
 
 
 def test_index_options_happy_path(fastapi_client: TestClient, monkeypatch):
@@ -19,6 +19,7 @@ def test_index_options_happy_path(fastapi_client: TestClient, monkeypatch):
     data = r.json()["result"][0]
     assert data["name"] == "x"
     assert data["initialized"] is True
+    assert data["acronyms"]["HR"] == "Human Resources"
 
 
 def test_feedback_create_and_patch(fastapi_client: TestClient):
