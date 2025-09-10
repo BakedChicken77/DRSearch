@@ -26,6 +26,36 @@ try:
 except Exception:  # pragma: no cover - missing/invalid file
     _IGNORED_ACRONYM_KEYS = set()
 
+# ---------------------------------------------------------------------------
+# Acronym helpers
+
+
+def _is_valid_acronym(key: str, value: str) -> bool:
+    """Return True if the acronym key/value pair should be kept."""
+
+    key_clean = key.strip()
+    if not key_clean or not value:
+        return False
+    if key_clean.upper() in _IGNORED_ACRONYM_KEYS:
+        return False
+    # Remove short keys (2 or fewer characters)
+    if len(key_clean) <= 2:
+        return False
+    # Remove values with disallowed punctuation
+    if any(char in value for char in ".(),[]"):
+        return False
+    # Remove excessively long values compared to key length
+    word_count = len(value.split())
+    if word_count - len(key_clean) >= 3:
+        return False
+    # Remove keys with more lowercase than uppercase letters
+    upper = sum(c.isupper() for c in key_clean)
+    lower = sum(c.islower() for c in key_clean)
+    if lower > upper:
+        return False
+    return True
+
+
 # Base index option definitions without acronym data
 _BASE_INDEX_OPTIONS = [
     {
@@ -101,11 +131,8 @@ def _fetch_acronyms(index_name: str) -> Dict[str, str]:
         keys = meta.get("acronym_keys") or []
         values = meta.get("acronym_values") or []
         for k, v in zip(keys, values):
-            if not k or not v:
-                continue
-            if k.upper() in _IGNORED_ACRONYM_KEYS:
-                continue
-            acronyms[k] = v
+            if _is_valid_acronym(k, v):
+                acronyms[k] = v
     return acronyms
 
 

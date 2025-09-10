@@ -41,19 +41,79 @@ def _run_fetch(monkeypatch, rows):
 
 def test_fetch_acronyms_filters_empty_and_none(monkeypatch):
     rows = [
-        {"cmetadata": {"acronym_keys": ["A", "", "B"], "acronym_values": ["Alpha", "foo", ""]}}
+        {
+            "cmetadata": {
+                "acronym_keys": ["ABC", "", "DEF"],
+                "acronym_values": ["Alpha", "foo", ""],
+            }
+        }
     ]
-    assert _run_fetch(monkeypatch, rows) == {"A": "Alpha"}
+    assert _run_fetch(monkeypatch, rows) == {"ABC": "Alpha"}
 
 
 def test_fetch_acronyms_respects_ignore_list_case_insensitive(monkeypatch):
     rows = [
         {
             "cmetadata": {
-                "acronym_keys": ["HR", "IT", "ip"],
-                "acronym_values": ["Human Resources", "Information Tech", "internet protocol"],
+                "acronym_keys": ["HRS", "IT", "ip"],
+                "acronym_values": [
+                    "Human Resources",
+                    "Information Tech",
+                    "internet protocol",
+                ],
             }
         }
     ]
     result = _run_fetch(monkeypatch, rows)
-    assert result == {"HR": "Human Resources"}
+    assert result == {"HRS": "Human Resources"}
+
+
+def test_fetch_acronyms_excludes_short_keys(monkeypatch):
+    rows = [
+        {
+            "cmetadata": {
+                "acronym_keys": ["AB", "ABC"],
+                "acronym_values": ["Alpha Beta", "Gamma"],
+            }
+        }
+    ]
+    assert _run_fetch(monkeypatch, rows) == {"ABC": "Gamma"}
+
+
+def test_fetch_acronyms_excludes_long_values(monkeypatch):
+    rows = [
+        {
+            "cmetadata": {
+                "acronym_keys": ["ABC", "LONG"],
+                "acronym_values": [
+                    "one two three four five six",
+                    "word word",
+                ],
+            }
+        }
+    ]
+    assert _run_fetch(monkeypatch, rows) == {"LONG": "word word"}
+
+
+def test_fetch_acronyms_excludes_values_with_punctuation(monkeypatch):
+    rows = [
+        {
+            "cmetadata": {
+                "acronym_keys": ["ABC", "DEF"],
+                "acronym_values": ["has, comma", "clean value"],
+            }
+        }
+    ]
+    assert _run_fetch(monkeypatch, rows) == {"DEF": "clean value"}
+
+
+def test_fetch_acronyms_excludes_keys_with_more_lowercase(monkeypatch):
+    rows = [
+        {
+            "cmetadata": {
+                "acronym_keys": ["eMail", "ABC"],
+                "acronym_values": ["electronic mail", "Just example"],
+            }
+        }
+    ]
+    assert _run_fetch(monkeypatch, rows) == {"ABC": "Just example"}
