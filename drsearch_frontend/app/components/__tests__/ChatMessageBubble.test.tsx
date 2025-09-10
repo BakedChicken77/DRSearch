@@ -261,6 +261,27 @@ describe("ChatMessageBubble component", () => {
       <ChatMessageBubble
         message={{
           id: "7",
+          content: "answer [0]",
+          role: "assistant",
+          runId: "r",
+          sources: [{ url: "u", title: "Title" }],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+    screen.getByText("View Sources");
+    const link = screen.getByText("Title");
+    fireEvent.mouseEnter(link);
+    fireEvent.mouseLeave(link);
+  });
+
+  test("does not show sources without citations", () => {
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "8",
           content: "answer",
           role: "assistant",
           runId: "r",
@@ -271,11 +292,7 @@ describe("ChatMessageBubble component", () => {
         conversation={[]}
       />,
     );
-    const heading = screen.getByText("View Sources");
-    fireEvent.mouseEnter(heading);
-    const link = await screen.findByText("Title");
-    fireEvent.mouseEnter(link);
-    fireEvent.mouseLeave(link);
+    expect(screen.queryByText("View Sources")).not.toBeInTheDocument();
   });
 
   test("citation fallback uses last source", () => {

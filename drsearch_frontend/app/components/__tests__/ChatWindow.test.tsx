@@ -197,8 +197,20 @@ test("changing index resets chat", async () => {
 
 test("index change clears messages", async () => {
   (fetchIndexOptions as jest.Mock).mockResolvedValue([
-    { name: "a", display_name: "A", example_questions: [], initialized: true, acronyms: {} },
-    { name: "b", display_name: "B", example_questions: [], initialized: true, acronyms: {} },
+    {
+      name: "a",
+      display_name: "A",
+      example_questions: [],
+      initialized: true,
+      acronyms: {},
+    },
+    {
+      name: "b",
+      display_name: "B",
+      example_questions: [],
+      initialized: true,
+      acronyms: {},
+    },
   ]);
   (fetchEventSource as jest.Mock).mockImplementation(async (_url, opts) => {
     opts.onmessage?.({
@@ -329,7 +341,7 @@ test("renders highlighted markdown and updates message", async () => {
           {
             op: "add",
             path: "/streamed_output",
-            value: ["response"],
+            value: ["response [0]"],
           },
           {
             op: "add",
@@ -364,6 +376,7 @@ test("renders highlighted markdown and updates message", async () => {
 
   expect(highlightSpy).toHaveBeenCalled();
   expect(screen.getByText("View Sources")).toBeInTheDocument();
+  expect(screen.getByText("f")).toBeInTheDocument();
 });
 
 test("enter vs shift+enter", async () => {
