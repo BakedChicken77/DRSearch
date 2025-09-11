@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useSession } from "next-auth/react";
 import { EmptyState } from "../components/EmptyState";
 import { ChatMessageBubble, Message } from "../components/ChatMessageBubble";
-import { AutoResizeTextarea } from "./AutoResizeTextarea";
+import { AcronymTextarea } from "./AcronymTextarea";
 import { marked, Renderer } from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/gradient-dark.css";
@@ -29,7 +29,6 @@ import { Source } from "./SourceBubble";
 import { SettingsDrawer } from "./SettingsDrawer";
 import { apiBaseUrl } from "../utils/constants";
 import { fetchIndexOptions, IndexOption } from "../utils/fetchIndexOptions";
-import { expandLastAcronym } from "../utils/acronyms";
 
 export function ChatWindow(props: {
   placeholder?: string;
@@ -44,35 +43,9 @@ export function ChatWindow(props: {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [lastReplacement, setLastReplacement] = useState<{
-    acronym: string;
-    expansion: string;
-    start: number;
-  } | null>(null);
   const [chatHistory, setChatHistory] = useState<
     { human: string; ai: string }[]
   >([]);
-
-  useEffect(() => {
-    if (!lastReplacement) return;
-    const el = inputRef.current;
-    if (!el) return;
-    const { expansion, start } = lastReplacement;
-    const end = start + expansion.length;
-    const highlightTimer = setTimeout(() => {
-      el.focus();
-      el.setSelectionRange(start, end);
-    }, 0);
-    const restoreTimer = setTimeout(() => {
-      if (el.selectionStart === start && el.selectionEnd === end) {
-        el.setSelectionRange(end, end);
-      }
-    }, 1000);
-    return () => {
-      clearTimeout(highlightTimer);
-      clearTimeout(restoreTimer);
-    };
-  }, [lastReplacement]);
 
   const { placeholder, titleText = "DRS ASSISTANT" } = props;
 
@@ -374,7 +347,7 @@ export function ChatWindow(props: {
 
       {/* input + send */}
       <InputGroup size="md" alignItems="center">
-        <AutoResizeTextarea
+        <AcronymTextarea
           ref={inputRef}
           value={input}
           maxRows={20}
@@ -383,49 +356,16 @@ export function ChatWindow(props: {
           textColor="black"
           borderColor="rgb(58, 58, 61)"
           isDisabled={!selectedIndexName}
+          acronymMap={acronymMap}
           _disabled={{
             backgroundColor: "gray.200",
             cursor: "not-allowed",
           }} /* istanbul ignore next */
-          onChange={(e) => {
-            const val = e.target.value;
-            const isDeleting = val.length < input.length;
-            if (isDeleting) {
-              setInput(val);
-              setLastReplacement(null);
-              return;
-            }
-            const { text, acronym, expansion, start } = expandLastAcronym(
-              val,
-              acronymMap,
-            );
-            setInput(text);
-            if (acronym && expansion && typeof start === "number") {
-              setLastReplacement({ acronym, expansion, start });
-            } else if (lastReplacement) {
-              setLastReplacement(null);
-            }
-          }}
+          onChange={(val) => setInput(val)}
           onKeyDown={(e) => {
-            if (
-              e.key === "Backspace" &&
-              lastReplacement &&
-              input.endsWith(`${lastReplacement.expansion} `)
-            ) {
-              e.preventDefault();
-              const end = `${lastReplacement.expansion} `;
-              setInput(
-                input.slice(0, -end.length) + `${lastReplacement.acronym} `,
-              );
-              setLastReplacement(null);
-              return;
-            }
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               sendMessage();
-            } else if (e.key === "Enter" && e.shiftKey) {
-              e.preventDefault();
-              setInput((t) => t + "\n");
             }
           }}
         />
