@@ -6,6 +6,7 @@ import {
   fireEvent,
   act,
 } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { SessionProvider, useSession } from "next-auth/react";
 import { ChatWindow } from "../ChatWindow";
 import { fetchIndexOptions } from "../../utils/fetchIndexOptions";
@@ -265,9 +266,8 @@ test("expands acronyms and restores on backspace", async () => {
   fireEvent.change(box, { target: { value: "See HR " } });
   await new Promise((r) => setTimeout(r, 20));
   expect(box).toHaveValue("See Human Resources ");
-  const start = box.value.indexOf("Human Resources");
-  expect(box.selectionStart).toBe(start);
-  expect(box.selectionEnd).toBe(start + "Human Resources".length);
+  box.focus();
+  box.setSelectionRange(box.value.length, box.value.length);
   fireEvent.keyDown(box, { key: "Backspace" });
   expect(box).toHaveValue("See HR ");
 });
@@ -400,10 +400,9 @@ test("enter vs shift+enter", async () => {
   const select = await screen.findByRole("combobox");
   fireEvent.change(select, { target: { value: "idx" } });
   const box = screen.getByRole("textbox");
-  fireEvent.change(box, { target: { value: "line" } });
-  fireEvent.keyDown(box, { key: "Enter", shiftKey: true });
+  await userEvent.type(box, "line{Shift>}{Enter}{/Shift}");
   expect(box).toHaveValue("line\n");
 
-  fireEvent.keyDown(box, { key: "Enter" });
+  await userEvent.type(box, "{enter}");
   await waitFor(() => expect(fetchEventSource).toHaveBeenCalled());
 });

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useSession } from "next-auth/react";
 import { EmptyState } from "../components/EmptyState";
 import { ChatMessageBubble, Message } from "../components/ChatMessageBubble";
-import { AcronymTextarea } from "./AcronymTextarea";
+import { AutoResizeTextarea } from "./AutoResizeTextarea";
 import { marked, Renderer } from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/gradient-dark.css";
@@ -347,7 +347,7 @@ export function ChatWindow(props: {
 
       {/* input + send */}
       <InputGroup size="md" alignItems="center">
-        <AcronymTextarea
+        <AutoResizeTextarea
           ref={inputRef}
           value={input}
           maxRows={20}

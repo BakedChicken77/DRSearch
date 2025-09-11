@@ -1,6 +1,4 @@
-// app\components\AcronymTextarea.tsx
-
-import React, { useMemo, useRef, useState, useImperativeHandle } from "react";
+import React, { useImperativeHandle, useRef, useState } from "react";
 import { Textarea, TextareaProps } from "@chakra-ui/react";
 import ResizeTextarea from "react-textarea-autosize";
 import { expandLastAcronym } from "../utils/acronyms";
@@ -12,34 +10,19 @@ interface Replacement {
   end: number;
 }
 
-interface AcronymTextareaProps extends TextareaProps {
+interface AutoResizeTextareaProps extends TextareaProps {
   value: string;
   onChange: (val: string) => void;
   acronymMap: Record<string, string>;
 }
 
-export const AcronymTextarea = React.forwardRef<
+export const AutoResizeTextarea = React.forwardRef<
   HTMLTextAreaElement,
-  AcronymTextareaProps
+  AutoResizeTextareaProps
 >(({ value, onChange, acronymMap, onKeyDown, ...props }, ref) => {
   const innerRef = useRef<HTMLTextAreaElement | null>(null);
   useImperativeHandle(ref, () => innerRef.current as HTMLTextAreaElement);
   const [replacements, setReplacements] = useState<Replacement[]>([]);
-
-  const renderWithHighlights = useMemo(() => {
-    let result = "";
-    let lastIndex = 0;
-    const text = value;
-    replacements.forEach((r) => {
-      result += escapeHtml(text.slice(lastIndex, r.start));
-      result += `<span class="acronym-replacement">${escapeHtml(
-        text.slice(r.start, r.end),
-      )}</span>`;
-      lastIndex = r.end;
-    });
-    result += escapeHtml(text.slice(lastIndex));
-    return result;
-  }, [value, replacements]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
@@ -58,6 +41,13 @@ export const AcronymTextarea = React.forwardRef<
       setReplacements((rs) => [...rs, { acronym, expansion, start, end }]);
       e.target.value = text;
       onChange(text);
+      requestAnimationFrame(() => {
+        innerRef.current?.setSelectionRange(start, end);
+        requestAnimationFrame(() => {
+          const pos = innerRef.current?.value.length ?? 0;
+          innerRef.current?.setSelectionRange(pos, pos);
+        });
+      });
     } else {
       onChange(val);
     }
@@ -83,16 +73,12 @@ export const AcronymTextarea = React.forwardRef<
             .filter((_, i) => i !== idx)
             .map((r) =>
               r.start > rep.start
-                ? {
-                    ...r,
-                    start: r.start - diff,
-                    end: r.end - diff,
-                  }
+                ? { ...r, start: r.start - diff, end: r.end - diff }
                 : r,
             ),
         );
-        el.selectionStart = el.selectionEnd =
-          rep.start + rep.acronym.length + 1;
+        const caret = rep.start + rep.acronym.length + 1;
+        el.setSelectionRange(caret, caret);
         return;
       }
     }
@@ -100,49 +86,15 @@ export const AcronymTextarea = React.forwardRef<
   };
 
   return (
-    <div style={{ position: "relative", width: "100%" }}>
-      <div
-        data-testid="acronym-overlay"
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          color: "black",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-        dangerouslySetInnerHTML={{ __html: renderWithHighlights }}
-      />
-      <Textarea
-        as={ResizeTextarea}
-        ref={innerRef}
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        style={{
-          position: "relative",
-          background: "transparent",
-          color: "transparent",
-          caretColor: "black",
-          zIndex: 1,
-        }}
-        {...props}
-      />
-    </div>
+    <Textarea
+      as={ResizeTextarea}
+      ref={innerRef}
+      value={value}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      {...props}
+    />
   );
 });
 
-AcronymTextarea.displayName = "AcronymTextarea";
-
-function escapeHtml(text: string) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
+AutoResizeTextarea.displayName = "AutoResizeTextarea";
