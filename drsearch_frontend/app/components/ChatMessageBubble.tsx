@@ -16,10 +16,6 @@ import {
   Button,
   Divider,
   Spacer,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -96,6 +92,46 @@ export const filterSources = (sources: Source[]) => {
   return { filtered, indexMap };
 };
 
+export const filterSourcesByCitations = (
+  content: string,
+  filteredSources: Source[],
+  sourceIndexMap: Map<number, number>,
+) => {
+  const citationRegex = /\[\s*[\^\$]?(\d+)[\^\$]?\s*\]/g;
+  const matches = Array.from(content.matchAll(citationRegex));
+  const citedOriginal = new Set<number>();
+  matches.forEach((match) => {
+    citedOriginal.add(parseInt(match[1], 10));
+  });
+
+  const usedDedup = new Set<number>();
+  citedOriginal.forEach((orig) => {
+    const dedup = sourceIndexMap.get(orig);
+    if (dedup !== undefined) {
+      usedDedup.add(dedup);
+    }
+  });
+
+  const remap = new Map<number, number>();
+  const newFiltered: Source[] = [];
+  filteredSources.forEach((src, idx) => {
+    if (usedDedup.has(idx)) {
+      remap.set(idx, newFiltered.length);
+      newFiltered.push(src);
+    }
+  });
+
+  const newIndexMap = new Map<number, number>();
+  sourceIndexMap.forEach((dedupIdx, origIdx) => {
+    const newIdx = remap.get(dedupIdx);
+    if (newIdx !== undefined) {
+      newIndexMap.set(origIdx, newIdx);
+    }
+  });
+
+  return { filteredSources: newFiltered, indexMap: newIndexMap };
+};
+
 export const createAnswerElements = (
   content: string,
   filteredSources: Source[],
@@ -118,7 +154,8 @@ export const createAnswerElements = (
 
   matches.forEach((match) => {
     const sourceNum = parseInt(match[1], 10);
-    const resolvedNum = sourceIndexMap.get(sourceNum) ?? 10;
+    const resolvedNum =
+      sourceIndexMap.get(sourceNum) ?? filteredSources.length - 1;
     if (match.index !== null && resolvedNum < filteredSources.length) {
       elements.push(
         <span
@@ -288,8 +325,10 @@ export function ChatMessageBubble(props: {
   __TEST__.viewTrace = viewTrace;
 
   const sources = props.message.sources ?? [];
-  const { filtered: filteredSources, indexMap: sourceIndexMap } =
+  const { filtered: dedupedSources, indexMap: initialIndexMap } =
     filterSources(sources);
+  const { filteredSources, indexMap: sourceIndexMap } =
+    filterSourcesByCitations(content, dedupedSources, initialIndexMap);
 
   // Use an array of highlighted states as a state since React
   // complains when creating states in a loop
@@ -349,39 +388,30 @@ export function ChatMessageBubble(props: {
         <>
           <Flex direction={"column"} width={"100%"}>
             <VStack spacing={"5px"} align={"start"} width={"100%"}>
-              <Popover trigger="hover" placement="bottom-start" isLazy>
-                <PopoverTrigger>
-                  <Heading
-                    fontSize="lg"
-                    fontWeight={"medium"}
-                    mb={1}
-                    color={"blue.300"}
-                    paddingBottom={"10px"}
-                    cursor="pointer"
-                  >
-                    View Sources
-                  </Heading>
-                </PopoverTrigger>
-                <PopoverContent bg="rgb(45,52,62)" border="none" width="auto">
-                  <PopoverBody>
-                    <SourceList
-                      sources={filteredSources}
-                      highlightedStates={highlighedSourceLinkStates}
-                      onMouseEnter={(index) => {
-                        setHighlightedSourceLinkStates(
-                          filteredSources.map((_, i) => i === index),
-                        );
-                      }}
-                      onMouseLeave={() =>
-                        setHighlightedSourceLinkStates(
-                          filteredSources.map(() => false),
-                        )
-                      }
-                      runId={runId}
-                    />
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
+              <Heading
+                fontSize="lg"
+                fontWeight={"medium"}
+                mb={1}
+                color={"blue.300"}
+                paddingBottom={"10px"}
+              >
+                View Sources
+              </Heading>
+              <SourceList
+                sources={filteredSources}
+                highlightedStates={highlighedSourceLinkStates}
+                onMouseEnter={(index) => {
+                  setHighlightedSourceLinkStates(
+                    filteredSources.map((_, i) => i === index),
+                  );
+                }}
+                onMouseLeave={() =>
+                  setHighlightedSourceLinkStates(
+                    filteredSources.map(() => false),
+                  )
+                }
+                runId={runId}
+              />
             </VStack>
           </Flex>
 
