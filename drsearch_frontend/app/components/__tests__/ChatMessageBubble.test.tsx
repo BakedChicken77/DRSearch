@@ -210,11 +210,11 @@ describe("ChatMessageBubble component", () => {
     await waitFor(() => expect(sendFeedback).toHaveBeenCalledTimes(1));
   });
 
-  test("view trace button opens url", async () => {
-    (global as any).fetch = jest.fn(() =>
-      Promise.resolve({ json: () => Promise.resolve('"http://x"') }),
-    );
-    const open = (window.open = jest.fn());
+  test("submit feedback button sends feedback without score", async () => {
+    (sendFeedback as jest.Mock).mockResolvedValue({
+      code: 200,
+      feedbackId: "fbo",
+    });
     renderWithProviders(
       <ChatMessageBubble
         message={{
@@ -229,31 +229,18 @@ describe("ChatMessageBubble component", () => {
         conversation={[]}
       />,
     );
-    fireEvent.click(screen.getByText(/view trace/i));
-    await waitFor(() => expect(open).toHaveBeenCalled());
-  });
-
-  test("view trace shows error", async () => {
-    (global as any).fetch = jest.fn(() =>
-      Promise.resolve({ json: () => Promise.resolve({ code: 400 }) }),
-    );
-    const open = (window.open = jest.fn());
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{
-          id: "6",
-          content: "answer",
-          role: "assistant",
+    fireEvent.click(screen.getByText(/submit feedback/i));
+    fireEvent.click(screen.getByText("Send"));
+    await waitFor(() =>
+      expect(sendFeedback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          score: undefined,
           runId: "r",
-          sources: [],
-        }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
+          key: "feedback_only",
+          accessToken: "t",
+        }),
+      ),
     );
-    fireEvent.click(screen.getByText(/view trace/i));
-    await waitFor(() => expect(open).not.toHaveBeenCalled());
   });
 
   test("source list hover highlights", async () => {
@@ -357,15 +344,12 @@ describe("ChatMessageBubble component", () => {
     expect(emojisplosion).not.toHaveBeenCalled();
   });
 
-  test("post feedback clicks and trace error flow", async () => {
+  test("post feedback clicks show error", async () => {
     jest.useRealTimers();
     (sendFeedback as jest.Mock).mockResolvedValue({
       code: 200,
       feedbackId: "1",
     });
-    (global as any).fetch = jest.fn(() =>
-      Promise.resolve({ json: () => Promise.resolve({ code: 400 }) }),
-    );
     const toast = require("react-toastify").toast;
     const err = jest.spyOn(toast, "error").mockImplementation(() => {});
     renderWithProviders(
@@ -391,9 +375,9 @@ describe("ChatMessageBubble component", () => {
     expect(err).toHaveBeenCalledWith(
       "You have already provided your feedback.",
     );
-    await (__TEST__.viewTrace as any)();
-    await waitFor(() =>
-      expect(err).toHaveBeenCalledWith("Unable to view trace"),
+    fireEvent.click(screen.getByText(/submit feedback/i));
+    expect(err).toHaveBeenCalledWith(
+      "You have already provided your feedback.",
     );
     err.mockRestore();
   });
