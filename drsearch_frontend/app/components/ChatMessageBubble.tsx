@@ -26,16 +26,14 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { sendFeedback } from "../utils/sendFeedback";
-import { apiBaseUrl } from "../utils/constants";
 import { InlineCitation } from "./InlineCitation";
 import DOMPurify from "dompurify";
 
 export const __TEST__ = {
   sendUserFeedback: null as
-    | ((score: number, key: string) => Promise<void>)
+    | ((score: number | null, key: string) => Promise<void>)
     | null,
   animateButton: null as ((buttonId: string) => void) | null,
-  viewTrace: null as (() => Promise<void>) | null,
   setComment: null as ((c: string) => void) | null,
   comment: "",
 };
@@ -55,7 +53,7 @@ export type Feedback = {
   feedback_id: string;
   run_id: string;
   key: string;
-  score: number;
+  score: number | null;
   comment?: string;
 };
 
@@ -213,7 +211,6 @@ export function ChatMessageBubble(props: {
   console.log("Rendering ChatMessageBubble with props:", props);
   const isUser = role === "user";
   const [isLoading, setIsLoading] = useState(false);
-  const [traceIsLoading, setTraceIsLoading] = useState(false);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [comment, setComment] = useState("");
   __TEST__.setComment = setComment;
@@ -242,7 +239,7 @@ export function ChatMessageBubble(props: {
     };
   };
 
-  const sendUserFeedback = async (score: number, key: string) => {
+  const sendUserFeedback = async (score: number | null, key: string) => {
     console.log(`Sending user feedback with score: ${score}, key: ${key}`);
     let run_id = runId;
     if (run_id === undefined) {
@@ -258,7 +255,7 @@ export function ChatMessageBubble(props: {
     setIsLoading(true);
     try {
       const data = await sendFeedback({
-        score,
+        score: score ?? undefined,
         runId: run_id,
         key,
         feedbackId: feedback?.feedback_id,
@@ -273,7 +270,9 @@ export function ChatMessageBubble(props: {
       });
       if (data.code === 200) {
         setFeedback({ run_id, score, key, feedback_id: data.feedbackId });
-        score === 1 ? animateButton("upButton") : animateButton("downButton");
+        if (score !== null) {
+          score === 1 ? animateButton("upButton") : animateButton("downButton");
+        }
         if (comment) {
           /* istanbul ignore next */
           setComment("");
@@ -289,40 +288,6 @@ export function ChatMessageBubble(props: {
     setIsLoading(false);
   };
   __TEST__.sendUserFeedback = sendUserFeedback;
-
-  const viewTrace = async () => {
-    console.log("Viewing trace for run ID:", runId);
-    try {
-      setTraceIsLoading(true);
-      const response = await fetch(apiBaseUrl + "/get_trace", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // Include access token in API request
-        },
-        body: JSON.stringify({
-          run_id: runId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.code === 400) {
-        toast.error("Unable to view trace");
-        throw new Error("Unable to view trace");
-      } else {
-        const url = data.replace(/['"]+/g, "");
-        window.open(url, "_blank");
-        console.log("Trace URL opened:", url);
-        setTraceIsLoading(false);
-      }
-    } catch (e: any) {
-      console.error("Error viewing trace:", e);
-      setTraceIsLoading(false);
-      toast.error(e.message);
-    }
-  };
-  __TEST__.viewTrace = viewTrace;
 
   const sources = props.message.sources ?? [];
   const { filtered: dedupedSources, indexMap: initialIndexMap } =
@@ -478,16 +443,20 @@ export function ChatMessageBubble(props: {
               <Button
                 size="sm"
                 variant="outline" /* istanbul ignore next */
-                colorScheme={runId === null ? "black" : "black"}
-                onClick={(e) => {
-                  e.preventDefault();
-                  viewTrace();
+                colorScheme={feedback === null ? "blue" : "gray"}
+                onClick={() => {
+                  if (feedback === null && props.message.runId) {
+                    setPendingScore(null);
+                    setIsModalOpen(true);
+                    setFeedbackColor("border-4 border-blue-300");
+                  } else {
+                    /* istanbul ignore next */
+                    toast.error("You have already provided your feedback.");
+                  }
                 }}
-                isLoading={traceIsLoading}
-                loadingText="🔄"
                 color="black"
               >
-                🚀🚀 View trace
+                Submit Feedback
               </Button>
             </HStack>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -507,13 +476,10 @@ export function ChatMessageBubble(props: {
                     colorScheme="blue"
                     mr={3}
                     onClick={async () => {
-                      if (pendingScore !== null) {
-                        await sendUserFeedback(pendingScore, "user_score");
-                        animateButton(
-                          pendingScore === 1 ? "upButton" : "downButton",
-                        );
-                        setIsModalOpen(false);
-                      }
+                      const key =
+                        pendingScore === null ? "feedback_only" : "user_score";
+                      await sendUserFeedback(pendingScore, key);
+                      setIsModalOpen(false);
                     }}
                     isLoading={isLoading}
                   >

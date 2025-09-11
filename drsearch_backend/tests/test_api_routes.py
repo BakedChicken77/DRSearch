@@ -68,6 +68,29 @@ def test_feedback_logged(tmp_path, monkeypatch):
     assert not any(json.loads(l).get("message") == "feedback" for l in general_lines)
 
 
+def test_feedback_only_logged(tmp_path, monkeypatch):
+    monkeypatch.setenv("LOG_DIR", str(tmp_path))
+    monkeypatch.setenv("LOG_OUTPUT_MODE", "local")
+    from app import core as core_pkg
+
+    importlib.reload(core_pkg.logging)
+    from app import create_app
+
+    client = TestClient(create_app())
+    body = {
+        "run_id": "33333333-3333-3333-3333-333333333333",
+        "key": "user_score",
+        "comment": "only feedback",
+    }
+    assert client.post("/feedback", json=body).status_code == 200
+    core_pkg.logging.shutdown_logging()
+    lines = [
+        json.loads(l) for l in (tmp_path / "feedback.jsonl").read_text().splitlines()
+    ]
+    entry = next(item for item in lines if item.get("message") == "feedback")
+    assert entry["thumb"] == "feedback_only"
+
+
 def test_get_trace_not_implemented(fastapi_client: TestClient):
     r = fastapi_client.post(
         "/get_trace", json={"run_id": "11111111-1111-1111-1111-111111111111"}
