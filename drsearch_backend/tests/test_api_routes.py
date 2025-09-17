@@ -22,6 +22,38 @@ def test_index_options_happy_path(fastapi_client: TestClient, monkeypatch):
     assert data["acronyms"]["CDR"] == "Critical Design Review"
 
 
+def test_index_options_includes_build_info(fastapi_client: TestClient, monkeypatch):
+    monkeypatch.setattr("app.api.v1.routes._read_index_options", _ok)
+    monkeypatch.setattr("app.warmup.INDEX_STATUS", {"x": True})
+    monkeypatch.setattr("app.api.v1.routes.INDEX_STATUS", {"x": True})
+    monkeypatch.setenv("DRSEARCH_BUILD_SHA", "abcdef1234567890")
+    monkeypatch.setenv("DRSEARCH_BUILD_SHA_SHORT", "abcdef1")
+    monkeypatch.setenv("DRSEARCH_BUILD_DATE", "2024-05-01T12:00:00Z")
+
+    r = fastapi_client.get("/index-options")
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload["build_info"] == {
+        "sha": "abcdef1234567890",
+        "sha_short": "abcdef1",
+        "build_date": "2024-05-01T12:00:00Z",
+    }
+
+
+def test_index_options_build_info_optional(fastapi_client: TestClient, monkeypatch):
+    monkeypatch.setattr("app.api.v1.routes._read_index_options", _ok)
+    monkeypatch.setattr("app.warmup.INDEX_STATUS", {"x": True})
+    monkeypatch.setattr("app.api.v1.routes.INDEX_STATUS", {"x": True})
+    monkeypatch.delenv("DRSEARCH_BUILD_SHA", raising=False)
+    monkeypatch.delenv("DRSEARCH_BUILD_SHA_SHORT", raising=False)
+    monkeypatch.delenv("DRSEARCH_BUILD_DATE", raising=False)
+
+    r = fastapi_client.get("/index-options")
+    assert r.status_code == 200
+    payload = r.json()
+    assert "build_info" not in payload
+
+
 def test_feedback_create_and_patch(fastapi_client: TestClient):
     body = {
         "run_id": "11111111-1111-1111-1111-111111111111",

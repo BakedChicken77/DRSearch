@@ -5,6 +5,7 @@
 // app/layout.tsx
 import './globals.css'
 import { Providers } from '@/components/providers'
+import { BuildInfoWidget } from './components/BuildInfoWidget'
 
 export const metadata = {
   title: 'DRSearch',
@@ -23,7 +24,10 @@ export default function RootLayout({
         style={{ background: 'rgb(212, 211, 203)' }}
       >
         <div className="flex flex-col h-full md:p-8">
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <BuildInfoWidget />
+          </Providers>
         </div>
       </body>
     </html>

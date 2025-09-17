@@ -18,6 +18,7 @@ from ...auth.middleware import AuthMiddleware  # noqa: F401 – imported for sid
 from app.auth import jwt  # triggers cache warming on app-start
 from app.chain.api import answer_chain
 from app.models import (
+    BuildInfo,
     ChatRequest,
     Feedback,
     FeedbackUpdate,
@@ -27,8 +28,6 @@ from app.models import (
     TraceRequest,
 )
 from app.warmup import INDEX_STATUS
-import json
-
 feedback_logger = logging.getLogger("feedback")
 
 
@@ -51,6 +50,19 @@ async def _read_index_options() -> list:  # pragma: no cover – pure I/O
     return getattr(mod, "INDEX_OPTIONS", [])
 
 
+def _get_backend_build_info() -> BuildInfo | None:
+    """Return backend build metadata when all env vars are present."""
+
+    sha = os.getenv("DRSEARCH_BUILD_SHA")
+    sha_short = os.getenv("DRSEARCH_BUILD_SHA_SHORT")
+    build_date = os.getenv("DRSEARCH_BUILD_DATE")
+
+    if not all([sha, sha_short, build_date]):
+        return None
+
+    return BuildInfo(sha=sha, sha_short=sha_short, build_date=build_date)
+
+
 # ---------- router factory ----------
 
 
@@ -67,7 +79,11 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
     )
 
     # ---- /index-options
-    @router.get("/index-options", response_model=IndexOptionsResponse)
+    @router.get(
+        "/index-options",
+        response_model=IndexOptionsResponse,
+        response_model_exclude_none=True,
+    )
     async def index_options() -> IndexOptionsResponse:  # noqa: D401
         try:
             raw_opts = await _read_index_options()
@@ -75,7 +91,8 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
                 IndexOption(**o, initialized=INDEX_STATUS.get(o["name"], False))
                 for o in raw_opts
             ]
-            return IndexOptionsResponse(result=opts)
+            build_info = _get_backend_build_info()
+            return IndexOptionsResponse(result=opts, build_info=build_info)
         except Exception as exc:  # pragma: no cover – catastrophic
             logger.error("Unable to read index options", exc_info=exc)
             raise HTTPException(

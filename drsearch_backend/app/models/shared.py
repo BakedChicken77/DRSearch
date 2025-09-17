@@ -24,9 +24,18 @@ class IndexOption(BaseModel):
     acronyms: Optional[dict[str, str]] = None
 
 
+class BuildInfo(BaseModel):
+    """Metadata describing a particular build of the service."""
+
+    sha: str
+    sha_short: str
+    build_date: str
+
+
 class IndexOptionsResponse(BaseModel):
     """Response model for `/index-options`."""
 
     result: List[IndexOption]
     code: int = Field(200, description="Application level status code")
+    build_info: Optional[BuildInfo] = None
 
