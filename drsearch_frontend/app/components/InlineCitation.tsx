@@ -1,5 +1,3 @@
-// app\components\InlineCitation.tsx
-
 import { Source } from "./SourceBubble";
 import { convertToHttpUrlIfNeeded } from "../utils/urlUtils";
 
@@ -10,12 +8,13 @@ export function InlineCitation(props: {
   onMouseEnter: () => any;
   onMouseLeave: () => any;
 }) {
-  const { source, sourceNumber, highlighted, onMouseEnter, onMouseLeave } = props;
+  const { source, sourceNumber, highlighted, onMouseEnter, onMouseLeave } =
+    props;
 
   console.log("InlineCitation props:", props);
-  
+
   const fileUrl = source?.url ? convertToHttpUrlIfNeeded(source.url) : "";
-  
+
   return (
     <a
       href={fileUrl}
