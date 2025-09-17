@@ -61,3 +61,12 @@ to
 ```Dockerfile
 CMD ["yarn", "dev"]
 ```
+
+## Build Metadata Display
+
+- The backend exposes build metadata (`sha`, `sha_short`, and `build_date`) through the `/index-options` endpoint when the
+  `DRSEARCH_BUILD_SHA`, `DRSEARCH_BUILD_SHA_SHORT`, and `DRSEARCH_BUILD_DATE` environment variables are set.
+- The frontend expects `NEXT_PUBLIC_BUILD_SHA`, `NEXT_PUBLIC_BUILD_SHA_SHORT`, and `NEXT_PUBLIC_BUILD_DATE` to be available at
+  build time. During container builds these may also be supplied as `APP_BUILD_*` variables which are mapped automatically.
+- A "Build" badge is rendered in the bottom-right corner of the UI. Hovering over the badge reveals a tooltip containing both
+  frontend and backend build information, including the short SHA and build date for each side.
