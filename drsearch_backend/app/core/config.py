@@ -27,6 +27,15 @@ class Settings(BaseSettings):
     tenant_id: str = Field(..., env="AZURE_AD_TENANT_ID")
     client_id: str = Field(..., env="AZURE_AD_CLIENT_ID")
 
+
+    # ------------------------------------------------------------------
+    # Langfuse
+    # ------------------------------------------------------------------
+    langfuse_enabled: bool = Field(False, env="LANGFUSE_ENABLED")
+    langfuse_host: str = Field(..., env="LANGFUSE_HOST")
+    langfuse_public_key: str = Field(..., env="LANGFUSE_PUBLIC_KEY")
+    langfuse_secret_key: str = Field(..., env="LANGFUSE_SECRET_KEY")
+
     # ------------------------------------------------------------------
     # CORS / Front‑end
     # ------------------------------------------------------------------
