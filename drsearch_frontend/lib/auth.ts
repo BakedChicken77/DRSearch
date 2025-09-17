@@ -1,17 +1,12 @@
-// lib\auth.ts
-
-
-
 import AzureADProvider, { AzureADProfile } from "next-auth/providers/azure-ad";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions, User, Session, DefaultSession } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { TokenSetParameters } from "openid-client";
 
-const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED !== 'False';
+const AUTH_ENABLED = process.env.NEXT_PUBLIC_AUTH_ENABLED !== "False";
 const API_SCOPE = process.env.NEXT_PUBLIC_AZURE_AD_API_SCOPE; // Replace with your actual API scope
-const NEXT_AUTH_DEBUG_MODE = process.env.NEXT_AUTH_DEBUG_MODE === 'true'; // Default debug mode to false if not set
-
+const NEXT_AUTH_DEBUG_MODE = process.env.NEXT_AUTH_DEBUG_MODE === "true"; // Default debug mode to false if not set
 
 console.log("Auth Enabled:", AUTH_ENABLED);
 
@@ -30,7 +25,7 @@ const configureIdentityProvider = () => {
 
   // Retrieve list of admin email addresses for access control, if specified
   const adminEmails = process.env.ADMIN_EMAIL_ADDRESS?.split(",").map((email) =>
-    email.toLowerCase().trim()
+    email.toLowerCase().trim(),
   );
 
   // Configure provider based on AUTH_ENABLED flag
@@ -52,11 +47,16 @@ const configureIdentityProvider = () => {
               redirect_uri: process.env.NEXT_PUBLIC_AZURE_AD_REDIRECT_URI!, // Example: Redirect to localhost:3000 in development
             },
           },
-          async profile(profile: AzureADProfile, tokens: TokenSetParameters): Promise<User> {
+          async profile(
+            profile: AzureADProfile,
+            tokens: TokenSetParameters,
+          ): Promise<User> {
             // Custom logic to ensure 'id' is set and handle admin check
             const isAdmin =
               adminEmails?.includes(profile.email?.toLowerCase() ?? "") ||
-              adminEmails?.includes(profile.preferred_username?.toLowerCase() ?? "") ||
+              adminEmails?.includes(
+                profile.preferred_username?.toLowerCase() ?? "",
+              ) ||
               false;
 
             const user: User = {
@@ -69,7 +69,7 @@ const configureIdentityProvider = () => {
 
             return user;
           },
-        })
+        }),
       );
     }
   } else {
@@ -78,13 +78,21 @@ const configureIdentityProvider = () => {
       CredentialsProvider({
         name: "Development Login",
         credentials: {
-          username: { label: "Username", type: "text", placeholder: "Enter any username" },
+          username: {
+            label: "Username",
+            type: "text",
+            placeholder: "Enter any username",
+          },
         },
         async authorize(credentials) {
           // Accept any username and assign a default user profile for development
-          return { id: "dev-user", name: credentials?.username || "Dev User", isAdmin: true } as User;
+          return {
+            id: "dev-user",
+            name: credentials?.username || "Dev User",
+            isAdmin: true,
+          } as User;
         },
-      })
+      }),
     );
   }
 
@@ -105,7 +113,9 @@ export const authOptions: NextAuthOptions = {
       if (account && user) {
         customToken = {
           accessToken: account.access_token,
-          accessTokenExpires: account.expires_at ? account.expires_at * 1000 : undefined, // Convert to milliseconds
+          accessTokenExpires: account.expires_at
+            ? account.expires_at * 1000
+            : undefined, // Convert to milliseconds
           refreshToken: account.refresh_token,
           isAdmin: (user as User & { isAdmin: boolean }).isAdmin,
         };
@@ -113,7 +123,10 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Return previous token if the access token has not expired yet
-      if (customToken.accessTokenExpires && Date.now() < customToken.accessTokenExpires) {
+      if (
+        customToken.accessTokenExpires &&
+        Date.now() < customToken.accessTokenExpires
+      ) {
         return customToken;
       }
 
