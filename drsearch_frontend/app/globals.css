@@ -6,30 +6,33 @@
 
 /* Add the Inter font using @font-face */
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter/Inter-Regular.woff2') format('woff2'),
-       url('/fonts/Inter/Inter-Regular.woff') format('woff');
+  font-family: "Inter";
+  src:
+    url("/fonts/Inter/Inter-Regular.woff2") format("woff2"),
+    url("/fonts/Inter/Inter-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter/Inter-Bold.woff2') format('woff2'),
-       url('/fonts/Inter/Inter-Bold.woff') format('woff');
+  font-family: "Inter";
+  src:
+    url("/fonts/Inter/Inter-Bold.woff2") format("woff2"),
+    url("/fonts/Inter/Inter-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
 }
 
 /* Apply the Inter font to the body and the .inter class */
-body, .inter {
-  font-family: 'Inter', sans-serif;
+body,
+.inter {
+  font-family: "Inter", sans-serif;
   color: #000000;
   background: #bfc1b4;
 }
 
 body input,
-body textarea { 
+body textarea {
   color: black;
 }
 
@@ -51,4 +54,56 @@ code {
 
 li {
   padding: 4px;
+}
+
+.acronym-replacement {
+  font-style: italic;
+  font-family: "Times New Roman", serif;
+}
+
+/* default look if you pass only class */
+.tiptap .expansion--blue {
+  color: #0b66ff;
+  font-weight: 600;
+}
+
+/* another variant */
+.tiptap .expansion--warn {
+  color: #8a2e0b;
+  background: #fff3cd;
+  padding: 0 2px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+.tiptap .expansion--darkblue {
+  color: darkblue;
+  font-weight: bold;
+}
+
+/* ===== Sources styling ===== */
+
+/* "View Sources" title styling */
+.chakra-heading.view-sources-title {
+  color: #3f53c7;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+/* Links inside the sources list — out-specific Chakra by combining classes */
+.chakra-link.source-list-link {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  color: #2795c9;
+  text-decoration: none;
+}
+
+.chakra-link.source-list-link:hover {
+  color: #115e59;
+  text-decoration: underline;
+}
+
+/* When highlighted from React state */
+.chakra-link.source-list-link.is-highlighted {
+  color: #082f49;
 }
