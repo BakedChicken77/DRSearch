@@ -1,11 +1,11 @@
-# file: app/chain/engine.py
+# drsearch_backend/app/chain/engine.py
 
 from __future__ import annotations
 
 import logging
 import os
 from operator import itemgetter
-from typing import Callable, List, Sequence
+from typing import Any, Callable, List, Sequence
 
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder, PromptTemplate
 from langchain.retrievers.multi_query import MultiQueryRetriever
@@ -32,6 +32,77 @@ from app.core.chain_config import _DEFAULT_INDEX, RAG_ON
 from app.index_config import INDEX_CONFIG
 
 logger = logging.getLogger(__name__)
+
+
+# ─── Minimal tracing helper to ensure retrieval shows in Langfuse ─────────────
+def _json_safe(o: Any) -> Any:
+    try:
+        import json
+
+        json.dumps(o)
+        return o
+    except Exception:
+        return str(o)
+
+
+def _trace_retriever(retriever: BaseRetriever) -> Runnable:
+    """Wrap a retriever so we explicitly emit a 'RetrieveDocs' span if a Langfuse
+    callback handler is present in the LCEL config. No hard dependency on Langfuse."""
+    def _run(query: str, config: dict | None = None):
+        config = config or {}
+        raw = config.get("callbacks")
+        # Extract potential handlers from LCEL callback manager or list
+        if raw is None:
+            handlers = []
+        elif isinstance(raw, list):
+            handlers = raw
+        else:
+            handlers = getattr(raw, "handlers", getattr(raw, "callbacks", [])) or []
+
+        lf = None
+        for cb in handlers:
+            # Look for an object that exposes lf.trace.span(...)
+            trace = getattr(cb, "trace", None)
+            if trace is not None and hasattr(trace, "span"):
+                lf = cb
+                break
+
+        span = None
+        if lf is not None:
+            try:
+                span = lf.trace.span(name="RetrieveDocs", input={"query": query})
+            except Exception:
+                span = None
+
+        try:
+            docs = retriever.invoke(query, config=config)
+        except Exception as exc:
+            if span is not None:
+                try:
+                    span.end(level="ERROR", status_message=str(exc))
+                except Exception:
+                    pass
+            raise
+
+        if span is not None:
+            try:
+                span.end(
+                    output=[
+                        {
+                            "page_content": d.page_content,
+                            "metadata": {k: _json_safe(v) for k, v in d.metadata.items()},
+                        }
+                        for d in docs
+                    ]
+                )
+            except Exception:
+                try:
+                    span.end()
+                except Exception:
+                    pass
+        return docs
+
+    return RunnableLambda(_run).with_config(run_name="RetrieveDocs")
 
 
 class ChatEngine:
@@ -144,6 +215,8 @@ class ChatEngine:
                 include_original=True,
                 prompt=self._cfg["DECOMPOSER"],
             )
+            # Ensure retrieval step is explicitly traced in Langfuse
+            retriever = _trace_retriever(retriever)
         else:
             retriever = None
 
@@ -186,7 +259,7 @@ class ChatEngine:
 
     def _build_retriever_chain(
         self,
-        retriever: BaseRetriever,
+        retriever: Runnable,
         format_docs: Callable[[Sequence[Document]], str],
     ) -> Runnable:
         """Return retriever chain that supports follow-up questions."""
