@@ -17,6 +17,8 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@microsoft/fetch-event-source": "^2.0.1",
+    "@tiptap/react": "^3.4.2",
+    "@tiptap/starter-kit": "^3.4.2",
     "@types/marked": "^5.0.1",
     "@types/node": "20.4.9",
     "@types/react": "18.2.20",
