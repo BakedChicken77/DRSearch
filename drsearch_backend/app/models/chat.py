@@ -7,6 +7,7 @@ from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
 
 from app.core.chain_config import _NUMBER_OF_DOCS_RETRIEVED
+from app.core.chain_config import _PAGE_WINDOW as _DEFAULT_PAGE_WINDOW
 
 
 class ChatRequest(BaseModel):
@@ -29,3 +30,7 @@ class ChatRequest(BaseModel):
         description="How many documents to retrieve for each query",
     )
 
+    page_window: int = Field(
+        default=_DEFAULT_PAGE_WINDOW, ge=-1, le=50,
+        description="For PGVector: -1 disables expansion; 0=hits only; N expands by N pages"
+    )

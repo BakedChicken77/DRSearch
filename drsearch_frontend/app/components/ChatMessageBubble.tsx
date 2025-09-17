@@ -24,16 +24,20 @@ import {
   ModalBody as ChakraModalBody,
   ModalCloseButton,
   Textarea,
+  StackDivider
 } from "@chakra-ui/react";
 import { sendFeedback } from "../utils/sendFeedback";
+
 import { InlineCitation } from "./InlineCitation";
 import DOMPurify from "dompurify";
+
 
 export const __TEST__ = {
   sendUserFeedback: null as
     | ((score: number | null, key: string) => Promise<void>)
     | null,
   animateButton: null as ((buttonId: string) => void) | null,
+
   setComment: null as ((c: string) => void) | null,
   comment: "",
 };
@@ -211,6 +215,7 @@ export function ChatMessageBubble(props: {
   console.log("Rendering ChatMessageBubble with props:", props);
   const isUser = role === "user";
   const [isLoading, setIsLoading] = useState(false);
+
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [comment, setComment] = useState("");
   __TEST__.setComment = setComment;
@@ -289,6 +294,8 @@ export function ChatMessageBubble(props: {
   };
   __TEST__.sendUserFeedback = sendUserFeedback;
 
+
+
   const sources = props.message.sources ?? [];
   const { filtered: dedupedSources, indexMap: initialIndexMap } =
     filterSources(sources);
@@ -351,40 +358,45 @@ export function ChatMessageBubble(props: {
     <VStack align="start" spacing={5} pb={5}>
       {!isUser && filteredSources.length > 0 && (
         <>
-          <Flex direction={"column"} width={"100%"}>
-            <VStack spacing={"5px"} align={"start"} width={"100%"}>
-              <Heading
-                fontSize="lg"
-                fontWeight={"medium"}
-                mb={1}
-                color={"blue.300"}
-                paddingBottom={"10px"}
-              >
-                View Sources
-              </Heading>
-              <SourceList
-                sources={filteredSources}
-                highlightedStates={highlighedSourceLinkStates}
-                onMouseEnter={(index) => {
-                  setHighlightedSourceLinkStates(
-                    filteredSources.map((_, i) => i === index),
-                  );
-                }}
-                onMouseLeave={() =>
-                  setHighlightedSourceLinkStates(
-                    filteredSources.map(() => false),
-                  )
-                }
-                runId={runId}
-              />
-            </VStack>
-          </Flex>
+          <VStack
+            spacing="8px"
+            align="start"
+            width="100%"
+            divider={<StackDivider borderColor="gray.200" />}
+          >
+            <Heading
+              fontSize="lg"
+              fontWeight="medium"
+              mb={1}
+              className="view-sources-title"
+              paddingBottom="6px"
+            >
+              View Sources
+            </Heading>
+
+            <SourceList
+              sources={filteredSources}
+              highlightedStates={highlighedSourceLinkStates}
+              onMouseEnter={(index) => {
+                setHighlightedSourceLinkStates(
+                  filteredSources.map((_, i) => i === index),
+                );
+              }}
+              onMouseLeave={() =>
+                setHighlightedSourceLinkStates(filteredSources.map(() => false))
+              }
+              runId={runId}
+            />
+          </VStack>
+
+          <Divider my={4} />  {/* separator between sources and "Answer" */}
 
           <Heading size="lg" fontWeight="medium" color="blue.300">
             Answer
           </Heading>
         </>
       )}
+
 
       {isUser ? (
         <Heading size="lg" fontWeight="medium" color="black">
@@ -454,6 +466,7 @@ export function ChatMessageBubble(props: {
                     toast.error("You have already provided your feedback.");
                   }
                 }}
+
                 color="black"
               >
                 Submit Feedback

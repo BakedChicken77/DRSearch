@@ -78,6 +78,49 @@ describe("utility functions", () => {
     expect(setHighlight).toHaveBeenCalledWith([false]);
     expect(link).toHaveAttribute("href", "a");
   });
+
+  test("citation numbers correspond to filtered source positions", () => {
+    // Test case with duplicate sources to verify citation numbering
+    const sources = [
+      { url: "url1", title: "Document 1" },
+      { url: "url2", title: "Document 2" },
+      { url: "url1", title: "Document 1 Duplicate" }, // This should be filtered out
+      { url: "url3", title: "Document 3" },
+    ];
+    const { filtered, indexMap } = filterSources(sources as any);
+    const setHighlight = jest.fn();
+    
+    // Content with citations referring to original indices [0], [1], [2], [3]
+    const elements = createAnswerElements(
+      "See [0] and [1] and [2] and [3]",
+      filtered as any,
+      indexMap,
+      new Array(filtered.length).fill(false),
+      setHighlight,
+    );
+    
+    const { container } = render(<>{elements}</>);
+    const links = container.querySelectorAll("a");
+    
+    // Should have 4 citations but only 3 unique sources after filtering
+    expect(links).toHaveLength(4);
+    
+    // Citation [0] -> filtered index 0 -> should display "1" 
+    expect(links[0].textContent).toBe("1");
+    expect(links[0]).toHaveAttribute("href", "url1");
+    
+    // Citation [1] -> filtered index 1 -> should display "2"
+    expect(links[1].textContent).toBe("2"); 
+    expect(links[1]).toHaveAttribute("href", "url2");
+    
+    // Citation [2] -> maps to same as [0] (filtered index 0) -> should display "1"
+    expect(links[2].textContent).toBe("1");
+    expect(links[2]).toHaveAttribute("href", "url1");
+    
+    // Citation [3] -> filtered index 2 -> should display "3"
+    expect(links[3].textContent).toBe("3");
+    expect(links[3]).toHaveAttribute("href", "url3");
+  });
 });
 
 describe("ChatMessageBubble component", () => {

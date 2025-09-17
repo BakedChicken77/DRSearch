@@ -29,7 +29,14 @@ import { Source } from "./SourceBubble";
 import { SettingsDrawer } from "./SettingsDrawer";
 import { apiBaseUrl } from "../utils/constants";
 import { fetchIndexOptions, IndexOption } from "../utils/fetchIndexOptions";
-import { expandLastAcronym } from "../utils/acronyms";
+import { Box } from "@chakra-ui/react";
+
+
+import dynamic from "next/dynamic";
+// @ts-ignore – typing is inferred
+const RichAcronymEditor = dynamic(() => import("./RichAcronymEditor"), {
+  ssr: false,
+});
 
 export function ChatWindow(props: {
   placeholder?: string;
@@ -44,35 +51,9 @@ export function ChatWindow(props: {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [lastReplacement, setLastReplacement] = useState<{
-    acronym: string;
-    expansion: string;
-    start: number;
-  } | null>(null);
   const [chatHistory, setChatHistory] = useState<
     { human: string; ai: string }[]
   >([]);
-
-  useEffect(() => {
-    if (!lastReplacement) return;
-    const el = inputRef.current;
-    if (!el) return;
-    const { expansion, start } = lastReplacement;
-    const end = start + expansion.length;
-    const highlightTimer = setTimeout(() => {
-      el.focus();
-      el.setSelectionRange(start, end);
-    }, 0);
-    const restoreTimer = setTimeout(() => {
-      if (el.selectionStart === start && el.selectionEnd === end) {
-        el.setSelectionRange(end, end);
-      }
-    }, 1000);
-    return () => {
-      clearTimeout(highlightTimer);
-      clearTimeout(restoreTimer);
-    };
-  }, [lastReplacement]);
 
   const { placeholder, titleText = "DRS ASSISTANT" } = props;
 
@@ -90,7 +71,11 @@ export function ChatWindow(props: {
   const handleIndexChange = (name: string) => {
     setSelectedIndexName(name);
     const opt = indexOptions?.find((o) => o.name === name);
-    setAcronymMap(opt?.acronyms || {});
+    const raw = opt?.acronyms || {};
+    const uppercased = Object.fromEntries(
+      Object.entries(raw).map(([k, v]) => [k.toUpperCase(), v])
+    );
+    setAcronymMap(uppercased);
   };
 
   // reset on index change
@@ -272,7 +257,7 @@ export function ChatWindow(props: {
           }
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       /* istanbul ignore next */
       console.error("Send message error:", e);
       /* istanbul ignore next */
@@ -323,6 +308,7 @@ export function ChatWindow(props: {
 
           {/* dropdown from backend */}
           <Select
+            data-testid="index-select"
             value={selectedIndexName}
             onChange={(e) => handleIndexChange(e.target.value)}
             placeholder="Select Document Index"
@@ -356,6 +342,7 @@ export function ChatWindow(props: {
       <div
         className="flex flex-col-reverse w-full mb-2 overflow-auto"
         ref={messageContainerRef}
+        data-testid="chat-stream"
       >
         {messages.length > 0 &&
           [...messages]
@@ -374,63 +361,21 @@ export function ChatWindow(props: {
 
       {/* input + send */}
       <InputGroup size="md" alignItems="center">
-        <AutoResizeTextarea
-          ref={inputRef}
-          value={input}
-          maxRows={20}
-          mr="56px"
-          placeholder={placeholder}
-          textColor="black"
-          borderColor="rgb(58, 58, 61)"
-          isDisabled={!selectedIndexName}
-          _disabled={{
-            backgroundColor: "gray.200",
-            cursor: "not-allowed",
-          }} /* istanbul ignore next */
-          onChange={(e) => {
-            const val = e.target.value;
-            const isDeleting = val.length < input.length;
-            if (isDeleting) {
-              setInput(val);
-              setLastReplacement(null);
-              return;
-            }
-            const { text, acronym, expansion, start } = expandLastAcronym(
-              val,
-              acronymMap,
-            );
-            setInput(text);
-            if (acronym && expansion && typeof start === "number") {
-              setLastReplacement({ acronym, expansion, start });
-            } else if (lastReplacement) {
-              setLastReplacement(null);
-            }
-          }}
-          onKeyDown={(e) => {
-            if (
-              e.key === "Backspace" &&
-              lastReplacement &&
-              input.endsWith(`${lastReplacement.expansion} `)
-            ) {
-              e.preventDefault();
-              const end = `${lastReplacement.expansion} `;
-              setInput(
-                input.slice(0, -end.length) + `${lastReplacement.acronym} `,
-              );
-              setLastReplacement(null);
-              return;
-            }
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            } else if (e.key === "Enter" && e.shiftKey) {
-              e.preventDefault();
-              setInput((t) => t + "\n");
-            }
-          }}
-        />
+        <Box flex="1" mr="56px">
+          <RichAcronymEditor
+            value={input}
+            onChange={setInput}
+            acronymMap={acronymMap}
+            isDisabled={!selectedIndexName}
+            placeholder={placeholder}
+            onSubmit={(text) => {
+              if (selectedIndexName) sendMessage(text);
+            }}
+          />
+        </Box>
         <InputRightElement h="full">
           <IconButton
+            data-testid="chat-send-btn"
             colorScheme="blue"
             rounded="full"
             aria-label="Send"

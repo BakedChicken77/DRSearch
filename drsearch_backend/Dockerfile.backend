@@ -29,12 +29,10 @@ WORKDIR /app
 
 # 4) Copy only lockfiles first, install deps
 COPY pyproject.toml ./
-# COPY pyproject.toml poetry.lock ./
 
 RUN pip install --upgrade pip setuptools wheel \
- && pip install poetry==1.5.1 \
+ && pip install poetry==2.1.2 \
  && poetry config virtualenvs.create false \
- # && poetry install --no-interaction --no-ansi --no-root
  && poetry install --no-interaction --no-ansi --no-root --all-extras
 
 # 4a) Install gunicorn for production
@@ -55,5 +53,4 @@ USER ${USERNAME}
 CMD ["poetry", "run", "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8011"]
 # For production
 # CMD ["gunicorn","-k", "uvicorn.workers.UvicornWorker","--bind", "0.0.0.0:8011","--workers", "4","app:app"]
-
 # CMD ["sleep", "infinity"]

@@ -10,6 +10,20 @@ INDEX_CONFIG = {
         "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER2,
         "PN_TO_FILE_MAPPING": None
     },
+    "SEPS": {
+        "attributes": ["file_path", "filename", "url", "text_as_html"],
+        "index_key": "page_content",
+        "response_template": System_Prompts.RESPONSE_TEMPLATE_SEPS,
+        "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER2,
+        "PN_TO_FILE_MAPPING": None
+    },
+    "SEPS_AFTER_MIGRATION": {
+        "attributes": ["file_path", "filename", "url", "text_as_html"],
+        "index_key": "page_content",
+        "response_template": System_Prompts.RESPONSE_TEMPLATE_SEPS,
+        "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER2,
+        "PN_TO_FILE_MAPPING": None
+    },
     "SEPs_F_T_C_W_A_V_Summaries": {
         "attributes": ["file_path", "filename", "url", "text_as_html"],
         "index_key": "page_content",
@@ -57,7 +71,7 @@ INDEX_CONFIG = {
         "index_key": "page_content",
         "response_template": System_Prompts.RESPONSE_TEMPLATE_JAC_SKE_PROGRAM_FOR_TECHS,
         "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER_JACSKE,
-        "PN_TO_FILE_MAPPING": 'JACSKE_PROD_DEPLOY.csv'
+        "PN_TO_FILE_MAPPING": 'JACSKE_Program'
     },
     "test20240712": {
         "attributes": ["file_path", "filename", "url", "text_as_html"],
@@ -80,12 +94,12 @@ INDEX_CONFIG = {
         "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER_HFSS,
         "PN_TO_FILE_MAPPING": None
     },
-    "Adacstest20250205": {
+    "ADACS": {
         "attributes": ["file_path", "filename", "url", "text_as_html"],
         "index_key": "page_content",
         "response_template": System_Prompts.RESPONSE_TEMPLATE_ADACS_TECH,
         "DECOMPOSER": System_Prompts.QUESTION_DECOMPOSER_ADACS_TECH,
-        "PN_TO_FILE_MAPPING": "ADACS_TECH.csv"
+        "PN_TO_FILE_MAPPING": "ADACS"
     },
     "TEST_INDEX": {
         "attributes": ["file_path", "filename", "url", "text_as_html"],

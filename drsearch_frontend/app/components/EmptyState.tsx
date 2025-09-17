@@ -65,6 +65,7 @@ export function EmptyState(props: {
           </Heading>
           <p style={{ color: "black", textAlign: "center" }}>Here to assist</p>
           <Select
+            data-testid="index-select"
             value={selectedIndexName}
             onChange={(e) => onIndexChange(e.target.value)}
             placeholder="Select Document Index"

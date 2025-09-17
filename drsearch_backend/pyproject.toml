@@ -49,9 +49,10 @@ dev = [
 ]
 
 [tool.poetry]
-packages = [{ include = "app" }]
+packages = [
+  { include = "app" }
+]
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
