@@ -27,7 +27,7 @@ export function SourceList({
         return (
           <Link
             key={index}
-            color={highlightedStates[index] ? "blue.200" : "blue.300"}
+            className={`source-list-link ${highlightedStates[index] ? "is-highlighted" : ""}`}
             onMouseEnter={() => onMouseEnter(index)}
             onMouseLeave={onMouseLeave}
             onClick={async () => {
