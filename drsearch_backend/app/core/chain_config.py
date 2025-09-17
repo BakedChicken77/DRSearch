@@ -36,6 +36,11 @@ _AZURE_SEARCH_KEY: str = os.getenv("AZURE_SEARCH_KEY", "")
 #: How many documents to pull per query when RAG_ON
 _NUMBER_OF_DOCS_RETRIEVED: int = 3
 
+
+#: Number of pages before and after a retrieved chunk to also fetch from
+#: the pgvector store. Setting to 0 preserves existing behaviour.
+_PAGE_WINDOW: int = int(os.getenv("PAGE_WINDOW", "0"))
+
 #: Default Weaviate index name
 _DEFAULT_INDEX: str = "JACSKE_Program"
 
