@@ -92,8 +92,7 @@ def build_router(settings: Settings) -> APIRouter:  # noqa: D401 – factory
                 for o in raw_opts
             ]
             build_info = _get_backend_build_info()
-            payload = IndexOptionsResponse(result=opts, build_info=build_info)
-            return payload.dict(exclude_none=True)
+            return IndexOptionsResponse(result=opts, build_info=build_info)
         except Exception as exc:  # pragma: no cover – catastrophic
             logger.error("Unable to read index options", exc_info=exc)
             raise HTTPException(
