@@ -1,8 +1,11 @@
 // app/components/__tests__/ChatMessageBubble.test.tsx
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { act } from "react-dom/test-utils";
 import {
   filterSources,
+  filterSourcesByCitations,
   createAnswerElements,
   ChatMessageBubble,
   __TEST__,
@@ -17,7 +20,6 @@ jest.mock("emojisplosion", () => ({ emojisplosion: jest.fn() }));
 jest.mock("../../utils/sendFeedback");
 jest.mock("next-auth/react", () => ({
   __esModule: true,
-  // preserve actual named export SessionProvider but ensure it renders children
   SessionProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
@@ -31,301 +33,132 @@ const renderWithProviders = (ui: React.ReactElement) =>
     </ChakraProvider>,
   );
 
+const createDeferred = <T,>() => {
+  let resolve!: (value: T) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+};
+
+let consoleLogSpy: jest.SpyInstance;
+let consoleWarnSpy: jest.SpyInstance;
+let consoleErrorSpy: jest.SpyInstance;
+let consoleDebugSpy: jest.SpyInstance;
+
 beforeEach(() => {
   (useSession as jest.Mock).mockReturnValue({
     data: { accessToken: "t" },
   });
-  jest.clearAllMocks();
+  consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+  consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+  consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+  consoleDebugSpy = jest.spyOn(console, "debug").mockImplementation(() => {});
 });
 
-describe("utility functions", () => {
-  test("filters duplicate sources", () => {
+afterEach(() => {
+  jest.useRealTimers();
+  consoleLogSpy.mockRestore();
+  consoleWarnSpy.mockRestore();
+  consoleErrorSpy.mockRestore();
+  consoleDebugSpy.mockRestore();
+  jest.clearAllMocks();
+  __TEST__.sendUserFeedback = null;
+  __TEST__.animateButton = null;
+  __TEST__.setComment = null;
+  __TEST__.comment = "";
+});
+
+describe("utility helpers", () => {
+  test("filterSources deduplicates urls and builds source index map", () => {
     const sources = [
       { url: "a", title: "A" },
       { url: "a", title: "A2" },
       { url: "b", title: "B" },
+      { url: "c", title: "C" },
     ];
+
     const { filtered, indexMap } = filterSources(sources as any);
-    expect(filtered).toHaveLength(2);
+
+    expect(filtered).toHaveLength(3);
+    expect(filtered.map((s) => s.title)).toEqual(["A", "B", "C"]);
+    expect(indexMap.get(0)).toBe(0);
     expect(indexMap.get(1)).toBe(0);
+    expect(indexMap.get(2)).toBe(1);
+    expect(indexMap.get(3)).toBe(2);
   });
 
-  test("handles sources without url", () => {
-    const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
-    const sources = [{ title: "A" } as any];
-    const { filtered } = filterSources(sources);
+  test("filterSources warns when url missing", () => {
+    const sources = [{ title: "Missing" }];
+
+    const { filtered } = filterSources(sources as any);
+
     expect(filtered).toHaveLength(0);
-    expect(warn).toHaveBeenCalled();
-    warn.mockRestore();
-  });
-
-  test("creates citation elements", () => {
-    const sources = [{ url: "a", title: "A" }];
-    const { filtered, indexMap } = filterSources(sources as any);
-    const setHighlight = jest.fn();
-    const elements = createAnswerElements(
-      "test [0]",
-      filtered as any,
-      indexMap,
-      [false],
-      setHighlight,
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      "Source at index 0 has undefined url and will be skipped.",
     );
-    const { container } = render(<>{elements}</>);
-    const link = container.querySelector("a")!;
-    fireEvent.mouseEnter(link);
-    expect(setHighlight).toHaveBeenCalledWith([true]);
-    fireEvent.mouseLeave(link);
-    expect(setHighlight).toHaveBeenCalledWith([false]);
-    expect(link).toHaveAttribute("href", "a");
   });
 
-  test("citation numbers correspond to filtered source positions", () => {
-    // Test case with duplicate sources to verify citation numbering
+  test("filterSourcesByCitations retains only referenced deduped sources", () => {
     const sources = [
-      { url: "url1", title: "Document 1" },
-      { url: "url2", title: "Document 2" },
-      { url: "url1", title: "Document 1 Duplicate" }, // This should be filtered out
-      { url: "url3", title: "Document 3" },
+      { url: "url1", title: "Doc 1" },
+      { url: "url1", title: "Doc 1 duplicate" },
+      { url: "url2", title: "Doc 2" },
     ];
     const { filtered, indexMap } = filterSources(sources as any);
+
+    const { filteredSources, indexMap: filteredMap } = filterSourcesByCitations(
+      "Only referencing [1]",
+      filtered,
+      indexMap,
+    );
+
+    expect(filteredSources).toHaveLength(1);
+    expect(filteredSources[0].title).toBe("Doc 1");
+    expect(filteredMap.get(0)).toBe(0);
+    expect(filteredMap.get(1)).toBe(0);
+    expect(filteredMap.has(2)).toBe(false);
+  });
+
+  test("createAnswerElements renders citations with deduped numbering", async () => {
+    const sources = [
+      { url: "u1", title: "Doc 1" },
+      { url: "u1", title: "Doc 1 duplicate" },
+      { url: "u2", title: "Doc 2" },
+    ];
+    const { filtered, indexMap } = filterSources(sources as any);
+    const highlightStates = new Array(filtered.length).fill(false);
     const setHighlight = jest.fn();
-    
-    // Content with citations referring to original indices [0], [1], [2], [3]
+
     const elements = createAnswerElements(
-      "See [0] and [1] and [2] and [3]",
+      "One [0] two [1] three [2]",
       filtered as any,
       indexMap,
-      new Array(filtered.length).fill(false),
+      highlightStates,
       setHighlight,
     );
-    
+
     const { container } = render(<>{elements}</>);
-    const links = container.querySelectorAll("a");
-    
-    // Should have 4 citations but only 3 unique sources after filtering
-    expect(links).toHaveLength(4);
-    
-    // Citation [0] -> filtered index 0 -> should display "1" 
-    expect(links[0].textContent).toBe("1");
-    expect(links[0]).toHaveAttribute("href", "url1");
-    
-    // Citation [1] -> filtered index 1 -> should display "2"
-    expect(links[1].textContent).toBe("2"); 
-    expect(links[1]).toHaveAttribute("href", "url2");
-    
-    // Citation [2] -> maps to same as [0] (filtered index 0) -> should display "1"
-    expect(links[2].textContent).toBe("1");
-    expect(links[2]).toHaveAttribute("href", "url1");
-    
-    // Citation [3] -> filtered index 2 -> should display "3"
-    expect(links[3].textContent).toBe("3");
-    expect(links[3]).toHaveAttribute("href", "url3");
-  });
-});
+    const anchors = container.querySelectorAll("a");
+    expect(anchors).toHaveLength(3);
 
-describe("ChatMessageBubble component", () => {
-  test("renders user message", () => {
-    const { container } = renderWithProviders(
-      <ChatMessageBubble
-        message={{ id: "1", content: "hi", role: "user" }}
-        isMostRecent={false}
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    expect(container.innerHTML).toContain("hi");
+    expect(anchors[0].textContent).toBe("1");
+    expect(anchors[0]).toHaveAttribute("href", "u1");
+    expect(anchors[1].textContent).toBe("1");
+    expect(anchors[1]).toHaveAttribute("href", "u1");
+    expect(anchors[2].textContent).toBe("2");
+    expect(anchors[2]).toHaveAttribute("href", "u2");
+
+    const user = userEvent.setup();
+    await user.hover(anchors[0]);
+    expect(setHighlight).toHaveBeenLastCalledWith([true, false]);
+    await user.unhover(anchors[0]);
+    expect(setHighlight).toHaveBeenLastCalledWith([false, false]);
   });
 
-  test("assistant feedback button triggers sendFeedback", async () => {
-    jest.useFakeTimers();
-    (sendFeedback as jest.Mock).mockResolvedValue({
-      code: 200,
-      feedbackId: "f",
-    });
-
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{
-          id: "2",
-          content: "answer",
-          role: "assistant",
-          runId: "r",
-          sources: [],
-        }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-
-    // first button is 👍
-    const buttons = screen.getAllByRole("button");
-    fireEvent.click(buttons[0]);
-    fireEvent.click(screen.getByText("Send"));
-    jest.runAllTimers();
-
-    await waitFor(() => {
-      expect(sendFeedback).toHaveBeenCalledTimes(1);
-      expect(sendFeedback).toHaveBeenCalledWith(
-        expect.objectContaining({
-          score: 1,
-          runId: "r",
-          key: "user_score",
-          accessToken: "t",
-        }),
-      );
-    });
-  });
-
-  test("downvote button also sends feedback", async () => {
-    (sendFeedback as jest.Mock).mockResolvedValue({
-      code: 200,
-      feedbackId: "d",
-    });
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{
-          id: "x",
-          content: "a",
-          role: "assistant",
-          runId: "r",
-          sources: [],
-        }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    const buttons = screen.getAllByRole("button");
-    fireEvent.click(buttons[1]);
-    fireEvent.click(screen.getByText("Send"));
-    await waitFor(() =>
-      expect(sendFeedback).toHaveBeenCalledWith(
-        expect.objectContaining({
-          score: 0,
-          runId: "r",
-          key: "user_score",
-          accessToken: "t",
-        }),
-      ),
-    );
-  });
-
-  test("does not send feedback when runId missing", () => {
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{ id: "3", content: "hi", role: "assistant" }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    fireEvent.click(screen.getAllByRole("button")[0]);
-    expect(sendFeedback).not.toHaveBeenCalled();
-  });
-
-  test("ignores additional clicks while loading", async () => {
-    let resolve: (v: any) => void = () => {};
-    (sendFeedback as jest.Mock).mockReturnValue(
-      new Promise((r) => {
-        resolve = r;
-      }),
-    );
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{
-          id: "4",
-          content: "answer",
-          role: "assistant",
-          runId: "r",
-          sources: [],
-        }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    const btn = screen.getAllByRole("button")[0];
-    fireEvent.click(btn);
-    fireEvent.click(btn);
-    fireEvent.click(screen.getByText("Send"));
-    resolve({ code: 200, feedbackId: "ff" });
-    await waitFor(() => expect(sendFeedback).toHaveBeenCalledTimes(1));
-  });
-
-  test("submit feedback button sends feedback without score", async () => {
-    (sendFeedback as jest.Mock).mockResolvedValue({
-      code: 200,
-      feedbackId: "fbo",
-    });
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{
-          id: "5",
-          content: "answer",
-          role: "assistant",
-          runId: "r",
-          sources: [],
-        }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    fireEvent.click(screen.getByText(/submit feedback/i));
-    fireEvent.click(screen.getByText("Send"));
-    await waitFor(() =>
-      expect(sendFeedback).toHaveBeenCalledWith(
-        expect.objectContaining({
-          score: undefined,
-          runId: "r",
-          key: "feedback_only",
-          accessToken: "t",
-        }),
-      ),
-    );
-  });
-
-  test("source list hover highlights", async () => {
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{
-          id: "7",
-          content: "answer [0]",
-          role: "assistant",
-          runId: "r",
-          sources: [{ url: "u", title: "Title" }],
-        }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    screen.getByText("View Sources");
-    const link = screen.getByText("Title");
-    fireEvent.mouseEnter(link);
-    fireEvent.mouseLeave(link);
-  });
-
-  test("does not show sources without citations", () => {
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{
-          id: "8",
-          content: "answer",
-          role: "assistant",
-          runId: "r",
-          sources: [{ url: "u", title: "Title" }],
-        }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    expect(screen.queryByText("View Sources")).not.toBeInTheDocument();
-  });
-
-  test("citation fallback uses last source", () => {
+  test("createAnswerElements falls back to last source for unknown citation", () => {
     const sources = Array.from({ length: 11 }, (_, i) => ({
       url: `u${i}`,
       title: `t${i}`,
@@ -342,66 +175,193 @@ describe("ChatMessageBubble component", () => {
     expect(link).toHaveAttribute("href", "u10");
     expect(link.textContent).toBe("6");
   });
+});
 
-  test("sendUserFeedback early returns", async () => {
+describe("ChatMessageBubble", () => {
+  test("renders user message content", () => {
+    const { container } = renderWithProviders(
+      <ChatMessageBubble
+        message={{ id: "1", content: "hello", role: "user" }}
+        isMostRecent={false}
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    expect(container).toHaveTextContent("hello");
+  });
+
+  test("renders assistant message with deduped citations", () => {
     renderWithProviders(
       <ChatMessageBubble
-        message={{ id: "e", content: "a", role: "assistant" }}
+        message={{
+          id: "2",
+          content: "See [0] and [1] and [2] and [3]",
+          role: "assistant",
+          runId: "run",
+          sources: [
+            { url: "url1", title: "Document 1" },
+            { url: "url1", title: "Document 1 Duplicate" },
+            { url: "url2", title: "Document 2" },
+            { url: "url3", title: "Document 3" },
+          ],
+        }}
         isMostRecent
         messageCompleted
         conversation={[]}
       />,
     );
-    await (__TEST__.sendUserFeedback as any)(1, "user_score");
-    expect(sendFeedback).not.toHaveBeenCalled();
+
+    expect(screen.getByText("View Sources")).toBeInTheDocument();
+    const sourceEntries = screen.getAllByText(/Document/);
+    expect(sourceEntries).toHaveLength(3);
+
+    const citationLinks = screen.getAllByRole("link", { name: /\d/ });
+    expect(citationLinks.map((link) => link.textContent)).toEqual([
+      "1",
+      "1",
+      "2",
+      "3",
+    ]);
+    expect(citationLinks[0]).toHaveAttribute("href", "url1");
+    expect(citationLinks[1]).toHaveAttribute("href", "url1");
+    expect(citationLinks[2]).toHaveAttribute("href", "url2");
+    expect(citationLinks[3]).toHaveAttribute("href", "url3");
   });
 
-  test("comment resets after feedback", async () => {
+  test("hovering citations syncs highlight state", async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "hover",
+          content: "answer [0]",
+          role: "assistant",
+          runId: "run",
+          sources: [{ url: "u", title: "Title" }],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    const citation = screen.getByRole("link", { name: "1" });
+    const source = screen.getByText("Title");
+
+    await user.hover(citation);
+    await waitFor(() => expect(source).toHaveClass("is-highlighted"));
+    await user.unhover(citation);
+    await waitFor(() => expect(source).not.toHaveClass("is-highlighted"));
+  });
+
+  test("hovering source list item highlights citations", async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "hover2",
+          content: "answer [0]",
+          role: "assistant",
+          runId: "run",
+          sources: [{ url: "u", title: "Title" }],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    const citation = screen.getByRole("link", { name: "1" });
+    const source = screen.getByText("Title");
+
+    await user.hover(source);
+    await waitFor(() =>
+      expect(citation).toHaveClass("bg-[rgb(200, 1, 24)]"),
+    );
+    await user.unhover(source);
+    await waitFor(() =>
+      expect(citation).toHaveClass("bg-[rgb(228, 1, 44)]"),
+    );
+  });
+
+  test("submits positive feedback and resets comment", async () => {
+    const user = userEvent.setup();
     (sendFeedback as jest.Mock).mockResolvedValue({
       code: 200,
       feedbackId: "f",
     });
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{ id: "c", content: "a", role: "assistant", runId: "r" }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    (__TEST__.setComment as any)("note");
-    await (__TEST__.sendUserFeedback as any)(1, "user_score");
-    await waitFor(() => expect(__TEST__.comment).toBe(""));
-  });
 
-  test("animateButton default branch", () => {
-    renderWithProviders(
-      <ChatMessageBubble
-        message={{ id: "b", content: "a", role: "assistant", runId: "r" }}
-        isMostRecent
-        messageCompleted
-        conversation={[]}
-      />,
-    );
-    (__TEST__.animateButton as any)("unknown");
-    expect(emojisplosion).not.toHaveBeenCalled();
-  });
-
-  test("post feedback clicks show error", async () => {
-    jest.useRealTimers();
-    (sendFeedback as jest.Mock).mockResolvedValue({
-      code: 200,
-      feedbackId: "1",
-    });
-    const toast = require("react-toastify").toast;
-    const err = jest.spyOn(toast, "error").mockImplementation(() => {});
     renderWithProviders(
       <ChatMessageBubble
         message={{
-          id: "z",
-          content: "a",
+          id: "p",
+          content: "answer [0]",
           role: "assistant",
-          runId: "r",
+          runId: "run",
+          sources: [{ url: "http://doc", title: "Doc" }],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[
+          { id: "1", content: "question", role: "user" } as any,
+          {
+            id: "p",
+            content: "answer [0]",
+            role: "assistant",
+            runId: "run",
+            sources: [{ url: "http://doc", title: "Doc" }],
+          } as any,
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "👍" }));
+    const textarea = await screen.findByPlaceholderText("Enter your feedback");
+    await user.type(textarea, "Great job");
+    const sendButton = await screen.findByRole("button", { name: /send/i });
+    (emojisplosion as jest.Mock).mockClear();
+    await user.click(sendButton);
+
+    await waitFor(() => {
+      expect(sendFeedback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          score: 1,
+          runId: "run",
+          key: "user_score",
+          comment: "Great job",
+          documents: ["http://doc"],
+          conversation: [
+            { role: "user", content: "question" },
+            { role: "assistant", content: "answer [0]" },
+          ],
+          accessToken: "t",
+        }),
+      );
+    });
+
+    expect(emojisplosion).toHaveBeenCalledWith(
+      expect.objectContaining({ emojis: ["👍"] }),
+    );
+    await waitFor(() => expect(__TEST__.comment).toBe(""));
+  });
+
+  test("submits negative feedback with animation", async () => {
+    const user = userEvent.setup();
+    (sendFeedback as jest.Mock).mockResolvedValue({
+      code: 200,
+      feedbackId: "d",
+    });
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "n",
+          content: "answer",
+          role: "assistant",
+          runId: "run",
           sources: [],
         }}
         isMostRecent
@@ -409,19 +369,286 @@ describe("ChatMessageBubble component", () => {
         conversation={[]}
       />,
     );
-    const [up] = screen.getAllByRole("button");
-    fireEvent.click(up);
-    fireEvent.click(screen.getByText("Send"));
+
+    await user.click(screen.getByRole("button", { name: "👎" }));
+    const textarea = await screen.findByPlaceholderText("Enter your feedback");
+    await user.type(textarea, "Needs work");
+    const sendButton = await screen.findByRole("button", { name: /send/i });
+    (emojisplosion as jest.Mock).mockClear();
+    await user.click(sendButton);
+
+    await waitFor(() =>
+      expect(sendFeedback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          score: 0,
+          key: "user_score",
+        }),
+      ),
+    );
+    expect(emojisplosion).toHaveBeenCalledWith(
+      expect.objectContaining({ emojis: ["👎"] }),
+    );
+  });
+
+  test("submits feedback without score", async () => {
+    const user = userEvent.setup();
+    (sendFeedback as jest.Mock).mockResolvedValue({
+      code: 200,
+      feedbackId: "c",
+    });
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "s",
+          content: "answer",
+          role: "assistant",
+          runId: "run",
+          sources: [{ url: "u", title: "Title" }],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /submit feedback/i }));
+    const textarea = await screen.findByPlaceholderText("Enter your feedback");
+    await user.type(textarea, "General note");
+    const sendButton = await screen.findByRole("button", { name: /send/i });
+    (emojisplosion as jest.Mock).mockClear();
+    await user.click(sendButton);
+
+    await waitFor(() =>
+      expect(sendFeedback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          score: undefined,
+          key: "feedback_only",
+          comment: "General note",
+        }),
+      ),
+    );
+    expect(emojisplosion).not.toHaveBeenCalled();
+  });
+
+  test("warns when run id missing", async () => {
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{ id: "no-run", content: "answer", role: "assistant" }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    await act(async () => {
+      await __TEST__.sendUserFeedback?.(1, "user_score");
+    });
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      "Run ID is undefined, cannot send feedback",
+    );
+    expect(sendFeedback).not.toHaveBeenCalled();
+  });
+
+  test("warns when already loading feedback", async () => {
+    const deferred = createDeferred<{ code: number; feedbackId: string }>();
+    (sendFeedback as jest.Mock).mockReturnValue(deferred.promise);
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "loading",
+          content: "answer",
+          role: "assistant",
+          runId: "run",
+          sources: [],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    await act(async () => {
+      void __TEST__.sendUserFeedback?.(1, "user_score");
+      await Promise.resolve();
+    });
+
+    expect(sendFeedback).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await __TEST__.sendUserFeedback?.(1, "user_score");
+    });
+
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      "Already loading, cannot send feedback",
+    );
+
+    await act(async () => {
+      deferred.resolve({ code: 200, feedbackId: "id" });
+    });
+  });
+
+  test("handles feedback errors", async () => {
+    const user = userEvent.setup();
+    const error = new Error("boom");
+    (sendFeedback as jest.Mock).mockRejectedValue(error);
+    const toast = require("react-toastify").toast;
+    const toastSpy = jest
+      .spyOn(toast, "error")
+      .mockImplementation(() => {});
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "err",
+          content: "answer",
+          role: "assistant",
+          runId: "run",
+          sources: [],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "👍" }));
+    const textarea = await screen.findByPlaceholderText("Enter your feedback");
+    await user.type(textarea, "Oops");
+    await user.click(screen.getByRole("button", { name: /send/i }));
+
+    await waitFor(() => expect(toastSpy).toHaveBeenCalledWith("boom"));
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error sending feedback:",
+      error,
+    );
+    toastSpy.mockRestore();
+  });
+
+  test("prevents feedback after submission", async () => {
+    const user = userEvent.setup();
+    (sendFeedback as jest.Mock).mockResolvedValue({
+      code: 200,
+      feedbackId: "done",
+    });
+    const toast = require("react-toastify").toast;
+    const toastSpy = jest
+      .spyOn(toast, "error")
+      .mockImplementation(() => {});
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "post",
+          content: "answer",
+          role: "assistant",
+          runId: "run",
+          sources: [],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    const upvote = screen.getByRole("button", { name: "👍" });
+    await user.click(upvote);
+    await user.click(await screen.findByRole("button", { name: /send/i }));
     await waitFor(() => expect(sendFeedback).toHaveBeenCalledTimes(1));
-    await new Promise((r) => setTimeout(r, 0));
-    fireEvent.click(up);
-    expect(err).toHaveBeenCalledWith(
+
+    await user.click(upvote);
+    expect(toastSpy).toHaveBeenCalledWith(
       "You have already provided your feedback.",
     );
-    fireEvent.click(screen.getByText(/submit feedback/i));
-    expect(err).toHaveBeenCalledWith(
+
+    await user.click(screen.getByRole("button", { name: /submit feedback/i }));
+    expect(toastSpy).toHaveBeenCalledWith(
       "You have already provided your feedback.",
     );
-    err.mockRestore();
+    toastSpy.mockRestore();
+  });
+
+  test("does not show sources when content lacks citations", () => {
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{
+          id: "no-cite",
+          content: "answer",
+          role: "assistant",
+          runId: "run",
+          sources: [{ url: "u", title: "Title" }],
+        }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    expect(screen.queryByText("View Sources")).not.toBeInTheDocument();
+  });
+
+  test("animateButton gracefully ignores unknown id", () => {
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{ id: "anim", content: "answer", role: "assistant", runId: "run" }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    __TEST__.animateButton?.("unknown");
+    expect(emojisplosion).not.toHaveBeenCalled();
+  });
+
+  test("animateButton triggers emojisplosion for up and down buttons", () => {
+    jest.useFakeTimers();
+
+    renderWithProviders(
+      <ChatMessageBubble
+        message={{ id: "anim2", content: "answer", role: "assistant", runId: "run" }}
+        isMostRecent
+        messageCompleted
+        conversation={[]}
+      />,
+    );
+
+    const upButton = screen.getByRole("button", { name: "👍" });
+    Object.defineProperty(upButton, "offsetTop", {
+      value: 10,
+      configurable: true,
+    });
+    Object.defineProperty(upButton, "offsetLeft", {
+      value: 20,
+      configurable: true,
+    });
+    Object.defineProperty(upButton, "clientWidth", {
+      value: 100,
+      configurable: true,
+    });
+    Object.defineProperty(upButton, "clientHeight", {
+      value: 40,
+      configurable: true,
+    });
+
+    (emojisplosion as jest.Mock).mockClear();
+    act(() => {
+      __TEST__.animateButton?.("upButton");
+    });
+    const upArgs = (emojisplosion as jest.Mock).mock.calls[0][0];
+    expect(upArgs.emojis).toEqual(["👍"]);
+    expect(upArgs.position()).toEqual({ x: 70, y: 30 });
+
+    (emojisplosion as jest.Mock).mockClear();
+    act(() => {
+      __TEST__.animateButton?.("downButton");
+    });
+    const downArgs = (emojisplosion as jest.Mock).mock.calls[0][0];
+    expect(downArgs.emojis).toEqual(["👎"]);
+    expect(downArgs.position()).toEqual({ x: 0, y: 0 });
+
+    jest.runAllTimers();
   });
 });
