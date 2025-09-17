@@ -125,9 +125,9 @@ export function BuildInfoWidget() {
         bottom={{ base: 4, md: 6 }}
         right={{ base: 4, md: 6 }}
         zIndex={1400}
-        bg="gray.700"
+        bg="gray.500"
         color="white"
-        px={3}
+        px={2}
         py={1.5}
         fontSize="sm"
         borderRadius="full"
@@ -136,7 +136,7 @@ export function BuildInfoWidget() {
         _hover={{ opacity: 1.0 }}
         _focusVisible={{ outline: "2px solid", outlineColor: "gray.200" }}
       >
-        Build
+        v1
       </Box>
     </Tooltip>
   );
