@@ -69,7 +69,7 @@ _BASE_INDEX_OPTIONS = [
         ],
     },
     {
-        "name": "SEPs_F_T_C_W_A_V_Summaries",
+        "name": "SEPS_AFTER_MIGRATION",
         "display_name": "SEPS",
         "example_questions": [
             "How do I fill out my timesheet?",
@@ -79,7 +79,7 @@ _BASE_INDEX_OPTIONS = [
         ],
     },
     {
-        "name": "Adacstest20250205",
+        "name": "ADACS",
         "display_name": "ADACS",
         "example_questions": [
             "What is ADACS?",
