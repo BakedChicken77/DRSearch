@@ -1,7 +1,23 @@
-# DRSearch
-A RAG Chatbot
+## To install and run backend application on local machine:
+### Install production dependencies
+```powershell
+poetry install
+```
 
+### To install all dependencies (i.e. pytest & company) include '--all-extras':
+```powershell
+poetry install --all-extras
+```
+## Running the Backend Locally
 
+The FastAPI application is fully initialised by default. You can start it with:
+
+```bash
+poetry run uvicorn app:app --host 0.0.0.0 --port 8011
+```
+
+If you need to disable automatic initialisation (for example during tests), set
+the environment variable `INIT_APP=false` before running Uvicorn.
 
 
 ## To run test, use this command:
@@ -13,8 +29,15 @@ A RAG Chatbot
 poetry run pytest --cov=app --cov-report=term-missing -q
 
 ```
-
-
+### In order to run pytest in docker container, the poetry environment must be installed with dev tools. 
+### To install with dev tools, add the '--all-extras' in the Dockerfile.backend:
+```Dockerfile
+RUN pip install --upgrade pip setuptools wheel \
+ && pip install poetry==1.5.1 \
+ && poetry config virtualenvs.create false \
+# && poetry install --no-interaction --no-ansi --no-root
+ && poetry install --no-interaction --no-ansi --no-root --all-extras
+```
 
 ### Authentication — Detailed Technical Walk-through
 Use this section verbatim (or excerpt as needed) in project documentation.
