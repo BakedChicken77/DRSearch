@@ -156,9 +156,20 @@ export const createAnswerElements = (
 
   matches.forEach((match) => {
     const sourceNum = parseInt(match[1], 10);
-    const resolvedNum =
-      sourceIndexMap.get(sourceNum) ?? filteredSources.length - 1;
-    if (match.index !== null && resolvedNum < filteredSources.length) {
+    const mappedIndex = sourceIndexMap.get(sourceNum);
+    const fallbackIndex =
+      filteredSources.length > 0 ? filteredSources.length - 1 : undefined;
+    const resolvedNum = mappedIndex ?? fallbackIndex ?? -1;
+    const displayNumber =
+      mappedIndex !== undefined && resolvedNum >= 0
+        ? resolvedNum + 1
+        : sourceNum + 1;
+
+    if (
+      match.index !== null &&
+      resolvedNum >= 0 &&
+      resolvedNum < filteredSources.length
+    ) {
       elements.push(
         <span
           key={`content:${prevIndex}`}
@@ -171,7 +182,7 @@ export const createAnswerElements = (
         <InlineCitation
           key={`citation:${prevIndex}`}
           source={filteredSources[resolvedNum]}
-          sourceNumber={sourceNum + 1} // Keep original source number
+          sourceNumber={displayNumber}
           highlighted={highlighedSourceLinkStates[resolvedNum]}
           onMouseEnter={() => {
             console.log(
