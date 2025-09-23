@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useSession } from "next-auth/react";
 import { EmptyState } from "../components/EmptyState";
@@ -60,6 +60,12 @@ export function ChatWindow(props: {
   // index selection
   const [selectedIndexName, setSelectedIndexName] = useState("");
   const [acronymMap, setAcronymMap] = useState<Record<string, string>>({});
+  const [acronymReplacementEnabled, setAcronymReplacementEnabled] =
+    useState(true);
+  const effectiveAcronymMap = useMemo(
+    () => (acronymReplacementEnabled ? acronymMap : {}),
+    [acronymMap, acronymReplacementEnabled],
+  );
 
   // number of docs
   const [numDocs, setNumDocs] = useState(3);
@@ -287,7 +293,12 @@ export function ChatWindow(props: {
 
   return (
     <div className="flex flex-col items-center p-8 rounded grow max-h-full">
-      <SettingsDrawer numDocs={numDocs} setNumDocs={setNumDocs} />
+      <SettingsDrawer
+        numDocs={numDocs}
+        setNumDocs={setNumDocs}
+        acronymReplacementEnabled={acronymReplacementEnabled}
+        setAcronymReplacementEnabled={setAcronymReplacementEnabled}
+      />
       <IconButton
         aria-label="start new chat"
         title="start new chat"
@@ -365,7 +376,7 @@ export function ChatWindow(props: {
           <RichAcronymEditor
             value={input}
             onChange={setInput}
-            acronymMap={acronymMap}
+            acronymMap={effectiveAcronymMap}
             isDisabled={!selectedIndexName}
             placeholder={placeholder}
             onSubmit={(text) => {

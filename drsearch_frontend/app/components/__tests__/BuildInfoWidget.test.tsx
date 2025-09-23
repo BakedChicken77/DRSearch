@@ -140,7 +140,7 @@ describe("BuildInfoWidget", () => {
       </ChakraProvider>,
     );
 
-    await screen.findAllByText("Build");
+    await screen.findAllByText(/Built/i);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

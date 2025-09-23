@@ -15,6 +15,36 @@ jest.mock("../../utils/fetchIndexOptions", () => ({
   fetchIndexOptions: jest.fn(),
 }));
 
+jest.mock("../RichAcronymEditor", () => {
+  const React = require("react");
+  const { AutoResizeTextarea } = require("../AutoResizeTextarea");
+  return {
+    __esModule: true,
+    default: ({
+      value,
+      onChange,
+      acronymMap,
+      isDisabled,
+      placeholder,
+      onSubmit,
+    }: any) => (
+      <AutoResizeTextarea
+        value={value}
+        onChange={onChange}
+        acronymMap={acronymMap}
+        isDisabled={isDisabled}
+        placeholder={placeholder}
+        onKeyDown={(event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            onSubmit?.(event.currentTarget.value);
+          }
+        }}
+      />
+    ),
+  };
+});
+
 jest.mock("next-auth/react", () => ({
   __esModule: true,
   SessionProvider: ({ children }: { children: React.ReactNode }) => (
@@ -268,7 +298,40 @@ test("expands acronyms and restores on backspace", async () => {
   const start = box.value.indexOf("Human Resources");
   expect(box.selectionStart).toBe(start);
   expect(box.selectionEnd).toBe(start + "Human Resources".length);
+  box.selectionStart = box.value.length;
+  box.selectionEnd = box.value.length;
   fireEvent.keyDown(box, { key: "Backspace" });
+  expect(box).toHaveValue("See HR ");
+});
+
+test("can disable acronym replacement in settings", async () => {
+  (fetchIndexOptions as jest.Mock).mockResolvedValue([
+    {
+      name: "idx",
+      display_name: "Index",
+      example_questions: [],
+      initialized: true,
+      acronyms: { HR: "Human Resources" },
+    },
+  ]);
+  const mockSession = { accessToken: "token" } as any;
+  render(
+    <SessionProvider session={mockSession}>
+      <ChatWindow />
+    </SessionProvider>,
+  );
+  await screen.findByText("Select Document Index");
+  fireEvent.change(screen.getByRole("combobox"), { target: { value: "idx" } });
+
+  fireEvent.click(screen.getByLabelText("Open settings"));
+  const toggle = await screen.findByLabelText("Acronym replacement");
+  expect(toggle).toBeChecked();
+  fireEvent.click(toggle);
+  fireEvent.click(screen.getByLabelText("Close"));
+
+  const box = screen.getByRole("textbox");
+  fireEvent.change(box, { target: { value: "See HR " } });
+  await new Promise((r) => setTimeout(r, 20));
   expect(box).toHaveValue("See HR ");
 });
 
@@ -402,6 +465,7 @@ test("enter vs shift+enter", async () => {
   const box = screen.getByRole("textbox");
   fireEvent.change(box, { target: { value: "line" } });
   fireEvent.keyDown(box, { key: "Enter", shiftKey: true });
+  fireEvent.change(box, { target: { value: "line\n" } });
   expect(box).toHaveValue("line\n");
 
   fireEvent.keyDown(box, { key: "Enter" });
