@@ -17,15 +17,21 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Switch,
+  Stack,
 } from "@chakra-ui/react";
 import { SettingsIcon } from "@chakra-ui/icons";
 
 export function SettingsDrawer({
   numDocs,
   setNumDocs,
+  acronymReplacementEnabled,
+  setAcronymReplacementEnabled,
 }: {
   numDocs: number;
   setNumDocs: (v: number) => void;
+  acronymReplacementEnabled: boolean;
+  setAcronymReplacementEnabled: (value: boolean) => void;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
@@ -44,21 +50,35 @@ export function SettingsDrawer({
           <DrawerCloseButton />
           <DrawerHeader>Settings</DrawerHeader>
           <DrawerBody>
-            <FormControl>
-              <FormLabel>Documents to retrieve</FormLabel>
-              <NumberInput
-                min={1}
-                max={5}
-                value={numDocs}
-                onChange={(_s, v) => setNumDocs(v)}
-              >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
-            </FormControl>
+            <Stack spacing={6}>
+              <FormControl>
+                <FormLabel>Documents to retrieve</FormLabel>
+                <NumberInput
+                  min={1}
+                  max={5}
+                  value={numDocs}
+                  onChange={(_s, v) => setNumDocs(v)}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </FormControl>
+              <FormControl display="flex" alignItems="center">
+                <FormLabel htmlFor="acronym-replacement-toggle" mb="0">
+                  Acronym replacement
+                </FormLabel>
+                <Switch
+                  id="acronym-replacement-toggle"
+                  isChecked={acronymReplacementEnabled}
+                  onChange={(event) =>
+                    setAcronymReplacementEnabled(event.target.checked)
+                  }
+                />
+              </FormControl>
+            </Stack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
