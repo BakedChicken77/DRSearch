@@ -37,6 +37,17 @@ _AZURE_SEARCH_KEY: str = os.getenv("AZURE_SEARCH_KEY", "")
 _NUMBER_OF_DOCS_RETRIEVED: int = 3
 
 
+#: Maximum number of characters that can be fed into the LLM as part of the
+#: retrieved context. Can be overridden via CONTEXT_CHAR_LIMIT. Setting the
+#: environment variable to "0" disables the guard rail.
+_context_char_limit_env = os.getenv("CONTEXT_CHAR_LIMIT")
+if _context_char_limit_env is None:
+    CONTEXT_CHAR_LIMIT: int | None = 12000
+else:
+    parsed_limit = max(int(_context_char_limit_env), 0)
+    CONTEXT_CHAR_LIMIT = parsed_limit or None
+
+
 #: Number of pages before and after a retrieved chunk to also fetch from
 #: the pgvector store. Setting to 0 preserves existing behaviour.
 _PAGE_WINDOW: int = int(os.getenv("PAGE_WINDOW", "0"))
